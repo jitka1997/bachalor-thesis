@@ -1,0 +1,36 @@
+https://thenewstack.io/the-different-token-types-and-formats-explained/
+
+rozne typy tokenov podla toho naco sa pouzivaju:
+    - access token -> typicky opaque token, autorizacia usera apinou, nie na autentifikaciu
+    - bearer token -> pouzitie access tokenov, bearer tokenu ma ziska access, ziadne kontroly apinou ani aplikaciou, ze odosielatel je ten co ma dostat access
+    - sender constrained tokens -> pouzije sa cryptografia aby sa token zvialal s appkou, pomocou niecoho co vie len appka - sukromny kluc
+    - refresh tokens -> access tokeny maju kratku trvacnost, po ktorej uplynuti by sa musel user opat autentifikovat, preto som s access tokenom vydava aj refresh token, pomocou ktoreho ziska user novy access token bez nutnosti autentifikovania
+    - id token -> jwt - info o userovi, vystup z openid connect (OIDC), sluzi len na autentifikaciu, nie autorizaciu, neposiala sa dalsej apine
+
+formaty tokenov:
+    - opaque token  (referencia) -> nahodny string, nenesie ziadnu info appke ani apine, no na overie ich platnosti treba databazu s metadami o tokenoch - vydanie, platnost, appka, token introspection
+    - structured (hodnota) -> hlavicka, telo, podpis - ma vela info, musi byt encryptnuty aby nebol precitany hocikym, podpis zabezpecuje len integritu
+    - phantom tokens -> kombinacia opaque a structured, pouzitie api gateway/reverse proxy medzi klintom a apinov. Klient dostane opaque token a ten posiela s requestami apine, requesty najpv idu cez proxynu a ta spravi introspection (call na dalsi servis) odkial dostane structured token a ten posle apine. Vyhoda je ze proxyna moze structured tokeny cachovat. Klient sa nedostane k citlivym udajom zo structured tokenu
+    - split tokens -> rozdelenie structured tokenu na podpis a zvysok. Klient sa autentifikuje a apina mu vrati podpis z vygenerovaneho structured tokenu, podpis zahashuje a spolu so zvyskom ho posle proxyne, ktora si zacachuje tento token, hash podpisu pouzije ako kluc a zvysok ako hodnotu. Tym padom proxyna nerobi ziadne dalsie volania, iba pozera do cache a nikto nema cely token u seba.
+
+
+https://zapier.com/engineering/apikey-oauth-jwt/
+    - api key -> jednoduchy sposob ako pouzivat api, staticka vec garantujuca access ku vsetkemu, bezpecnoste rizko, hlavne ak sa posiela ako query string v url, lepsie v authorization header. Pre developera fajn, pre usera nic moc, casto nevie co je api vobec a kde ma zobrat kluc.
+    - OAuth - OAuth2.0 standard na autorizaciu voci apine, vyuziva access a refresh token
+
+
+https://fly.io/blog/api-tokens-a-tedious-survey/
+    - IAM -> identity and access management
+    - JWT -> problem lebo nejasne co musis napisat, aky sifrovaci algoritmus sa pouziva, ci je symentrcke/asymetricke sifrovanie
+    - PASETO -> lepsi JWT - snazi sa obmedzit co mozes pouzit a nemeni parametre ale verzionuje cely protokol, problem je ze su 4 aktivne verzie..
+    - Protocol Buffer Tokens (protobuf) -> definuje silno typovany protokol format, mame token a signed token. Token - semantika => strigify, podpisem, vlozim do signed tokenu aj s podpisom.
+    - CAT -> crypto auth token, cat server ma root key - apine vytvori token z tohto kluca a jej identity, appkam ktora sa autentifikuju cat serveru a budu chciet mat pristup k apine vyrobi creation key z tokenu ktory vyrobil apine, takto si vie apina lahko verifikovat token od appky, appka si vie vyrobit token pomocou HMAC z tohto creation key a svojej identity. Netreba zdielane tajomstvo pre kazde spojenie dvojice appka apina. Apina a cat server sa voci sebe autetifikuju pomocou certifikatou v TLS spojeni.
+    - Macaroons -> server vie vydat golden ticket a pridat nanho ombedzenia (caveats) - kazde ombedzenia sa vyraba z predosleho mac pomoucou pridania listu obmedzeni a hmacnutia tokenu, kazdy s vyssiou urovnou vie overit
+    - Biscuits -> podobne ako macaroons, ale pri pridavani obmedzeni tokenov namiesto zahashovania noveho tokenu zo stareho a obmedzeni pouzitim HMAC, vyuzivaju podpisovanie a verejne kluce, naco neexistuje moc jednoduchi sposob ako to spravit z predostleho tokenu a obmedzenia. Obmedzenia nie su len boolean ale datalogove programy
+
+navrh kapitol:
+    1. vyuzitie api tokenov - preco potrebujeme api tokeny a ich rozdiely oproti inym sposobom autentifikacia a autorizacie (api keys, meno heslo, session)
+    2. zname a v praxi pouzivane api tokeny - predstavenie roznych typov tokenov, ktore sa vyuzivaju v praxi
+    3. teoreticke parametre tokenov - porovnanie tokenov ohladom na bezpecnost, skalovatelnost, flexibilitu
+    4. prakticke parametre tokenov - porovnanie tokenov vzhladom na jednoduchost implementacie a rychlost 
+    5. porovnanie na jednoduchom rozhrani - navrh a implementacia jednoducheho rozhrania s pouzitim viacerych typov tokenov a nase pozorovanie pri ich pouziti
