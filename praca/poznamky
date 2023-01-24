@@ -28,6 +28,61 @@ https://fly.io/blog/api-tokens-a-tedious-survey/
     - Macaroons -> server vie vydat golden ticket a pridat nanho ombedzenia (caveats) - kazde ombedzenia sa vyraba z predosleho mac pomoucou pridania listu obmedzeni a hmacnutia tokenu, kazdy s vyssiou urovnou vie overit
     - Biscuits -> podobne ako macaroons, ale pri pridavani obmedzeni tokenov namiesto zahashovania noveho tokenu zo stareho a obmedzeni pouzitim HMAC, vyuzivaju podpisovanie a verejne kluce, naco neexistuje moc jednoduchi sposob ako to spravit z predostleho tokenu a obmedzenia. Obmedzenia nie su len boolean ale datalogove programy
 
+https://www.youtube.com/watch?v=dlmaujVVPII
+    - o skturturovanych - nemusis mat databazu, overujes stateless, moze byt read stateless overenie, write stateful - lookup v databaze sessionov, ci je este aktualny
+    - JWT -> JWE (encryption) alebo JWS (signature), vacsinou JWS - o tom bude rec
+        - JOSE specs
+        - na skussanie jwt - https://token.dev/, dekodovanie base64 - https://codebeautify.org/base64-decode
+        - hlavicka, telo, kluc -> vyrobi sa string base64 kodovanim z hlavicky a tela, oddelene bodkou, na konci podpis vyrobeny pomocou kluca
+        - v hlavicke alg property - hmac (hs256)/private + public key (es512)/none(cisty JSON)
+        - kluc-hodnota pary su claims - 3 typy
+            - registered - kluce definovane v specke jwt
+            - public - z inych protokolov (napr. OpenID connect ma name v payloade)
+            - private - hocico co si dopisem
+            - regitered su hlavicka (typ, alg, optional kid - id kluca pouizteho na podpis), telo(sub - komu je urceny token, nbf - not before, exp - expiration date)
+        - validacia 
+            - dekodujem hlavicku - mam alg, pripadne kid - vygenerujem podpis a porovnam s podpisom v tokene
+            - validacia tela - dekodujem ho, skontrolujem ci som medze nbf a exp
+        - JWE este nevyse encrypted telo - ma viac sekcii v stringu (5 namiesto 3)
+        - problemy - moc vela moznosti 
+            - jws - 13 alg moznosti, jwe - 17 moznosti
+            - none alg!!!
+    - PASETO -> Platform Agnostic SEcurity TOken
+        - snazi sa opravit chyby jwt
+        - zjednodusuje jwt
+        - paseto implementacie - https://paseto.io/
+        - a skusanie tiez - https://token.dev/paseto/
+        - tiez base64 zakodovane - <verzia>.<purpose>.<payload>.<footer>
+            - version - 1,2,3,4 - rozlisuje krypto funkcie pouzite na podpisovanie/sifovanie
+            - purpose - local/public
+                - local - encrypted + shared key - kazdy lokalnou kopiou kluca vie precitat obsah tokenu
+                - public - neencryptnute, ako jws, pouzivaju public/private kluce 
+            - payload - najdolezitejsie nbf a exp, registed claims - to iste ako v jwt
+            - footer - optional kid
+            - public kluc je v payloade na konci - tym ze je fixny format nemusi byt oddelene bodkou
+        - vyhody - menej miesta na ludku chybu
+        - nevyhody - stale draft - 2 RFC - jedna pre nove crypto funkcie, nezavisla na paseto, jedna konkretne paseto specs
+    - Macaroons
+        - zaklad HMAC - hash-based message authentication code
+            - hash samo o sebe je jednosmerna crypto funkcia, vieme len zahashovat nie odhashovat
+            - authentication - nie iba hash ale hash vypocitany pomocou nejekeho secret key - teda len clovek s klucom vie overit hash
+        - zacina sa s jednym tajnym klucom, ktory vie vsetko
+        - pomocou hmac vyrobim podpis a ten pridam do tokenu
+        - dalsi token vyrobim tak ze zoberiem podpis, pridam obmedzenie spravim hmac pomocou predosleho tokenu ako kluca a pridam podpis
+        - takto vzdy niekto s tokenom z nejekej urovne vie overit tie pod nim
+        - 3rd party caviates -> 
+            - vyrobim si novy kluc - lubovolny
+            - hmacnem pomocou predosleho kluca a moj kluc dam ako caviat - takto pozna moj kluc kazdy co poznal predosly kluc
+            - hmacnem public svoj kluc + nejake metadata pomocou public kluca tretej strany - tretia strana pozna moj kluc
+            - poslem to niekomu, kto pouziva tretiu stranu - nepozna moj kluc - posle to tretej strane, ona pomocou svojho kluca ziska moj kluc - pomocou neho moze vytvarat nove macaroons (discharge macaroons) s novymi caviates s mojim klucom ako povodnym tajomstvom
+            - povodny server co vie tajomstvo vyssie ako ja, si vie ziskat moj novy kluc (lebo pozna vyssi kluc) a pomocou neho vie overit discharge macaroon, lebo tie pouzivaju ako najvyssie tajomstvo moj kluc
+        - nevyhody - nemaju official specs, iba writepaper od googlu - mozu byt rozdiely ako sa pouzivaju rozne caviates, zlozite 3rd party caviates
+        - vyhoda - existuje Cbased implementacia rescrv/libmacaroons - defacto standard (vseobecne akceptovana implementacia v praxi)
+
+
+
+
+
 navrh kapitol:
     1. vyuzitie api tokenov - preco potrebujeme api tokeny a ich rozdiely oproti inym sposobom autentifikacia a autorizacie (api keys, meno heslo, session)
     2. zname a v praxi pouzivane api tokeny - predstavenie roznych typov tokenov, ktore sa vyuzivaju v praxi
