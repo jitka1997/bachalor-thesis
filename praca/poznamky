@@ -79,10 +79,11 @@ https://www.youtube.com/watch?v=dlmaujVVPII
         - nevyhody - nemaju official specs, iba writepaper od googlu - mozu byt rozdiely ako sa pouzivaju rozne caviates, zlozite 3rd party caviates
         - vyhoda - existuje Cbased implementacia rescrv/libmacaroons - defacto standard (vseobecne akceptovana implementacia v praxi)
 
-
-
-
-
+google white paper Macaroons - https://storage.googleapis.com/pub-tools-public-publication-data/pdf/41892.pdf
+    - cielom macaroons je spojit vyhody viacerych pristupov - bearer tokens, flexibilnost certifikatov s verejnymi klucmi, rychle kryptograficke primitiva, 
+    - caveats(vyhrady) umoznuju delegovanie autority medzi domenami s utlmom a kontextovymi obmedzeniami
+    - zakladom je retazove skladanie hmac hodnot, co zaroven zabezpecuje distribuciu klucov
+    - 
 navrh kapitol:
     1. vyuzitie api tokenov - preco potrebujeme api tokeny a ich rozdiely oproti inym sposobom autentifikacia a autorizacie (api keys, meno heslo, session)
     2. zname a v praxi pouzivane api tokeny - predstavenie roznych typov tokenov, ktore sa vyuzivaju v praxi
