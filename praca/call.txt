@@ -1,0 +1,20 @@
+1. je tych 5 kapitol ok?
+    - rada by som spisala nieco - asi dve uvodne kapitoly niekedy teraz v marci a potom sla robit zvysok nech uz nieco mam
+2. 5 stran by som napisala z uvodu - porovnanie autentifikacie cez rozne metody - api tokeny, meno heslo, api kluc
+3. co mam vlastne porovnavat potom?? 
+    3.1 viem si predstavit obkecat nieco podobne ako bolo v tom blogu od ostertaga, len to bude viac detailne popisane - kde sa ktory token da vyuzit, preco je to zle niekedy, zname problemy
+    3.2 aj nejake meratelnejsie vysledky by to chcelo - prakticke + nieco skusit na rozhrani, co?? 
+        3.2.1 mozno by som to skusila stylom, ze dam nejake hypotezy a tie potom potvrdim/vyvratim na rozhrani, ale neviem si to uplne predstavit :D
+        3.2.2 bude sa dat realne zmerat nejaky rozdiel na takom hrackarskom rozhrani??
+4. ako citovat ked je tam napisane ze treba celu prvu stranu tam mat (macaroons paper)?
+
+- tabulka s porovnanim v kapitole 3 - meratelne (pocet alg) aj by ocko kategorie
+- benchmark - jednodueche api a merat kolko requestov to zvladne, ake su velke, ...
+- nakodit len api, na klienta postman, insomnia
+
+navrh kapitol:
+    1. vyuzitie api tokenov - preco potrebujeme api tokeny a ich rozdiely oproti inym sposobom autentifikacia a autorizacie (api keys, meno heslo, session)
+    2. zname a v praxi pouzivane api tokeny - predstavenie roznych typov tokenov, ktore sa vyuzivaju v praxi
+    3. teoreticke parametre tokenov - porovnanie tokenov ohladom na bezpecnost, skalovatelnost, flexibilitu - take obkecanie kde sa ktory token da vyuzit, preco je to zle niekedy, zname problemy, zaujimave vyhody, co ine namaju, pripadne maju to horsie
+    4. prakticke parametre tokenov - neviem uplne co chcem tuto porovnavat, mozno by bolo fajn tuto spravit hypotezu
+    5. porovnanie na jednoduchom rozhrani - navrh a implementacia jednoducheho rozhrania s pouzitim viacerych typov tokenov a nase pozorovanie pri ich pouziti - tu by bolo fajn overit/vyvratit hypotezu

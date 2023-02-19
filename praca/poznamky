@@ -31,7 +31,7 @@ https://fly.io/blog/api-tokens-a-tedious-survey/
 https://www.youtube.com/watch?v=dlmaujVVPII
     - o skturturovanych - nemusis mat databazu, overujes stateless, moze byt read stateless overenie, write stateful - lookup v databaze sessionov, ci je este aktualny
     - JWT -> JWE (encryption) alebo JWS (signature), vacsinou JWS - o tom bude rec
-        - JOSE specs
+        - JOSE specs - javascript object signing and encryption
         - na skussanie jwt - https://token.dev/, dekodovanie base64 - https://codebeautify.org/base64-decode
         - hlavicka, telo, kluc -> vyrobi sa string base64 kodovanim z hlavicky a tela, oddelene bodkou, na konci podpis vyrobeny pomocou kluca
         - v hlavicke alg property - hmac (hs256)/private + public key (es512)/none(cisty JSON)
@@ -42,8 +42,8 @@ https://www.youtube.com/watch?v=dlmaujVVPII
             - regitered su hlavicka (typ, alg, optional kid - id kluca pouizteho na podpis), telo(sub - komu je urceny token, nbf - not before, exp - expiration date)
         - validacia 
             - dekodujem hlavicku - mam alg, pripadne kid - vygenerujem podpis a porovnam s podpisom v tokene
-            - validacia tela - dekodujem ho, skontrolujem ci som medze nbf a exp
-        - JWE este nevyse encrypted telo - ma viac sekcii v stringu (5 namiesto 3)
+            - validacia tela - dekodujem ho, skontrolujem ci som medzi nbf a exp
+        - JWE este nevyse encrypted telo, jednotlive claims - ma viac sekcii v stringu (5 namiesto 3)
         - problemy - moc vela moznosti 
             - jws - 13 alg moznosti, jwe - 17 moznosti
             - none alg!!!
