@@ -1,0 +1,18 @@
+api keys google docs - https://cloud.google.com/endpoints/docs/openapi/authentication-method
+    - encryptnuty string identifikujuci klienta
+    - ku klucu si api pamata prava
+    - posielaju sa s kazdym requstom
+    - raz sa vygeneruju a maju vecnu platnost/kym sa nepregenruju/nezrusia vlastnikom
+    - casto su viditelne klientom a teda lahsie ukradnutelne
+    - preto zranitelne napriklad man in the middle utokom
+    - oproti tomu su tokeny short lived - pouzivaju sa ked treba autorizaciu s userom alebo s inym servisom
+    - identifikuju projekt, nevedia identifikovat usera, nedaju sa pouzit na bezpecnu autorizaciu
+    - pouzitie:
+        - blokovanie anonymnych poziadaviek
+        - kontrolovanie poctu poziadaviek na api
+        - lepsie kategorizovanie poziadaviek podla klucov, moznost priradit k jednotlivym projektom konkretne volania
+
+celkom dost (aj velkych) firiem pouziva lahko najditelne hard codnute api kluce - https://www.zdnet.com/article/secret-tokens-found-hard-coded-in-hundreds-of-android-apps/ - https://hackernoon.com/we-reverse-engineered-16k-apps-heres-what-we-found-51bdf3b456bb#.io6e11q6n
+    - firma Fallible nasla pomocou revezneho inzinierstva vela zranitelnosti
+    - okolo 300 firiem malo hard codnute kluce pre servisy tretich stran ako Dropbox, Twitter, and Slack
+
