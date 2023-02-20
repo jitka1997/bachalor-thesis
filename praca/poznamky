@@ -12,6 +12,13 @@ formaty tokenov:
     - structured (hodnota) -> hlavicka, telo, podpis - ma vela info, musi byt encryptnuty aby nebol precitany hocikym, podpis zabezpecuje len integritu
     - phantom tokens -> kombinacia opaque a structured, pouzitie api gateway/reverse proxy medzi klintom a apinov. Klient dostane opaque token a ten posiela s requestami apine, requesty najpv idu cez proxynu a ta spravi introspection (call na dalsi servis) odkial dostane structured token a ten posle apine. Vyhoda je ze proxyna moze structured tokeny cachovat. Klient sa nedostane k citlivym udajom zo structured tokenu
     - split tokens -> rozdelenie structured tokenu na podpis a zvysok. Klient sa autentifikuje a apina mu vrati podpis z vygenerovaneho structured tokenu, podpis zahashuje a spolu so zvyskom ho posle proxyne, ktora si zacachuje tento token, hash podpisu pouzije ako kluc a zvysok ako hodnotu. Tym padom proxyna nerobi ziadne dalsie volania, iba pozera do cache a nikto nema cely token u seba.
+    - token handler -> pouzitie pri single page appke. Prehliadace robia tazke pre appky pouzivat 3rd party cookies kvoli prevencii trackovania a navyse SPA nevie tak dorbe ochranit token ako cookie. Riesenie: token sa nevyda pre SPA ale pre token handler na proxy/gateway a ta vytvori cookie co posle SPA. Ked chce SPA spravit api volanie, posle cookie token handlerovi a ten spravi call
+
+trendy API bezpenosti - https://curity.io/blog/api-security-2023-trends/?utm_source=thenewstack&utm_medium=website
+    - api kluce nie su moc bezbepecne
+    - treba pouzivat autentifikacnu a autorizacnu schemu na zaklade tokenov
+    - jwt su fajn, ale pozuivat iba interne, neposkytovat tretim stranam, na to pouzivat opaque
+        - pomocou fantom a split token vzorov sa daju pouzivat jwt u seba a opaque vonku
 
 
 https://zapier.com/engineering/apikey-oauth-jwt/

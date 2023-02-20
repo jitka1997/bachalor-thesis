@@ -16,3 +16,7 @@ celkom dost (aj velkych) firiem pouziva lahko najditelne hard codnute api kluce 
     - firma Fallible nasla pomocou revezneho inzinierstva vela zranitelnosti
     - okolo 300 firiem malo hard codnute kluce pre servisy tretich stran ako Dropbox, Twitter, and Slack
 
+preco neposielat meno a heslo v kazdom requeste - https://stackoverflow.com/questions/48305695/is-it-a-bad-idea-to-send-username-and-password-with-every-request-from-a-mobile
+    - treba ho ma ulozene v nejakom local storage odkial sa da lahsie ukradnut
+    - aj ak pouzivame bezpecne spojenie, mozu nastat zranitelnosti a je lepsie ak utocnik dostane docasne udaje sessionid/token ako dlho trvajuce hesla
+    - hesla (hlavne ak ich robil user) su slabe, narozdiel od toho sessionid alebo tokne moze byt napr 500bitovy nahodny string - kratsie, caste hesla sa lahsie odhalia 
