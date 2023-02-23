@@ -91,6 +91,10 @@ google white paper Macaroons - https://storage.googleapis.com/pub-tools-public-p
     - caveats(vyhrady) umoznuju delegovanie autority medzi domenami s utlmom a kontextovymi obmedzeniami
     - zakladom je retazove skladanie hmac hodnot, co zaroven zabezpecuje distribuciu klucov
     - 
+
+biblia bezpecnosti pri API - https://cheatsheetseries.owasp.org/cheatsheets/REST_Security_Cheat_Sheet.html
+
+
 navrh kapitol:
     1. vyuzitie api tokenov - preco potrebujeme api tokeny a ich rozdiely oproti inym sposobom autentifikacia a autorizacie (api keys, meno heslo, session)
     2. zname a v praxi pouzivane api tokeny - predstavenie roznych typov tokenov, ktore sa vyuzivaju v praxi
