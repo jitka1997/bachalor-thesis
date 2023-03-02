@@ -95,6 +95,16 @@ google white paper Macaroons - https://storage.googleapis.com/pub-tools-public-p
 biblia bezpecnosti pri API - https://cheatsheetseries.owasp.org/cheatsheets/REST_Security_Cheat_Sheet.html
 
 
+protobuf - https://en.wikipedia.org/wiki/Protocol_Buffers
+    - data format pre serializaciu strukturovanych dat
+    - vyuziva sa na komunikaciu mikroservisov tvoriacich vacsi systém alebo na ulozenie dat
+    - obsahuje aj interface description language - popisuje strukturu dat a program na generovanie alebo parsovanie streamu dat danej struktury
+    - developnute v google
+    - vyuzivaju na ukladanie dat a komunikaciu servisov - ponukaju konkretny RCP stack -> gRCP
+    - serializacia je spatne aj dopredu kompatibilna ale nie self-explaining, 
+    treba metadata o schceme na spracovanie
+    - lebo sa to serializuje na byte wire
+
 navrh kapitol:
     1. vyuzitie api tokenov - preco potrebujeme api tokeny a ich rozdiely oproti inym sposobom autentifikacia a autorizacie (api keys, meno heslo, session)
     2. zname a v praxi pouzivane api tokeny - predstavenie roznych typov tokenov, ktore sa vyuzivaju v praxi
