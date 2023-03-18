@@ -105,6 +105,31 @@ protobuf - https://en.wikipedia.org/wiki/Protocol_Buffers
     treba metadata o schceme na spracovanie
     - lebo sa to serializuje na byte wire
 
+JWT - https://jose.readthedocs.io/en/latest/#f1
+    - fajn obkec o jwe, jws, jwk, jwt
+    - jwt - json s klucom, staci {k: 'kluc'}
+    - jws - claim su len base64 zakodovane a daju sa teda citat, podpis na autentickost
+    - jwe - zasifrovane
+
+JWT zranitelnosti - https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/
+    - none algortimus - hocikto si vie vyrobit platny token - aaaah!!
+    - RSA/HMAC utok
+        - vyrobim HMAC z tokenu s public klucom pouzivanym na overenie RSA
+        - napisem do alg hlavicky ze to je HMAC - najcastejsie HS256
+        - server ocakava RSA podpisane tokeny a vo vela implementaciach je to to iste volanie, co si prezita z alg hlavicky alg a ju mu len dam kluc, teda dam mu public kluc pre RSA ale v hlavicke najde volanie ze je to HMAC tak to overi symetricky a to bude platne lebo naozaj som to tym klucom podpisala 
+
+JOSE - https://datatracker.ietf.org/doc/rfc7165/
+    - JSON object signing and encryption
+    - definuje use casy a poziadavky na secure JSON format objekty - podla aktualne pouzivanych aplikacii bezpecnych mechanizmov
+    - definuje 3 JSON objekt formaty 
+        - Integrity-protected object format (JWE)
+        - Confidentiality-protected object format (JWS)
+        - A format for expressing keys (JWK)
+    - algortimy a ich identifikatory pouzivne v JWE, JWS a JWK su definovane v JWA
+
+rozdiely JOSE, JWT, JWS, JWE, JWK, JWA - https://stackoverflow.com/questions/74257560/what-is-the-difference-between-jose-jwa-jwe-jwk-jws-and-jwt
+    - dost dora odpoved aj strucna aj dlha
+    
 navrh kapitol:
     1. vyuzitie api tokenov - preco potrebujeme api tokeny a ich rozdiely oproti inym sposobom autentifikacia a autorizacie (api keys, meno heslo, session)
     2. zname a v praxi pouzivane api tokeny - predstavenie roznych typov tokenov, ktore sa vyuzivaju v praxi
