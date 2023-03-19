@@ -1,5 +1,37 @@
-\chapter{Typy API tokenov}
+\chapter{Šprecifikácia konkrétnych API tokenov}
 
 \label{kap:typy} % id kapitoly pre prikaz ref
 
-V tejto kapitole predstavíme v praxi využívané typy API tokenov a uvedieme ich základané charakteristiky.
+V tejto kapitole predstavíme v praxi využívané API tokeny, ktorými sa zaoberá naša práca. Uvedieme ich formát a základané charakteristiky ako ich vytvorenie, či validácia.
+
+Ich využitie, výhody či nevýhody rozoberieme v kapitole \ref{kap:teoreticke}.
+
+\section{JSON Web Token}
+
+Prvý token, ktorým sa budeme zaoberať je JSON web token (JWT) \cite{jwt_rfc}. JWT vznikol ako súčasť JOSE \cite{jose_rfc} (JSON object signing and encryption) štandardov, čo je dokument vypracovaný pracovnou skupinou IETF (Internet Engineering Task Force) na základe aplikácií bezpečnostných mechanizmov v rámci vývoja softvéru. Tieto štandardy popisujú využitie a definujú požiadavky na objekty formátu JSON, ktoré sú bezpečné.
+
+Definujú štandard pre bezpečný prenos JSON objektov medzi stranami, ktoré sú schopné ich overiť a dešifrovať. Zavádzajú tri základné formáty JSON objektov a to JWS (JSON Web Signature), JWE (JSON Web Encryption) a JWK (JSON Web Key), ktorým sa detailnejšie venujú ďalšie štandardy \cite{jws_rfc, jwe_rfc, jwk_rfc}. Prvé dva sú formáty zabezpečujúce bezpečnostné vlastnosti JSON objektov. Oba zabezpečujú autentickosť a integritu pomocou elektronických podpisov alebo hešovaného autentifikačného kódu (HMAC), ďalej budeme hovoriť v oboch prípadoch o podpise tokenu. JWE navyše zabezpečuje aj dôvernosť a to šifrovaním obsahu JSON objektu. Posledný formát JWK je formát pre reprezentáciu kľúčov, ktoré sú použité v kryptografických algoritmoch využitých v JWS a JWE. Kryptografické algortimy a ich identifikátory sú definované JSON
+Web Algorithms (JWA) štandardom \cite{jwa_rfc}.
+
+\subsection{Formát a vytvorenie JWT}
+
+Samotný JWT je vpodstate iba serializácia JSON objektu chráneného JWS alebo JWE. Podľa štandardu JWT obsahuje tri samostatné časti oddelené bodkami - hlavičku, telo a podpis. Hlavička a telo sú serializované JSON objekty obsahujúce oprávnenia (angl. claim) vo forme dvojíc kľúč, hodnota. Niektoré kľúče niektorých oprávnení sú definované v štandarde a teda by sa nemali používať pre žiadne iné hodnoty. 
+
+A to konkrétne v hlavičke najdôležitejšie sú \textit{typ} a \textit{alg}. Prvý určuje typ tokenu a druhý algoritmus, ktorý bol použitý na vytvorenie podpisu alebo vrámci šiforvania obsahu tokenu. Rôzne možnosti pre algortimy sú definované v JWA štandardoch.
+
+Telo obsahuje oprávnenia týkajúce sa kontrétnej autentifikácie a používateľa, pre ktorého bol token vydaný. Dôležité Štandardom popísané kľúče sú napríklad \textit{iss}, \textit{sub}, \textit{exp}, \textit{nbf}, \textit{iat}. Popisujú postupne vydavateľa tokenu, identifikátor používateľa, čas vypršania platnosti tokenu, čas, kedy sa token začne považovať za platný a čas vydania tokenu.
+
+Do tela aj hlavičky sa môžu vkladať ľubovoľné iné oprávnenia, naprílad \textit{admin}, \textit{role}, \textit{permissions}, určujúce oprávnenia používateľa.
+
+Hlavička a telo sa serializujú pomocou base64url kódovania \cite{base64_rfc}. V prípade JWE sa telo ešte šifruje. Následne sa obe časti podpíšu algoritmom definovaným v hlavičke a podpis sa zreťazí s hlavičkou a telom. Výsledný reťazec sa používa ako token.
+
+\subsection{Overenie platnosti JWT}
+
+Na overenie platnosti tokenu treba zvalidovať podpis. Podpis je vytvorený pomocou algoritmu definovanom v hlavičke. Teda pri validácii tokenu sa ako prvé dekóduje hlavička tokenu a z nej sa prečíta hodnota v kľúči \textit{alg}.
+
+Na základe hodnoty v kľúči \textit{alg} sa určí algoritmus, ktorý bol použitý na podpis tokenu. Následne sa podpis zvaliduje. 
+
+Ak bol token vytvorený pomocou JWE, na prečítanie tela je potrebné ho najprv dešifrovať. V prípade využitia JWS je telo po dekódovaní priamo čitateľné.
+
+\section{Platform Agnostic SEcurity TOken}
+

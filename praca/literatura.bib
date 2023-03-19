@@ -72,11 +72,18 @@
 }
 
 @misc{oauth2,
-  title  = {The OAuth 2.0 Authorization Framework},
-  author = {D. Hardt and Microsoft},
-  year   = {2012},
-  month  = {Október},
-  note   = {\url{https://www.rfc-editor.org/rfc/pdfrfc/rfc6749.txt.pdf}}
+    series =    {Request for Comments},
+    number =    6749,
+    howpublished =  {RFC 6749},
+    publisher = {RFC Editor},
+    doi =       {10.17487/RFC6749},
+    url =       {https://www.rfc-editor.org/info/rfc6749},
+        author =    {Dick Hardt},
+    title =     {{The OAuth 2.0 Authorization Framework}},
+    pagetotal = 76,
+    year =      2012,
+    month =     Október,
+    abstract =  {The OAuth 2.0 authorization framework enables a third-party application to obtain limited access to an HTTP service, either on behalf of a resource owner by orchestrating an approval interaction between the resource owner and the HTTP service, or by allowing the third-party application to obtain access on its own behalf. This specification replaces and obsoletes the OAuth 1.0 protocol described in RFC 5849. {[}STANDARDS-TRACK{]}},
 }
 
 @misc{oidc,
@@ -121,3 +128,104 @@ series = {CCS '05}
   number={2},
   pages={309-320},
   doi={10.1109/TDSC.2016.2568187}}
+
+  @misc{jose_rfc,
+    series =    {Request for Comments},
+    number =    7165,
+    howpublished =  {RFC 7165},
+    publisher = {RFC Editor},
+    doi =       {10.17487/RFC7165},
+    url =       {https://www.rfc-editor.org/info/rfc7165},
+        author =    {Richard Barnes},
+    title =     {{Use Cases and Requirements for JSON Object Signing and Encryption (JOSE)}},
+    pagetotal = 25,
+    year =      2014,
+    month =     {Apríl},
+    abstract =  {Many Internet applications have a need for object-based security mechanisms in addition to security mechanisms at the network layer or transport layer. For many years, the Cryptographic Message Syntax (CMS) has provided a binary secure object format based on ASN.1. Over time, binary object encodings such as ASN.1 have become less common than text-based encodings, such as the JavaScript Object Notation (JSON). This document defines a set of use cases and requirements for a secure object format encoded using JSON, drawn from a variety of application security mechanisms currently in development.},
+}
+
+@misc{jws_rfc,
+    series =    {Request for Comments},
+    number =    7515,
+    howpublished =  {RFC 7515},
+    publisher = {RFC Editor},
+    doi =       {10.17487/RFC7515},
+    url =       {https://www.rfc-editor.org/info/rfc7515},
+        author =    {Michael Jones and John Bradley and Nat Sakimura},
+    title =     {{JSON Web Signature (JWS)}},
+    pagetotal = 59,
+    year =      2015,
+    month =     {Máj}
+}
+
+@misc{jwe_rfc,
+    series =    {Request for Comments},
+    number =    7516,
+    howpublished =  {RFC 7516},
+    publisher = {RFC Editor},
+    doi =       {10.17487/RFC7516},
+    url =       {https://www.rfc-editor.org/info/rfc7516},
+        author =    {Michael Jones and Joe Hildebrand},
+    title =     {{JSON Web Encryption (JWE)}},
+    pagetotal = 51,
+    year =      2015,
+    month =     {Máj}
+}
+
+@misc{jwk_rfc,
+    series =    {Request for Comments},
+    number =    7517,
+    howpublished =  {RFC 7517},
+    publisher = {RFC Editor},
+    doi =       {10.17487/RFC7517},
+    url =       {https://www.rfc-editor.org/info/rfc7517},
+        author =    {Michael Jones},
+    title =     {{JSON Web Key (JWK)}},
+    pagetotal = 40,
+    year =      2015,
+    month =     {Máj}
+}
+
+@misc{jwa_rfc,
+    series =    {Request for Comments},
+    number =    7518,
+    howpublished =  {RFC 7518},
+    publisher = {RFC Editor},
+    doi =       {10.17487/RFC7518},
+    url =       {https://www.rfc-editor.org/info/rfc7518},
+        author =    {Michael Jones},
+    title =     {{JSON Web Algorithms (JWA)}},
+    pagetotal = 69,
+    year =      2015,
+    month =     {Máj}
+}
+
+
+@misc{jwt_rfc,
+    series =    {Request for Comments},
+    number =    7519,
+    howpublished =  {RFC 7519},
+    publisher = {RFC Editor},
+    doi =       {10.17487/RFC7519},
+    url =       {https://www.rfc-editor.org/info/rfc7519},
+        author =    {Michael Jones and John Bradley and Nat Sakimura},
+    title =     {{JSON Web Token (JWT)}},
+    pagetotal = 30,
+    year =      2015,
+    month =    {Máj}
+}
+
+@misc{base64_rfc,
+    series =    {Request for Comments},
+    number =    4648,
+    howpublished =  {RFC 4648},
+    publisher = {RFC Editor},
+    doi =       {10.17487/RFC4648},
+    url =       {https://www.rfc-editor.org/info/rfc4648},
+        author =    {Simon Josefsson},
+    title =     {{The Base16, Base32, and Base64 Data Encodings}},
+    pagetotal = 18,
+    year =      2006,
+    month =     {Október},
+    abstract =  {This document describes the commonly used base 64, base 32, and base 16 encoding schemes. It also discusses the use of line-feeds in encoded data, use of padding in encoded data, use of non-alphabet characters in encoded data, use of different encoding alphabets, and canonical encodings. {[}STANDARDS-TRACK{]}},
+}
