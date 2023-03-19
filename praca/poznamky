@@ -129,6 +129,13 @@ JOSE - https://datatracker.ietf.org/doc/rfc7165/
 
 rozdiely JOSE, JWT, JWS, JWE, JWK, JWA - https://stackoverflow.com/questions/74257560/what-is-the-difference-between-jose-jwa-jwe-jwk-jws-and-jwt
     - dost dora odpoved aj strucna aj dlha
+
+replay attack - https://security.stackexchange.com/questions/64541/can-i-prevent-a-replay-attack-of-my-signed-jwts
+    - odchytis token a pouzivas na vela volania
+    - da sa s tym nieco robit?? 
+
+fernet, blanca, paseto - https://www.scottbrady91.com/jose/alternatives-to-jwts
+    - fernet a blnca nove tokeny
     
 navrh kapitol:
     1. vyuzitie api tokenov - preco potrebujeme api tokeny a ich rozdiely oproti inym sposobom autentifikacia a autorizacie (api keys, meno heslo, session)
