@@ -136,6 +136,23 @@ replay attack - https://security.stackexchange.com/questions/64541/can-i-prevent
 
 fernet, blanca, paseto - https://www.scottbrady91.com/jose/alternatives-to-jwts
     - fernet a blnca nove tokeny
+
+PASETO algorithm lucidity - https://github.com/paseto-standard/paseto-spec/blob/master/docs/02-Implementation-Guide/03-Algorithm-Lucidity.md
+    - dokument popisujuci ako mas implementovat paseto aby si predisiel algoritmus confiouson utokom
+
+PASETO standard - https://github.com/paseto-standard/paseto-spec
+    - 3-4 casti oddelene bodkou
+    - verzia.ciel.telo.(pata)
+    - kazda verzia ma local a public
+        - local je symetricke sifrovanie tela plus hmac "podpis" na autentickost
+        - public je nesifrovane telo, cely token je podpisany asymetricky
+    - pata je optional, moze obsahovat lubovolnu info, nikdy sa nesifruje, ale pocita sa z nej hmac alebo podpis
+    - povodne verzie 1,2 - 3,4 novsie
+    - 3,4 riesie niektore krypto nedostatky - novsia a lepsie funkcie crypto a pridavaju moznost implicitnej informacie 
+        - implicitna informacia je taka, z ktorej sa pocita podpis ale nie je v tokene
+        - navyse v3 podpisy zarucuju jednoznacne autorstvo (v4 funkcia to robi sama o sebe)
+
+
     
 navrh kapitol:
     1. vyuzitie api tokenov - preco potrebujeme api tokeny a ich rozdiely oproti inym sposobom autentifikacia a autorizacie (api keys, meno heslo, session)

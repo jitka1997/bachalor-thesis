@@ -13,25 +13,63 @@ Prvý token, ktorým sa budeme zaoberať je JSON web token (JWT) \cite{jwt_rfc}.
 Definujú štandard pre bezpečný prenos JSON objektov medzi stranami, ktoré sú schopné ich overiť a dešifrovať. Zavádzajú tri základné formáty JSON objektov a to JWS (JSON Web Signature), JWE (JSON Web Encryption) a JWK (JSON Web Key), ktorým sa detailnejšie venujú ďalšie štandardy \cite{jws_rfc, jwe_rfc, jwk_rfc}. Prvé dva sú formáty zabezpečujúce bezpečnostné vlastnosti JSON objektov. Oba zabezpečujú autentickosť a integritu pomocou elektronických podpisov alebo hešovaného autentifikačného kódu (HMAC), ďalej budeme hovoriť v oboch prípadoch o podpise tokenu. JWE navyše zabezpečuje aj dôvernosť a to šifrovaním obsahu JSON objektu. Posledný formát JWK je formát pre reprezentáciu kľúčov, ktoré sú použité v kryptografických algoritmoch využitých v JWS a JWE. Kryptografické algortimy a ich identifikátory sú definované JSON
 Web Algorithms (JWA) štandardom \cite{jwa_rfc}.
 
-\subsection{Formát a vytvorenie JWT}
+\subsection{Štruktúra JWT}
 
 Samotný JWT je vpodstate iba serializácia JSON objektu chráneného JWS alebo JWE. Podľa štandardu JWT obsahuje tri samostatné časti oddelené bodkami - hlavičku, telo a podpis. Hlavička a telo sú serializované JSON objekty obsahujúce oprávnenia (angl. claim) vo forme dvojíc kľúč, hodnota. Niektoré kľúče niektorých oprávnení sú definované v štandarde a teda by sa nemali používať pre žiadne iné hodnoty. 
 
 A to konkrétne v hlavičke najdôležitejšie sú \textit{typ} a \textit{alg}. Prvý určuje typ tokenu a druhý algoritmus, ktorý bol použitý na vytvorenie podpisu alebo vrámci šiforvania obsahu tokenu. Rôzne možnosti pre algortimy sú definované v JWA štandardoch.
 
-Telo obsahuje oprávnenia týkajúce sa kontrétnej autentifikácie a používateľa, pre ktorého bol token vydaný. Dôležité Štandardom popísané kľúče sú napríklad \textit{iss}, \textit{sub}, \textit{exp}, \textit{nbf}, \textit{iat}. Popisujú postupne vydavateľa tokenu, identifikátor používateľa, čas vypršania platnosti tokenu, čas, kedy sa token začne považovať za platný a čas vydania tokenu.
+Telo tvorí logický obsah tokenu, napríklad môže obsahovať oprávnenia týkajúce sa kontrétnej autentifikácie a používateľa, pre ktorého bol token vydaný. Dôležité Štandardom popísané kľúče sú napríklad \textit{iss}, \textit{sub}, \textit{exp}, \textit{nbf}, \textit{iat}. Popisujú postupne vydavateľa tokenu, identifikátor používateľa, čas vypršania platnosti tokenu, čas, kedy sa token začne považovať za platný a čas vydania tokenu.
 
 Do tela aj hlavičky sa môžu vkladať ľubovoľné iné oprávnenia, naprílad \textit{admin}, \textit{role}, \textit{permissions}, určujúce oprávnenia používateľa.
 
-Hlavička a telo sa serializujú pomocou base64url kódovania \cite{base64_rfc}. V prípade JWE sa telo ešte šifruje. Následne sa obe časti podpíšu algoritmom definovaným v hlavičke a podpis sa zreťazí s hlavičkou a telom. Výsledný reťazec sa používa ako token.
+\subsection{Generovanie a validácia JWT}
 
-\subsection{Overenie platnosti JWT}
+Hlavička a telo sa serializujú pomocou base64url kódovania \cite{base64_rfc}. V prípade JWE sa telo ešte šifruje. Následne sa obe časti podpíšu algoritmom definovaným v hlavičke a podpis sa zreťazí s hlavičkou a telom. Výsledný reťazec sa používa ako token.
 
 Na overenie platnosti tokenu treba zvalidovať podpis. Podpis je vytvorený pomocou algoritmu definovanom v hlavičke. Teda pri validácii tokenu sa ako prvé dekóduje hlavička tokenu a z nej sa prečíta hodnota v kľúči \textit{alg}.
 
 Na základe hodnoty v kľúči \textit{alg} sa určí algoritmus, ktorý bol použitý na podpis tokenu. Následne sa podpis zvaliduje. 
 
-Ak bol token vytvorený pomocou JWE, na prečítanie tela je potrebné ho najprv dešifrovať. V prípade využitia JWS je telo po dekódovaní priamo čitateľné.
+Ak bol token vytvorený pomocou JWE, na prečítanie tela je potrebné ho najprv dešifrovať. V prípade využitia JWS je telo po dekódovaní priamo čitateľné. Následne môžeme overiť informácie o časovej platnosti tokenu, či právach používateľa a pod.
 
 \section{Platform Agnostic SEcurity TOken}
+
+Platform Agnostic SEcurity TOken (PASETO) je relatívne nový štandard tokenu navrhnutý v roku 2018 a je stále v štádiu RFC draftu \cite{paseto_rfc}. Je inšpirovaný rodinov štandardov JOSE (JWT, JWS, JWE, JWK). Jednoducho povedané sa snaží zjednodušiť implementáciu a použitie kryptografických funkcií.
+
+Rovanko ako JWT, PASETO serializuje JSON objekty a zaručuje rôzne bezpečnostné kvality pri ich prenose cez internet. Pôvodne bol PASETO navrhnutý s dvoma verziami \textit{v1} a \textit{v2} líšiacimi sa v použitých kryptografických algoritmoch. Dnes už existujú štyri verzie \textit{v1}, \textit{v2}, \textit{v3} a \textit{v4} popísané štandardom \cite{paseto_git}. Každá verzia tokenu zaručuje autentickosť a integritu obsahu tokenu a to pomocou asymetrického šifrovania v zmysle elektronického podpisu alebo pomocou hešovaného autentifikačného kódu (HMAC). Obe tieto možnosti budeme nazývať podpis a proces ich vytvárania podpisovanie.
+
+\subsection{Verzie PASETO}
+
+Ako sme spomenuli PASETO má štyri verzie. Každá verzia sa delí na dve ďalsie podľa ich využitia na lokálne a verejné. Lokálne tokeny majú zašifrované telo a tým zabezpečujú dôvernosť dát uložených v tele tokenu. Narozdiel od toho sú verejené tokene nešifrované a dáta v ich tele sú čitateľné pre kohokoľvek s prístupom k danému tokenu.
+
+Každá verzia PASETO používa iný algoritmus na podpisovanie a prípadne šifrovanie tokenu v prípade lokálnych tokenov. Jednotlivé algortimy pre konkrétne verzie a ich použitie je popísané v špecifikácii \cite{paseto_git}.
+
+Novšie verzie \textit{v3} a \textit{v4} prinášajú modernejšie kryptografické algortmy a pridávajú niektoré funkcionality. Napríklad verzia \textit{v3} prináša nepopierateľnosť autorstva ako novú bezpečnostnú kvalitu. Dosahuje to dokonca bez predĺženia podpisu a to pomocou pridania verejného kľuča do tokenu pred vypočítaním podpisu \cite{ueo}. Tiež zavádza podporu pre implicitné informácie, teda také informácie, ktoré nie sú uložené priamo v tokene, ale používajú sa pri výpočte podpisu. Teda sú to informácie potrebné pre validáciu tokenu, ale z nejakého dôvodu nie je vhodné ich vkladať priamo do tokenu. Napríklad môže ísť o citlivé interné dáta. Podrobná motivácia za zavedením nových verzií je popísaná v špecifikácii \cite{paseto_git}.
+
+\subsection{Štruktúra PASETO}
+
+PASETO sa skladá z troch alebo štyroch častí zreťazených bodkov. Časti postupne reprezentujú verziu, využitie, telo a pätu. Prvé tri časti sú povinné a päta je nepovinná, ale dovoľuje nám zapísať akékoľvek ďalšie informácie do tokenu.
+
+\begin{itemize}
+    \item Verzia - reprezentuje verziu PASETO. Môže byť \textit{v1}, \textit{v2}, \textit{v3} alebo \textit{v4}.
+    \item Využitie - určuje využitie tokenu ako lokálne alebo verejné. Možné hodnoty sú \textit{local} alebo \textit{public}.
+    \item Telo - reprezentuje samotné dáta uložené v tokene. Podobne ako pri JWT ide o oprávnenia vo forme dvojíc kľúč hodnota a rovnako sú niektoré doležité kľúče sú definované špecifikáciou. \cite{paseto_git}
+    \item Päta - môže obsahovať ľubovoľné ďalšie informácie.
+\end{itemize}
+
+Telo a päta sú vo forme JSON objektu, ktorý je serializovaný pomocou \textit{base64url} \cite{base64_rfc}.
+
+\subsection{Generovanie a validácia PASETO}
+
+Pri vytváraní tokenu sa musíme najprv rozhodnúť pre verziu a využitie podľa toho aké bezpečnosté požiadavky máme na token. Následne vytvoríme telo tokenu obsahujúce informácie, ktoré chceme pomocou tokenu prenášať, napríklad informácie o vzniku tokenu, jeho platnosti, jeho autorovi, či určenému subjektu. Ďalej môžeme pridať ďalšie informácie do päty tokenu ako napríklad identifikátor kľúča kryptografickej funkcie. 
+
+Ak sme zvolili lokálne využitie, tak telo tokenu zašifrujeme. Následne vypočítame podpis z tela a päty tokenu. Šifrovanie aj podpisovanie sa deje pomocou kryptografickej funkcie vybraj podľa verzie a využitia.
+
+Nakoniec všetky časti spojíme do jedného reťazca a oddelíme bodkami.
+
+Validácia je tokenu je inverzný proces ku generovaniu. Najprv rozdelíme reťazec na časti a zistíme verziu a využitie tokenu. Následne zistíme, či je podpis tokenu platný pomocou adekvátnej kryptografickej funkcie a kľúča. Ak mal token lokálne využitie dešifrujeme jeho telo a skontrolujeme časovú plastnosť tokenu, ak to využívaná schéma podporuje a telo obsahuje informácie o platnosti tokenu.
+
+\section{Fernet}
+
 
