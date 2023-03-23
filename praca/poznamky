@@ -152,6 +152,28 @@ PASETO standard - https://github.com/paseto-standard/paseto-spec
         - implicitna informacia je taka, z ktorej sa pocita podpis ale nie je v tokene
         - navyse v3 podpisy zarucuju jednoznacne autorstvo (v4 funkcia to robi sama o sebe)
 
+fernet - https://github.com/fernet/spec/blob/master/Spec.md
+    - specka
+    - zasifrovany a potom hmacnuty - AES 128 in CBC mode + 256-bit SHA256 HMAC
+    - 5 casti - verzia, IV, timestamp, sifrovany text, hmac
+    - nakoniec cele base64 zakodovane
+    - povodne developnute v heroku ako bezpecny format pre posielanie sprav (asi v ruby)
+    - teraz vela implementacii, pouziva sa napriklad v openstack - https://www.redhat.com/en/blog/introduction-fernet-tokens-red-hat-openstack-platform
+
+fernet heroku original
+    - Harold Giménez autor, minimalne drzi lecenciu
+    - heroku/legacy-fernet - https://github.com/heroku/legacy-fernet
+    - teraz ruby implementacia na https://github.com/fernet/fernet-rb
+    - specka na https://github.com/fernet/spec/blob/f16a35d3cfd8cdb2d8c7f7d10ce6c4d6058b19d2/Spec.md (da sa tam preklikat z predosleho a to toho sa da preklikat z legacy)
+
+
+branca - https://github.com/tuupola/branca-spec
+    - vychadza z fernet a kusok paseto
+    - pouziva chacha polly - resitne proti replay utokom
+    - verzia, timestamp, nonce, sifrovane telo, tag
+    - timestamp je tiez pocet sekund ale 32 bitovy, aby vydrzal dlhsie pouziva unsigned
+    - celkovo ciel je zjednodusit a zkratit token
+    - nonce nie iv lebo nepouziva blokovu sifru
 
     
 navrh kapitol:
@@ -160,3 +182,42 @@ navrh kapitol:
     3. teoreticke parametre tokenov - porovnanie tokenov ohladom na bezpecnost, skalovatelnost, flexibilitu
     4. prakticke parametre tokenov - porovnanie tokenov vzhladom na jednoduchost implementacie a rychlost 
     5. porovnanie na jednoduchom rozhrani - navrh a implementacia jednoducheho rozhrania s pouzitim viacerych typov tokenov a nase pozorovanie pri ich pouziti
+
+@misc{chacha_poly,
+    author =    {S. Arciszewski},
+    note   = {\url{https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-xchacha-03}},
+    title =     {XChaCha eXtended-nonce ChaCha and AEAD_XChaCha20_Poly1305},
+}
+
+@INPROCEEDINGS{base62,
+  author={Kejing He and Xiancheng Xu and Qiang Yue},
+  booktitle={2008 11th IEEE Singapore International Conference on Communication Systems}, 
+  title={A secure, lossless, and compressed Base62 encoding}, 
+  year={2008},
+  volume={},
+  number={},
+  pages={761-765},
+  doi={10.1109/ICCS.2008.4737287}
+}
+
+\section{Branca}
+
+(Áno naozaj tento token vznikol ako párodia na "lepší" fernet a teda Fernet-Branca). Motiváciou k vzniku Branca tokenu bolo modernizovanie Fernet tokenu. Branca má podobnú štruktúru aj generovanie a validáciu ako Fernet. Branca sa najmä líši v tom, že využíva šifrovaciu a podpisovú funkciu XChaCha20-Poly1305 AEAD.
+
+\subsection{Štruktúra Branca}
+
+Branca sa podobne ako Fernet skladá z piatich zreťazených častí. Tieto časti sa však jemne líšia od častí Fernet tokenu a zakódované sú \textit{base62} kódovaním.
+
+\begin{itemize}
+    \item Verzia - reprezentuje verziu Branca tokenu, aktuálne existuje len jedna verzia a je reprezentovaná číslom 0xBA. Zaberá vždy 8 bitov.
+    \item Časová pečiatka - reprezentuje čas vytvorenia tokenu. Čas je zachytení ako počet sekúd od 1.1.1970 v UTC časovej zóne. Zaberá vždy 32 bitov a je zapísaná ako číslo bez znamienka.
+    \item Nonce (Čiraz :D) - reprezentuje náhodný reťazec znakov, ktorý využíva šifrovacia funkcia. Ide vpodstate o IV, ale využíva sa naozaj len raz, zatiaľčo IV sa v blokovej šifre využije viac krát. Zaberá vždy 192 bitov.
+    \item Zašifrované telo - reprezentuje zašifrované dáta uložené v tokene. Môže mať ľubovoľnú dĺžku.
+    \item Hešovaný autentifikačný kód - reprezentuje výstup funkcie Poly1305 a zaberá vždy 128 bitov.
+\end{itemize}
+
+\subsection{Generovanie a validácia Branca}
+
+Vygenerujeme 192 bitový reťazec znakov, ktorý bude slúžiť ako nonce a zachytíme aktuálny čas do časovej pečiatky. Vyrobíme hlavičku zreťazením verzie, časovej pečiatky a nonce. Následne zašifrujeme telo tokenu pomocou šifrovacej funkcie, do ktorej vložíme tajný kľúč, nonce a ako dodatočnú informáciu použijeme hlavičku. Funkcia vráti zašifrované telo a hešovaný autentifikačný kód vypočítaný aj z hlavičky. Nakoniec všetky časti spojíme do jedného reťazca a zakódujeme pomocou \textit{base62} kódovania.
+
+Pri validácií tokenu ho ako prvé dekódujeme. Následne overíme, že prvý bajt je 0xBA a rozdelíme na jednotlivé časti. Dešifrujeme telo a overíme hešovaný autentifikačný kód pomocou fukncie XChaCha20-Poly1305 AEAD. Následne môžeme overiť napríklad časovú platnosť tokenu pomcou dodatočných informácií v tele tokenu a časovej pečiatky.

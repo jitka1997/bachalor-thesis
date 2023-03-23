@@ -10,7 +10,7 @@ Ich využitie, výhody či nevýhody rozoberieme v kapitole \ref{kap:teoreticke}
 
 Prvý token, ktorým sa budeme zaoberať je JSON web token (JWT) \cite{jwt_rfc}. JWT vznikol ako súčasť JOSE \cite{jose_rfc} (JSON object signing and encryption) štandardov, čo je dokument vypracovaný pracovnou skupinou IETF (Internet Engineering Task Force) na základe aplikácií bezpečnostných mechanizmov v rámci vývoja softvéru. Tieto štandardy popisujú využitie a definujú požiadavky na objekty formátu JSON, ktoré sú bezpečné.
 
-Definujú štandard pre bezpečný prenos JSON objektov medzi stranami, ktoré sú schopné ich overiť a dešifrovať. Zavádzajú tri základné formáty JSON objektov a to JWS (JSON Web Signature), JWE (JSON Web Encryption) a JWK (JSON Web Key), ktorým sa detailnejšie venujú ďalšie štandardy \cite{jws_rfc, jwe_rfc, jwk_rfc}. Prvé dva sú formáty zabezpečujúce bezpečnostné vlastnosti JSON objektov. Oba zabezpečujú autentickosť a integritu pomocou elektronických podpisov alebo hešovaného autentifikačného kódu (HMAC), ďalej budeme hovoriť v oboch prípadoch o podpise tokenu. JWE navyše zabezpečuje aj dôvernosť a to šifrovaním obsahu JSON objektu. Posledný formát JWK je formát pre reprezentáciu kľúčov, ktoré sú použité v kryptografických algoritmoch využitých v JWS a JWE. Kryptografické algortimy a ich identifikátory sú definované JSON
+Definujú štandard pre bezpečný prenos JSON objektov medzi stranami, ktoré sú schopné ich overiť a dešifrovať. Zavádzajú tri základné formáty JSON objektov a to JWS (JSON Web Signature), JWE (JSON Web Encryption) a JWK (JSON Web Key), ktorým sa detailnejšie venujú ďalšie štandardy \cite{jws_rfc, jwe_rfc, jwk_rfc}. Prvé dva sú formáty zabezpečujúce bezpečnostné vlastnosti JSON objektov. Oba zabezpečujú autentickosť a integritu pomocou elektronických podpisov alebo hešovaného autentifikačného kódu (HMAC) \cite{hmac}, ďalej budeme hovoriť v oboch prípadoch o podpise tokenu. JWE navyše zabezpečuje aj dôvernosť a to šifrovaním obsahu JSON objektu. Posledný formát JWK je formát pre reprezentáciu kľúčov, ktoré sú použité v kryptografických algoritmoch využitých v JWS a JWE. Kryptografické algortimy a ich identifikátory sú definované JSON
 Web Algorithms (JWA) štandardom \cite{jwa_rfc}.
 
 \subsection{Štruktúra JWT}
@@ -37,7 +37,7 @@ Ak bol token vytvorený pomocou JWE, na prečítanie tela je potrebné ho najprv
 
 Platform Agnostic SEcurity TOken (PASETO) je relatívne nový štandard tokenu navrhnutý v roku 2018 a je stále v štádiu RFC draftu \cite{paseto_rfc}. Je inšpirovaný rodinov štandardov JOSE (JWT, JWS, JWE, JWK). Jednoducho povedané sa snaží zjednodušiť implementáciu a použitie kryptografických funkcií.
 
-Rovanko ako JWT, PASETO serializuje JSON objekty a zaručuje rôzne bezpečnostné kvality pri ich prenose cez internet. Pôvodne bol PASETO navrhnutý s dvoma verziami \textit{v1} a \textit{v2} líšiacimi sa v použitých kryptografických algoritmoch. Dnes už existujú štyri verzie \textit{v1}, \textit{v2}, \textit{v3} a \textit{v4} popísané štandardom \cite{paseto_git}. Každá verzia tokenu zaručuje autentickosť a integritu obsahu tokenu a to pomocou asymetrického šifrovania v zmysle elektronického podpisu alebo pomocou hešovaného autentifikačného kódu (HMAC). Obe tieto možnosti budeme nazývať podpis a proces ich vytvárania podpisovanie.
+Rovanko ako JWT, PASETO serializuje JSON objekty a zaručuje rôzne bezpečnostné kvality pri ich prenose cez internet. Pôvodne bol PASETO navrhnutý s dvoma verziami \textit{v1} a \textit{v2} líšiacimi sa v použitých kryptografických algoritmoch. Dnes už existujú štyri verzie \textit{v1}, \textit{v2}, \textit{v3} a \textit{v4} popísané štandardom \cite{paseto_git}. Každá verzia tokenu zaručuje autentickosť a integritu obsahu tokenu a to pomocou asymetrického šifrovania v zmysle elektronického podpisu alebo pomocou hešovaného autentifikačného kódu (HMAC) \cite{hmac}. Obe tieto možnosti budeme nazývať podpis a proces ich vytvárania podpisovanie.
 
 \subsection{Verzie PASETO}
 
@@ -68,8 +68,36 @@ Ak sme zvolili lokálne využitie, tak telo tokenu zašifrujeme. Následne vypo�
 
 Nakoniec všetky časti spojíme do jedného reťazca a oddelíme bodkami.
 
-Validácia je tokenu je inverzný proces ku generovaniu. Najprv rozdelíme reťazec na časti a zistíme verziu a využitie tokenu. Následne zistíme, či je podpis tokenu platný pomocou adekvátnej kryptografickej funkcie a kľúča. Ak mal token lokálne využitie dešifrujeme jeho telo a skontrolujeme časovú plastnosť tokenu, ak to využívaná schéma podporuje a telo obsahuje informácie o platnosti tokenu.
+Validácia je tokenu je inverzný proces ku generovaniu. Najprv rozdelíme reťazec na časti a zistíme verziu a využitie tokenu a podľa toho vyberieme použitú kryptografickú funkciu. Následne zistíme, či je podpis tokenu platný pomocou adekvátnej kryptografickej funkcie a kľúča. Ak mal token lokálne využitie dešifrujeme jeho telo a skontrolujeme časovú plastnosť tokenu, ak to využívaná schéma podporuje a telo obsahuje informácie o platnosti tokenu.
 
 \section{Fernet}
 
+(Názov tohto tokenu je naozaj inšpirovaný známym nápojom. haha aka som vtipna :D) Pôvodne Fernet vznikol ako nástroj na zasielanie bezpečných správ v platforme cloudových služieb Heroku \cite{fernet_legacy}. V súčasnosti už podľa špecifikácie \cite{fernet_spec} vzniklo veľa implementácií Fernetu v rôznych programovacých jazyok \cite{fenet_cpp, fernet_haskell}, v rámci Heroku bol implementovaný v Ruby. Fernet bol dokonca vybratý PYCA (Python Cryptographic Authority) \cite{pyca_crypto} ako štandard pre implementáciu symetrického šifrovania v Pythone.
 
+Fernet je štruktúrovaný token, lebo v sebe nesie rôzne informácie, no nijak nešpecifikuje formát týchto informácií. Väčšina implementácií s nimi pracuje ako s obyčajným reťazcom znakov. 
+
+Token je navrhnutý s možnosťou pridania viacerých verzií, no v súčasnosti existuje len jedeina verzia. V tejto verzií je obsah tokenu zašifrovaný pomocou AES-128-CBC \cite{aes_cbc} a celý token je podpísaný pomocou HMAC-SHA256 \cite{hmac}. Z toho vyplýva, že Fernet zaručuje autentickosť, integritu a dôvernosť. 
+
+\subsection{Štruktúra Fernet}
+
+Fernet sa skladá z piatich zreťazených častí. Každá časť reprezentuje jednu informáciu o tokene. Jednotlivé časti sú nasledovné:
+
+\begin{itemize}
+    \item Verzia - reprezentuje verziu Fernet tokenu, aktuálne existuje len jedna verzia a je reprezentovaná číslom 0x80. Zaberá vždy 8 bitov.
+    \item Časová pečiatka - reprezentuje čas vytvorenia tokenu. Čas je zachytení ako počet sekúd od 1.1.1970 v UTC časovej zóne. Zaberá vždy 64 bitov.
+    \item Inicializačný vektor (IV) - reprezentuje náhodný reťazec znakov, ktorý je použitý pri šifrovaní a dešifrovaní tokenu. IV musí byť unikátny a najmä nepredvídateľný pre každý token, preto sa generuje náhodnou funkciou. Zaberá vždy 128 bitov.
+    \item Zašifrované telo - reprezentuje zašifrované dáta uložené v tokene. Môže mať premenlivú dĺžku, no vždy násobok 128 bitov.
+    \item HMAC - reprezentuje výstup HMAC-SHA256 funkcie a zaberá vždy 256 bitov.
+\end{itemize}
+
+Ako vidíme, všetky časti tokenu okrem tela majú pevne danú dĺžku. Vďaka tejto vlastnosti nemusia byť zreťazené časti oddelené žiadnym špeciálnym symbolom, napríklad bodkou, lebo vieme jednoznačne oddeliť verziu, časovú pečiatku, IV aj HMAC a tým pádom aj zašifrované telo.
+
+Pre jednoduché prenášanie je celý token zakódovaný pomocou \textit{base64url} \cite{base64_rfc}.
+
+\subsection{Generovanie a validácia Fernet}
+
+Pri generovaní Fernet tokenu sa využívajú dva kryptografické algoritmy, ktoré vyžadujú kľúč. Fernet definuje 256 kľúč, ktorý je rozdelený na dve 128 bitové časti. Prvá časť reprezentuje podpisový kľúč a druhá šifrovací kľúč.
+
+Existuje iba jedna verzia tokenu, teda tú máme danú. Pre vygenerovanie tokenu, potrebujeme zaznamenaý aktuálny čas do časovej pečiatky a vygenerovať náhodný reťazec, ktorý bude slúžiť ako IV. Následne zašifrujeme telo tokenu pomocou šifrovacieho kľúča a IV. Ďalej vypočítame HMAC z predchádzajúcich častí tokenu pomocou podpisového kľúča. Nakoniec a všetky časti spojíme do jedného reťazca a zakódujeme pomocou textit{base64url} \cite{base64_rfc}.
+
+Validácia tokenu spočíva v dekódovaní tokenu, rozdelení na časti a overení časovej pečiatky a HMAC. Potom dešifrujeme telo toknu pomocou šifrovacieho kľúča a IV. Následne prípadne overíme časovú plastnosť tokenu, ak telo obsahuje potrebné informácie pre overenie časovej platnosti ako vznik a doba platnosti tokenu.
