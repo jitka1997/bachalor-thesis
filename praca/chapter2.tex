@@ -101,3 +101,25 @@ Pri generovaní Fernet tokenu sa využívajú dva kryptografické algoritmy, kto
 Existuje iba jedna verzia tokenu, teda tú máme danú. Pre vygenerovanie tokenu, potrebujeme zaznamenaý aktuálny čas do časovej pečiatky a vygenerovať náhodný reťazec, ktorý bude slúžiť ako IV. Následne zašifrujeme telo tokenu pomocou šifrovacieho kľúča a IV. Ďalej vypočítame HMAC z predchádzajúcich častí tokenu pomocou podpisového kľúča. Nakoniec a všetky časti spojíme do jedného reťazca a zakódujeme pomocou textit{base64url} \cite{base64_rfc}.
 
 Validácia tokenu spočíva v dekódovaní tokenu, rozdelení na časti a overení časovej pečiatky a HMAC. Potom dešifrujeme telo toknu pomocou šifrovacieho kľúča a IV. Následne prípadne overíme časovú plastnosť tokenu, ak telo obsahuje potrebné informácie pre overenie časovej platnosti ako vznik a doba platnosti tokenu.
+
+\section{Branca}
+
+(Áno naozaj tento token vznikol ako párodia na "lepší" fernet a teda Fernet-Branca). Motiváciou k vzniku Branca tokenu bolo modernizovanie Fernet tokenu. Branca má podobnú štruktúru aj generovanie a validáciu ako Fernet. Branca sa najmä líši v tom, že využíva šifrovaciu a podpisovú funkciu XChaCha20-Poly1305 AEAD \cite{chacha_poly}.
+
+\subsection{Štruktúra Branca}
+
+Branca sa podobne ako Fernet skladá z piatich zreťazených častí. Tieto časti sa však jemne líšia od častí Fernet tokenu a zakódované sú \textit{base62} kódovaním \cite{base62}.
+
+\begin{itemize}
+    \item Verzia - reprezentuje verziu Branca tokenu, aktuálne existuje len jedna verzia a je reprezentovaná číslom 0xBA. Zaberá vždy 8 bitov.
+    \item Časová pečiatka - reprezentuje čas vytvorenia tokenu. Čas je zachytení ako počet sekúd od 1.1.1970 v UTC časovej zóne. Zaberá vždy 32 bitov a je zapísaná ako číslo bez znamienka.
+    \item Nonce (Čiraz :D) - reprezentuje náhodný reťazec znakov, ktorý využíva šifrovacia funkcia. Ide vpodstate o IV, ale využíva sa naozaj len raz, zatiaľčo IV sa v blokovej šifre využije viac krát. Zaberá vždy 192 bitov.
+    \item Zašifrované telo - reprezentuje zašifrované dáta uložené v tokene. Môže mať ľubovoľnú dĺžku.
+    \item Hešovaný autentifikačný kód - reprezentuje výstup funkcie Poly1305 a zaberá vždy 128 bitov.
+\end{itemize}
+
+\subsection{Generovanie a validácia Branca}
+
+Vygenerujeme 192 bitový reťazec znakov, ktorý bude slúžiť ako nonce a zachytíme aktuálny čas do časovej pečiatky. Vyrobíme hlavičku zreťazením verzie, časovej pečiatky a nonce. Následne zašifrujeme telo tokenu pomocou šifrovacej funkcie, do ktorej vložíme tajný kľúč, nonce a ako dodatočnú informáciu použijeme hlavičku. Funkcia vráti zašifrované telo a hešovaný autentifikačný kód vypočítaný aj z hlavičky. Nakoniec všetky časti spojíme do jedného reťazca a zakódujeme pomocou \textit{base62} kódovania \cite{base62}.
+
+Pri validácií tokenu ho ako prvé dekódujeme. Následne overíme, že prvý bajt je 0xBA a rozdelíme na jednotlivé časti. Dešifrujeme telo a overíme hešovaný autentifikačný kód pomocou fukncie XChaCha20-Poly1305 AEAD. Následne môžeme overiť napríklad časovú platnosť tokenu pomcou dodatočných informácií v tele tokenu a časovej pečiatky.
