@@ -175,6 +175,15 @@ branca - https://github.com/tuupola/branca-spec
     - celkovo ciel je zjednodusit a zkratit token
     - nonce nie iv lebo nepouziva blokovu sifru
 
+macaroons - https://github.com/rescrv/libmacaroons
+    - implemnetacia v c a pythone
+    - vyuziva location, secret a identifier pri vyrobe
+    - po pridani cavetov sa vzdy spravi novy podpis
+    - unikatny secret pre kazdu macaroon - identifier mi hovori aky kluc som pouzila pri vyrobe konkretneho tokenu
+
+macaroons in hyperdex - https://hackingdistributed.com/2014/11/23/macaroons-in-hyperdex/
+    - dost detailny clanok
+
     
 navrh kapitol:
     1. vyuzitie api tokenov - preco potrebujeme api tokeny a ich rozdiely oproti inym sposobom autentifikacia a autorizacie (api keys, meno heslo, session)
@@ -182,4 +191,3 @@ navrh kapitol:
     3. teoreticke parametre tokenov - porovnanie tokenov ohladom na bezpecnost, skalovatelnost, flexibilitu
     4. prakticke parametre tokenov - porovnanie tokenov vzhladom na jednoduchost implementacie a rychlost 
     5. porovnanie na jednoduchom rozhrani - navrh a implementacia jednoducheho rozhrania s pouzitim viacerych typov tokenov a nase pozorovanie pri ich pouziti
-
