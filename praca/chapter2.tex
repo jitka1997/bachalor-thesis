@@ -151,7 +151,7 @@ Príklad Macaroon tokenu je zobrazený v obrázku \ref{fig:macaroon_example}.
     %obrazok je v subore images/session.png
     \centerline{\includegraphics[width=0.8\textwidth]{images/basic_macaroon}}
     %popis obrazku
-    \caption[Macaroons token]{TODO: popis}
+    \caption[Macaroons token]{Príklad jednoduchého Macaroons tokenu.}
     %id obrazku, pomocou ktoreho sa budeme na obrazok odvolavat
     \label{fig:macaroon_example}
 \end{figure}
@@ -177,7 +177,7 @@ Reťazec reprezentujúci pravidlo tretej stany obsahuje lokáciu služby tretej 
     %obrazok je v subore images/session.png
     \centerline{\includegraphics[width=0.8\textwidth]{images/3rd_party_caveat}}
     %popis obrazku
-    \caption[Pridanie pravidla tretej strany]{TODO: popis}
+    \caption[Pridanie pravidla tretej strany]{Príklad pridania pravidla tretej strany, konkrétne pravidla \textit{user=``Alice''} na autentifikačný server (AS)}
     %id obrazku, pomocou ktoreho sa budeme na obrazok odvolavat
     \label{fig:add_caveat}
 \end{figure}
@@ -195,7 +195,7 @@ Tieto dôkazy sú reprezentované \textit{vybíjacími tokenmi} (angl. discharge
     %obrazok je v subore images/session.png
     \centerline{\includegraphics[width=0.8\textwidth]{images/user_request}}
     %popis obrazku
-    \caption[Získanie vybíjacieho tokenu používateľom]{TODO: popis}
+    \caption[Získanie vybíjacieho tokenu používateľom]{Príklad získania vybíjacieho tokenu používateľom.}
     %id obrazku, pomocou ktoreho sa budeme na obrazok odvolavat
     \label{fig:user_request}
 \end{figure}
@@ -222,15 +222,15 @@ Samotný token sa skladá z blokov a niektorých globálnych informácií pre ce
 
 Každý blok obsahuje serializovaný datalogový program, podpis bloku a verejný kľúč, v prípade, že ide o externý blok, aj podpis bloku službou tretej strany a príslušný verejný kľúč služby tretej strany. Príklad základného Bisquits tokenu je na obrázku \ref{fig:bisquits_token}.
 
-Datalogový program sa skladá z faktov, pravidiel, kontrol a pomocných informácií, detailnú schému formátu nájdeme v súbore schema.proto repozitára \cite{bisquits_git}. Fakty a pravidlá sú bežné datalogové fakty a pravidlá. Kontroly sú množiny datalogových dotazov. Dotaz je splnený práve vtedy, keď je jeho výsledok aspoň jeden fakt. Kontrola je splnená práve vtedy, keď je splnený aspoň jeden dotaz z množiny dotazov danej kontroly. Okrem toho definuje Bisquits aj politiky, ktoré vytvára entita validujúca token. Viac o politikách rozoberieme v nasledujúcej podkapitole. Bloky a politiky môžu mať anotáciu definujúcu, ktorým blokom dôverujú a teda s faktami a pravidlami, ktorých blokov pracujú. Vždy platí, že blok verí autoritatívnemu bloku, sebe a informáciám v službe validujúcej token. Anotáciou môže blok definovať, že dôveruje aj všetkým predchádzajúcim blokom alebo všetkým blokom podpísaným konkrétnym verejným kľúčom. Posledná možnosť sa využíva pre integráciu služieb tretích strán do autorizačnej schémy.
+Datalogový program sa skladá z faktov, pravidiel, kontrol a pomocných informácií, detailnú schému formátu nájdeme v súbore schema.proto repozitára \cite{biscuits_git}. Fakty a pravidlá sú bežné datalogové fakty a pravidlá. Kontroly sú množiny datalogových dotazov. Dotaz je splnený práve vtedy, keď je jeho výsledok aspoň jeden fakt. Kontrola je splnená práve vtedy, keď je splnený aspoň jeden dotaz z množiny dotazov danej kontroly. Okrem toho definuje Bisquits aj politiky, ktoré vytvára entita validujúca token. Viac o politikách rozoberieme v nasledujúcej podkapitole. Bloky a politiky môžu mať anotáciu definujúcu, ktorým blokom dôverujú a teda s faktami a pravidlami, ktorých blokov pracujú. Vždy platí, že blok verí autoritatívnemu bloku, sebe a informáciám v službe validujúcej token. Anotáciou môže blok definovať, že dôveruje aj všetkým predchádzajúcim blokom alebo všetkým blokom podpísaným konkrétnym verejným kľúčom. Posledná možnosť sa využíva pre integráciu služieb tretích strán do autorizačnej schémy.
 Datalogový program je serializovaný ako Protocol Buffer \cite{protobuf} podľa konkrétnej schémy definovanej v súbore schema.proto alebo v novšej verzii pomocou \textit{base64url} kódovania \cite{base64_rfc}.
 
 \begin{figure}
     %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
     %obrazok je v subore images/session.png
-    \centerline{\includegraphics[width=0.8\textwidth]{images/bisquits_token2}}
+    \centerline{\includegraphics[width=0.5\textwidth]{images/bisquits_token2}}
     %popis obrazku
-    \caption[Základný Bisquits token]{TODO: popis}
+    \caption[Bisquits token]{Príklad Bisquits tokena s jediným blokom.}
     %id obrazku, pomocou ktoreho sa budeme na obrazok odvolavat
     \label{fig:bisquits_token}
 \end{figure}
