@@ -180,14 +180,171 @@ macaroons - https://github.com/rescrv/libmacaroons
     - vyuziva location, secret a identifier pri vyrobe
     - po pridani cavetov sa vzdy spravi novy podpis
     - unikatny secret pre kazdu macaroon - identifier mi hovori aky kluc som pouzila pri vyrobe konkretneho tokenu
+    - sha1 je sice prelomene ale nevadi lebo to trvalo dlho a tu sa to pouziva na shortlived tokeny
 
 macaroons in hyperdex - https://hackingdistributed.com/2014/11/23/macaroons-in-hyperdex/
     - dost detailny clanok
 
+typek hovori o papri - https://www.youtube.com/watch?v=KvOGXqgHjyE
+    - nie moc detailne vysvetluje veci
+    - fajn prehlad, dobre otazky od publika
+
+vyzera byt dobry clanok - https://evancordell.com/posts/macaroons-101-contextual-confinement/
+
+playground macaroons - http://macaroons.io/
+
+macaroons paper - https://static.googleusercontent.com/media/research.google.com/sk//pubs/archive/41892.pdf
+    - na citaciu mam lepsi link bookmarknuty
+    - citacia 55 - auth facebook dropbox
+    - citacia 14 - SPKI/SDSI mal by byt predchodca macaroons
+    - citacie 3, 25, 51 - nested hmac generalizuju nieco co fungovalo v OS Amoeba
+    - citacia 37, 53 - ine auth modely, pouzivaju public key certifikaty, moc sa  nevyuzivaju
+    - citacie 19 (sekcia 6), 48 (kapitola 4.8) - revocation problemy tokenov
+    - citacia 18, 37 sekcia 4.3 - ako implementovat key identifier
+    - problem s revokaciou sa riesi typicky 4 sposobmi
+        - velmi short lived tokeny
+        - dovolenie freshness obmedzenia
+        - externy autoritativny stav (napr revocation list)
+        - rozdelenie povereni (credentials) - autorizacia len novym kolekciam
+        - macaroons sa daju lahko pouzivat so vsetkymi 4 sposobmi
+    - TS - target servis vydava macaroons
+    - vedia zuzit rozsah veci co sa daju robit s TS a kontextovo obmedzit kto, odkial a s akym extra dokazom to vie spravit
+        - obmezuje sa pomocou caveats
+        - kazdy caveat je predikat
+        - aby bol token platny musi sa kazdy predikat v kontexte daneho requestu vyhodnotit pravdivo
+        - velka vyhoda: hocickto vie pridat caveat bez toho aby komunikoval s TS, ale iba TS vie overit token
+
+    - citacia 21 - chanelIID 
+    - 3. party caveats pouzivaju holder of key proof - autentifikujes sa tym ze dokazes ze vlastnis nejaky kluc, napriklad podpises nieco sukromnym klucom
+        - napr. namiesto casoveho obmedzenia tokenu, bude 3. party caveat vyzadujuci dokaz od revocation-service, ktory vybije dany caveat
+    - teda nejake volanie co autorizuje macaroon, moze byt vdaka 3. party caveatom autorizovane alebo autentifikovane, pripadne auditovane  vela inymi servismi
+    - format
+        - retazec sprav 
+            - prva identifier, pre verejnost nepriehladna hodnota 
+                - moze byt kluc do databazy kde je ulozeny root key
+                - keyed HMACs
+                - alebo enrypction citacia 37, Sections 4.2 and 4.3
+            - dalsie caveats
+        - podpis - nested hmac
+
+    - vyroba
+        - hmac z identifikatora kluca pridana lokacia
+        - pridanie caveatov, po kazdom novy podpis pomocou hmac, kde ako kluc ide predosly podpis
+        - 3rd party caveats vyrobis tak, ze vyrobis caveat root key, zasivrujes ho pomocou aktualneho podpisu, to bude identifikator kluca a potom vyrobis novy caveat z identifikatora caveatu (co musi byt splnene) a identifikatora kluca a to podpises hmacom s aktualnym podpisom ako klucom
+
+    - pozitie tokenu userom
+        - toto das userovi
+        - on najde ze tam je 3rd party caveat a potrebuje discharge
+        - z location v tomto caveate vie kam si ma ist vypytat discharge token
+        - posle do lokacie identifikator caveatu
+        - tento servis si z toho vytiahne root key a predikat
+        - overi ci predikat plati, nato moze naprikalad vyzvat usera na prihlasenie
+        - vyrobi discharge token - z kluca co vytiahol a identifikarora
+        - moze pridat dalsie caveats - po jednom podpisuje
+        - posle naspat userovi
+        - na koniec user musi bindnut vsetky discharge tokenu k hlavnemu tokenu, aby sa nedali zneuzit tie dischage niekym inym - napriklad po odchyteni nejakym fising servisom, ze bude sa tvarit ako target servis a user mu posle aj svoje discharge a tie potom pouzije utocnik ako dokaz pre 3rd party caveaty -> TODO popisem az v porovnani
     
+    - overenie
+        - skontrolujes platnost predikatov vo 1st party caveatoch v kontexte poziadavky
+        - najdes 3rd party caveaty, desifrujes root key caveatu
+        - podla caveat identifikatora najdes zodpovedajuci dischage token
+        - overi platnost dischargu rekurzivne s root klucom caveatu
+        - na koniec postupne vytvori vsetky podpisy a overi podpis tokeny
+
+    - root kluce hlavne pre 3rd party caveaty by mali byt rozne, lebo po overeni ich bude poznat target servis a moze sfalsovat dischage tokeny, hlavne ked sa pouziva viac target servisov
+    - root key caveatu sa da spravit ako hmac(sig, n), kde n je nonce
+    
+bicuits specka - https://github.com/biscuit-auth/biscuit/blob/master/SPECIFICATIONS.md
+    - pouzivaju asymtricku kryptografiu, konkretne digitalne podpisy
+    - key id ulozeny v tokene - aby som vedela, z ktoreho tajneho kluca som to vyrobila
+    - je poskladany z blokovej
+        - prvy blok authority - prida ten co vytvoril token, definuje prava drzitela tokenu
+        - dalsie bloky - definuju checks, moze pridat hocikto, no nedaju sa odobrat bez invalidovania podpisu
+        - lokicky jazyk pouzity na dizajnovanie prav, cekov a dat je variant datalogu bez negacie a len na niektorych data types - je citacia v specke
+        - query je datalog query - pravidlo bez hlavy
+        - check je zoznam quries, query je splenena ak vyprodukuje nejaky fakt, aby bol check splneni musi byt aspon jedna query splnena
+            - check if - jeden set faktov co matchol body splni
+            - check all - vsetky sety faktov co matchli body splnili
+        - policies - zoznam queries, ak nejaka query vyrobi nejaky fakt policy matchne a skoncili sme, inak pokracujeme na dalsiu policy. Su allow aj deny policies - ak matchne allow token je platny ak matchne deny je zamietnuty
+        - policies sa testuju po tom co prebehnu checky
+        - ak nematchne ziadna policy, verification failne
+        - queries aj rules mozu mat v tele aj expreson na argumentoch predikatov, musi sa vyhodnotit na bool, definovane operacie su v specke
+
+        - navyse mozu byt dalsie fakty a rules v autorizrovy, nezavisle od tokenu
+
+        - rules a checks bloku mozu pracovat len s faktami zo svojho a predoslych blokoch, tymto sa zamedzuje tomu aby si mohol niekto novym blokov zvysit pravomoc
+            - navyse rules chceck a policies definovane autorizerom pracuju len s faktami z authority bloku alebo s tymi definovanymi v autorizrovy
+
+        - trusted anotacie - by default (a tie su trusted vzdy) je trusted len authority, current block a to co je v autorizrovi, da sa zmenit na vsetky predosle alebo tie podpisane nejakym danym public klucom
+        - verifier vytvori fakty na zaklade kontextu - napriklad operation - read/write, the resource accessed, and more ambient data like the current time, source IP address, revocation listsss
+
+        - najprv sa deserializuje podla protobuf formatu bisquits, potom sa overi ze public key v authotity blocku je ten root key co ocakavam
+
+        - vytvori sa revocation list - revocation identifier blocku je jeho podpis, lebo ten ho jednoznacne urcuje - potom sa prirobia fakty revocation_id (block_id, podpis)
+
+        - aktualny format - https://github.com/biscuit-auth/biscuit/blob/master/schema.proto
+
+        - kazdy blok ma svoj podpis a tiez definuje public kluc, ktorym sa ma overit podpis dalsieho bloku
+            - vytvaranie noveho bloku - vyrobit novy par pk, sk, sk vygenerovany poslednym blokom je vzdy v tokene zapisany v proof hlavicke
+            - vyrobi sa podpis pomocou kluca v proofe
+            - do proofu sa zapise vygenerovany sk
+
+            - moze byt blok podpisany aj external epk, esk parom, potom obsahuje blok epk a esign a esign je tiez podpisany normalnym sk, ktorym sme podpisovali tento blok (teda tym co bol v proof)
+
+            - podpisovanie funguje rovnako az nato ze sa podpisuje ako payload pk, ktory sa pouziva na verifikaciu tohto bloku (normalne sa podpisuje ten dalsi) -> kvoli tomu aby sa nedal externy podpis pouzit na token, preto je zviazany s pk predosleho bloku
+
+            - sig_n = (sk_n, data_n, + esig_n + pk_n+1)
+            - esig_n = (esk, data_n + pk_n)
+
+    - verifikacia - postupne sa po blokoch spravi verify(pk_i, sig_i, data_i + pk_i+1)
+    - verifikacia externeho podpisu - verify(epk_i, esig_i, data_i + pk_i)
+    - nakonci sa este overi ci pk_last je par so sk_last v proofe
+    - mozeme sealnut token aby sa uz nedal pridat blok - podpiseme sk_last obsah posledneho tokenu spolu s podpisom tohto bloku -> do proof sa da vyrobeny podpis
+
+    - ako pracovat s tretou stranou -> pridam check, ktory trustuje pk tretej strany a potom mozem mat naroky na fakty, ktore dava az blok, ktory pridala tretia strana, tretia strana moze pridat blok az ked je nieco splnene
+
+    - pouziva sa ed25519 funkcia na vyrabanie public klucov
+
+
+
 navrh kapitol:
     1. vyuzitie api tokenov - preco potrebujeme api tokeny a ich rozdiely oproti inym sposobom autentifikacia a autorizacie (api keys, meno heslo, session)
     2. zname a v praxi pouzivane api tokeny - predstavenie roznych typov tokenov, ktore sa vyuzivaju v praxi
     3. teoreticke parametre tokenov - porovnanie tokenov ohladom na bezpecnost, skalovatelnost, flexibilitu
     4. prakticke parametre tokenov - porovnanie tokenov vzhladom na jednoduchost implementacie a rychlost 
     5. porovnanie na jednoduchom rozhrani - navrh a implementacia jednoducheho rozhrania s pouzitim viacerych typov tokenov a nase pozorovanie pri ich pouziti
+
+navrh porovnania:
+    - pocet pouzivanych krypto funkcii v specifikacii, ak neni specifikacia, tak v nejakej popularnej implementacii
+    - s tym spojena nachylnost implementacie na confiouson alg utok
+    - podpora sifrovania obsahu
+    - nutnost zistit pouzity algoritmus z tokenu (nejak to tam treba napisat, ked je viac algoritmov, ale da sa to spravit pomocou identifikatora kluca, co moze identifikovat aj alg, pre pozorovatela nepriehladna hodnota)
+    - podpora 3rd party poziadaviek
+    - schopnost zoslabovat pravomoci
+    - hocikto vie overit autenticitu a integritu tokenu
+    - bezstavove overenie (jednoducha implementacia macaroons ma databazu korenovych klucov)
+    - standarne overovanie (nejake dane claim sety, macaroons vobec)
+    - udrziavana implementacia v popularnych jazykoch (js, c, python, java,..), nejeka specifikia
+    - kolko projektov to pouziva
+    - mozno aj take "abstraktnejsie" - flexibilita/skalovatelnost, mozno porovanat to pomocou nejakych mensich, napr z 3rd party poziadaviek
+
+CO SA CHCEM SPYTAT:
+    - ked popisujem technologiu staci dat citaciu papra na zaciatok a potom popisat?
+
+    DONE:
+    - je ok pouzivat slova ako servis - sluzba a cloud?
+    - macaroons fakt ze nemaju preklad, najblizsie je asi kokosove pusinky a to sa mi nezda moc dobre - neprekladat
+    - zatial mam tokeny jwt, paseto, fernet, branca, macaroons, este by som dala cat (mozno), Biscuits, oauth ani protobuf nie su tokeny, biscuits vyzera zaujimavo, nejake macaroons s datalogom
+    - preco treba pri hmacu novy kluc za kazdy token? 
+    - pride mi nejak vela ked tam pisem o kazdom tokene ako funguje, ale neviem si predstavit pisat porovnanie bez toho
+
+
+TODO: 
+- hmac citaciu vyriesit
+- oporavit nefunkcne citacie
+    - bisquits git
+    - bisquits blog
+    - fernet cpp
+
+
+- bisquits 3rd party blok pridanie

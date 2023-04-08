@@ -266,6 +266,9 @@ Exclusive Ownership},
     month =     {September},
     abstract =  {This document describes the use of the Advanced Encryption Standard (AES) Cipher Algorithm in Cipher Block Chaining (CBC) Mode, with an explicit Initialization Vector (IV), as a confidentiality mechanism within the context of the IPsec Encapsulating Security Payload (ESP).},
 }
+asi radsej takto citovat hmac - National Institute of Standards and Technology, “FIPS PUB 198-
+1: The keyed-hash message authentication code (HMAC),” 2008.
+[Online]. Available: http://csrc.nist.gov/publications/fips/fips198-1/FIPS198-1 final.pdf
 
 @misc{hmac,
     series =    {Request for Comments},
@@ -281,6 +284,7 @@ Exclusive Ownership},
     month =     may,
     abstract =  {This specification describes the use of Hashed Message Authentication Mode (HMAC) in conjunction with the SHA-256, SHA-384, and SHA-512 algorithms in IPsec. These algorithms may be used as the basis for data origin authentication and integrity verification mechanisms for the Authentication Header (AH), Encapsulating Security Payload (ESP), Internet Key Exchange Protocol (IKE), and IKEv2 protocols, and also as Pseudo-Random Functions (PRFs) for IKE and IKEv2. Truncated output lengths are specified for the authentication-related variants, with the corresponding algorithms designated as HMAC-SHA-256-128, HMAC-SHA-384-192, and HMAC-SHA-512-256. The PRF variants are not truncated, and are called PRF-HMAC-SHA-256, PRF-HMAC-SHA-384, and PRF-HMAC-SHA-512. {[}STANDARDS-TRACK{]}},
 }
+
 @misc{fernet_legacy,
     author =    {Harold Giménez},
     note   = {\url{https://github.com/heroku/legacy-fernet}},
@@ -334,4 +338,112 @@ Exclusive Ownership},
   number={},
   pages={761-765},
   doi={10.1109/ICCS.2008.4737287}
+}
+
+
+@misc{belay,
+    author =    {Google},
+    note   = {\url{https://sites.google.com/site/belayresearchproject/home
+}},
+    title =     {Belay research project},
+}
+
+@inproceedings{macaroons_paper,
+title	= {Macaroons: Cookies with Contextual Caveats for Decentralized Authorization in the Cloud},
+author	= {Arnar Birgisson and Joe Gibbs Politz and Úlfar Erlingsson and Ankur Taly and Michael Vrable and Mark Lentczner},
+year	= {2014},
+booktitle	= {Network and Distributed System Security Symposium}
+}
+
+@misc{hmac_sha1,
+    series =    {Request for Comments},
+    number =    2104,
+    howpublished =  {RFC 2104},
+    publisher = {RFC Editor},
+    doi =       {10.17487/RFC2104},
+    url =       {https://www.rfc-editor.org/info/rfc2104},
+        author =    {Dr. Hugo Krawczyk and Mihir Bellare and Ran Canetti},
+    title =     {{HMAC: Keyed-Hashing for Message Authentication}},
+    pagetotal = 11,
+    year =      1997,
+    month =     {Február},
+    abstract =  {This document describes HMAC, a mechanism for message authentication using cryptographic hash functions. HMAC can be used with any iterative cryptographic hash function, e.g., MD5, SHA-1, in combination with a secret shared key. The cryptographic strength of HMAC depends on the properties of the underlying hash function. This memo provides information for the Internet community. This memo does not specify an Internet standard of any kind},
+}
+
+@misc{macaroons_git,
+    author =    {Robert Escriva},
+    note   = {\url{https://github.com/rescrv/libmacaroons}},
+    title =     {libmacaroons},
+}
+
+@inproceedings{macaroons_key_id,
+author = {Lampson, Butler and Abadi, Martín and Burrows, Michael and Wobber, Ted},
+year = {1991},
+month = {Október},
+pages = {165-182},
+title = {Authentication in Distributed Systems: Theory and Practice},
+volume = {10},
+journal = {ACM Transactions on Computer Systems},
+doi = {10.1145/138873.138874}
+}
+
+@misc{biscuits_blog,
+    author =    {Geoffroy Couprie},
+    note   = {\url{https://www.clever-cloud.com/blog/engineering/2021/04/12/introduction-to-biscuit/}},
+    title =     {Biscuit, the foundation for your authorization systems},
+}
+
+
+@misc{biscuits_git,
+    author =    {Clever Cloud},
+    note   = {\url{https://github.com/biscuit-auth/biscuit}},
+    title =     {Bisquits repository},
+}
+
+@misc{ed_rfc,
+    series =    {Request for Comments},
+    number =    8032,
+    howpublished =  {RFC 8032},
+    publisher = {RFC Editor},
+    doi =       {10.17487/RFC8032},
+    url =       {https://www.rfc-editor.org/info/rfc8032},
+        author =    {Simon Josefsson and Ilari Liusvaara},
+    title =     {{Edwards-Curve Digital Signature Algorithm (EdDSA)}},
+    pagetotal = 60,
+    year =      2017,
+    month =     {Január},
+    abstract =  {This document describes elliptic curve signature scheme Edwards-curve Digital Signature Algorithm (EdDSA). The algorithm is instantiated with recommended parameters for the edwards25519 and edwards448 curves. An example implementation and test vectors are provided.},
+}
+
+@InProceedings{datalog_bis,
+  author =       {Ninghui Li and John C. Mitchell},
+  title =        {Datalog with Constraints: A Foundation for Trust Management Languages},
+  booktitle =    {Proceedings of the Fifth International Symposium on
+                  Practical Aspects of Declarative Languages},
+  month =        {Január},
+  year =         2003,
+}
+
+@misc{protobuf,
+    author =    {Google},
+    note   = {\url{https://protobuf.dev/overview/}},
+    title =     {Protocol Buffers documentation},
+}
+
+@misc{access_token,
+    author =    {Okta},
+    note   = {\url{https://www.okta.com/identity-101/access-token/}},
+    title =     {Access Token: Definition, Architecture, Usage and More},
+}
+
+@misc{phantom_token,
+    author =    {Curity},
+    note   = {\url{https://curity.io/resources/learn/phantom-token-pattern/}},
+    title =     {The Phantom Token Approach},
+}
+
+@misc{split_token,
+    author =    {Curity},
+    note   = {\url{https://curity.io/resources/learn/split-token-pattern/}},
+    title =     {The Split Token Approach},
 }
