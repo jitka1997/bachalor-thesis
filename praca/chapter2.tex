@@ -1,8 +1,8 @@
-\chapter{Šprecifikácia konkrétnych API tokenov}
+\chapter{Špecifikácia konkrétnych API tokenov}
 
 \label{kap:typy} % id kapitoly pre prikaz ref
 
-V tejto kapitole predstavíme v praxi využívané API tokeny, ktorými sa zaoberá naša práca. Uvedieme ich formát a základné charakteristiky ako ich vytvorenie, či validácia. Jednotlivé tokeny používajú rôzne kryptografické algoritmy na zabezpečenie integrity a autenticity tokenu. Pôjde buď o šifrovanie alebo o hešovanie s kľúčom \cite{hmac}. Výsledkom týchto algroritmov je buď elektronický podpis alebo hešovaný autentifikačný kód (HMAC). V oboch prípadoch budeme hovoriť o podpise tokenu. A proces ich vytvárania budeme nazývať podpisovanie.
+V tejto kapitole predstavíme v praxi využívané API tokeny, ktorými sa zaoberá naša práca. Uvedieme ich formát a základné charakteristiky ako ich vytvorenie, či validácia. Jednotlivé tokeny používajú rôzne kryptografické algoritmy na zabezpečenie integrity a autenticity tokenu. Využíva sa šifrovanie alebo hešovanie s kľúčom \cite{hmac}. Výsledkom týchto algroritmov je buď elektronický podpis alebo hešovaný autentifikačný kód (HMAC). V oboch prípadoch budeme hovoriť o podpise tokenu. A proces ich vytvárania budeme nazývať podpisovanie.
 
 Ich využitie, výhody či nevýhody rozoberieme v kapitole \ref{kap:teoreticke}.
 
@@ -11,12 +11,12 @@ Ich využitie, výhody či nevýhody rozoberieme v kapitole \ref{kap:teoreticke}
 
 Prvý token, ktorým sa budeme zaoberať je JSON web token (JWT) \cite{jwt_rfc}. JWT vznikol ako súčasť JOSE (JSON object signing and encryption) štandardov \cite{jose_rfc}, čo je dokument vypracovaný pracovnou skupinou IETF (Internet Engineering Task Force) na základe aplikácií bezpečnostných mechanizmov v rámci vývoja softvéru. Tieto štandardy popisujú využitie a definujú požiadavky na objekty formátu JSON, ktoré sú bezpečné.
 
-Definujú štandard pre bezpečný prenos JSON objektov medzi stranami, ktoré sú schopné ich overiť a dešifrovať. Zavádzajú tri základné formáty JSON objektov a to JWS (JSON Web Signature), JWE (JSON Web Encryption) a JWK (JSON Web Key), ktorým sa detailnejšie venujú ďalšie štandardy \cite{jws_rfc, jwe_rfc, jwk_rfc}. Prvé dva sú formáty zabezpečujúce bezpečnostné vlastnosti JSON objektov. Oba zabezpečujú autentickosť a integritu pomocou elektronických podpisov alebo hešovaného autentifikačného kódu. JWE navyše zabezpečuje aj dôvernosť a to šifrovaním obsahu JSON objektu. Posledný formát JWK je formát pre reprezentáciu kľúčov, ktoré sú použité v kryptografických algoritmoch využitých v JWS a JWE. Kryptografické algoritmy a ich identifikátory sú definované JSON Web Algorithms (JWA) štandardom \cite{jwa_rfc}.
+Definujú štandard pre bezpečný prenos JSON objektov medzi službami, ktoré sú schopné ich overiť a dešifrovať. Zavádzajú tri základné formáty JSON objektov a to JWS (JSON Web Signature), JWE (JSON Web Encryption) a JWK (JSON Web Key), ktorým sa detailnejšie venujú ďalšie štandardy \cite{jws_rfc, jwe_rfc, jwk_rfc}. Prvé dva sú formáty zabezpečujúce bezpečnostné vlastnosti JSON objektov. Oba zabezpečujú autentickosť a integritu pomocou elektronických podpisov alebo hešovaného autentifikačného kódu. JWE navyše zabezpečuje aj dôvernosť a to šifrovaním obsahu JSON objektu. Posledný formát JWK je formát pre reprezentáciu kľúčov, ktoré sú použité v kryptografických algoritmoch využitých v JWS a JWE. Kryptografické algoritmy a ich identifikátory sú definované JSON Web Algorithms (JWA) štandardom \cite{jwa_rfc}.
 
 
 \subsection{Štruktúra JWT}
 
-Samotný JWT je v podstate iba serializácia JSON objektu chráneného JWS alebo JWE. Podľa štandardu JWT obsahuje tri samostatné časti oddelené bodkami - hlavičku, telo a podpis. Hlavička a telo sú serializované JSON objekty obsahujúce oprávnenia (angl. claim) vo forme dvojíc kľúč, hodnota. Niektoré kľúče niektorých oprávnení sú definované v štandarde a teda by sa nemali používať pre žiadne iné hodnoty. 
+Samotný JWT je v podstate iba serializovaný JSON objekt chránený JWS alebo JWE. Podľa štandardu JWT obsahuje tri samostatné časti oddelené bodkami - hlavičku, telo a podpis. Hlavička a telo sú serializované JSON objekty obsahujúce oprávnenia (angl. claim) vo forme dvojíc kľúč, hodnota. Niektoré kľúče niektorých oprávnení sú definované v štandarde a teda by sa nemali používať pre žiadne iné hodnoty. 
 
 A to konkrétne v hlavičke sú najdôležitejšie \textit{typ} a \textit{alg}. Prvý určuje typ tokenu a druhý algoritmus, ktorý bol použitý na vytvorenie podpisu alebo v rámci šifrovania obsahu tokenu. Rôzne možnosti pre algoritmy sú definované v JWA štandardoch.
 
@@ -26,7 +26,7 @@ Do tela aj hlavičky sa môžu vkladať ľubovoľné iné oprávnenia, napríkla
 
 \subsection{Generovanie a validácia JWT}
 
-Hlavička a telo sa serializujú pomocou \textit{base64url} kódovania \cite{base64_rfc}. V prípade JWE sa telo ešte šifruje. Následne sa obe časti podpíšu algoritmom definovaným v hlavičke a podpis sa zreťazí s hlavičkou a telom. Výsledný reťazec sa používa ako token.
+Hlavička a telo sa serializujú pomocou base64url kódovania \cite{base64_rfc}. V prípade JWE sa telo ešte šifruje. Následne sa obe časti podpíšu algoritmom definovaným v hlavičke a podpis sa zreťazí s hlavičkou a telom. Výsledný reťazec sa používa ako token.
 
 Na overenie platnosti tokenu treba zvalidovať podpis. Podpis je vytvorený pomocou algoritmu definovanom v hlavičke. Teda pri validácii tokenu sa ako prvé dekóduje hlavička tokenu a z nej sa prečíta hodnota v kľúči \textit{alg}.
 
@@ -34,9 +34,9 @@ Na základe hodnoty v kľúči \textit{alg} sa určí algoritmus, ktorý bol pou
 
 Ak bol token vytvorený pomocou JWE, na prečítanie tela je potrebné ho najprv dešifrovať. V prípade využitia JWS je telo po dekódovaní priamo čitateľné. Následne môžeme overiť informácie o časovej platnosti tokenu, či právach používateľa a pod.
 
-\section{Platform Agnostic SEcurity TOken}
+\section{Platform Agnostic Security Token}
 
-Platform Agnostic SEcurity TOken (PASETO) je relatívne nový štandard tokenu navrhnutý v roku 2018 a je stále v štádiu RFC draftu \cite{paseto_rfc}. Je inšpirovaný rodinou štandardov JOSE (JWT, JWS, JWE, JWK). Jednoducho povedané snaží sa zjednodušiť implementáciu a použitie kryptografických funkcií.
+Platform Agnostic Security Token (PASETO) je relatívne nový štandard tokenu navrhnutý v roku 2018 a je stále v štádiu RFC draftu \cite{paseto_rfc}. Je inšpirovaný rodinou štandardov JOSE (JWT, JWS, JWE, JWK). Jednoducho povedané snaží sa zjednodušiť implementáciu a použitie kryptografických funkcií.
 
 Rovnako ako JWT, PASETO serializuje JSON objekty a zaručuje rôzne bezpečnostné kvality pri ich prenose cez internet. Pôvodne bol PASETO navrhnutý s dvoma verziami \textit{v1} a \textit{v2} líšiacimi sa v použitých kryptografických algoritmoch. Dnes už existujú štyri verzie \textit{v1}, \textit{v2}, \textit{v3} a \textit{v4} popísané štandardom \cite{paseto_git}. Každá verzia tokenu zaručuje autentickosť a integritu obsahu tokenu a to pomocou asymetrického šifrovania v zmysle elektronického podpisu alebo pomocou hešovaného autentifikačného kódu.
 
@@ -59,7 +59,7 @@ PASETO sa skladá z troch alebo štyroch častí zreťazených bodkou. Časti po
     \item Päta - môže obsahovať ľubovoľné ďalšie informácie.
 \end{itemize}
 
-Telo a päta sú vo forme JSON objektu, ktorý je serializovaný pomocou \textit{base64url} \cite{base64_rfc}.
+Telo a päta sú vo forme JSON objektu, ktorý je serializovaný pomocou base64url \cite{base64_rfc}.
 
 
 \subsection{Generovanie a validácia PASETO}
@@ -92,13 +92,13 @@ Fernet sa skladá z piatich zreťazených častí. Každá časť reprezentuje j
 
 Ako vidíme, všetky časti tokenu okrem tela majú pevne danú dĺžku. Vďaka tejto vlastnosti nemusia byť zreťazené časti oddelené žiadnym špeciálnym symbolom, napríklad bodkou, lebo vieme jednoznačne oddeliť verziu, časovú pečiatku, IV aj podpis a tým pádom aj zašifrované telo.
 
-Pre jednoduché prenášanie je celý token zakódovaný pomocou \textit{base64url} \cite{base64_rfc}.
+Pre jednoduché prenášanie je celý token zakódovaný pomocou base64url \cite{base64_rfc}.
 
 \subsection{Generovanie a validácia Fernet}
 
 Pri generovaní Fernet tokenu sa využívajú dva kryptografické algoritmy, ktoré vyžadujú kľúč. Fernet definuje 256 bitový kľúč, ktorý je rozdelený na dve 128 bitové časti. Prvá časť reprezentuje podpisový kľúč a druhá šifrovací kľúč.
 
-Existuje iba jedna verzia tokenu, teda tú máme danú. Pre vygenerovanie tokenu, potrebujeme zaznamenať aktuálny čas do časovej pečiatky a vygenerovať náhodný reťazec, ktorý bude slúžiť ako IV. Následne zašifrujeme telo tokenu pomocou šifrovacieho kľúča a IV. Ďalej vypočítame podpis z predchádzajúcich častí tokenu pomocou podpisového kľúča. Nakoniec všetky časti spojíme do jedného reťazca a zakódujeme pomocou \textit{base64url} \cite{base64_rfc}.
+Existuje iba jedna verzia tokenu s pevne daným algoritmom. Pre vygenerovanie tokenu, potrebujeme zaznamenať aktuálny čas do časovej pečiatky a vygenerovať náhodný reťazec, ktorý bude slúžiť ako IV. Následne zašifrujeme telo tokenu pomocou šifrovacieho kľúča a IV. Ďalej vypočítame podpis z predchádzajúcich častí tokenu pomocou podpisového kľúča. Nakoniec všetky časti spojíme do jedného reťazca a zakódujeme pomocou base64url \cite{base64_rfc}.
 
 Validácia tokenu spočíva v dekódovaní tokenu, rozdelení na časti a overení podpisu. Potom dešifrujeme telo tokenu pomocou šifrovacieho kľúča a IV. Následne prípadne overíme časovú platnosť tokenu, ak telo obsahuje potrebné informácie pre overenie časovej platnosti ako vznik a doba platnosti tokenu.
 
@@ -113,7 +113,7 @@ Branca sa podobne ako Fernet skladá z piatich zreťazených častí. Tieto čas
 \begin{itemize}
     \item Verzia - reprezentuje verziu Branca tokenu, aktuálne existuje len jedna verzia a je reprezentovaná číslom 0xBA. Zaberá vždy 8 bitov.
     \item Časová pečiatka - reprezentuje čas vytvorenia tokenu. Čas je zachytení ako počet sekúnd od 1.1.1970 v UTC časovej zóne. Zaberá vždy 32 bitov a je zapísaná ako číslo bez znamienka.
-    \item Nonce (Čiraz :D) - reprezentuje náhodný reťazec znakov, ktorý využíva šifrovacia funkcia. Ide v podstate o IV, ale využíva sa naozaj len raz, zatiaľ čo IV sa v blokovej šifre využije viac krát. Zaberá vždy 192 bitov.
+    \item Nonce - reprezentuje náhodný reťazec znakov, ktorý využíva šifrovacia funkcia. Ide v podstate o IV, ale využíva sa naozaj len raz, zatiaľ čo IV sa v blokovej šifre využije viac krát. Zaberá vždy 192 bitov.
     \item Zašifrované telo - reprezentuje zašifrované dáta uložené v tokene. Môže mať ľubovoľnú dĺžku.
     \item Podpis - v podobe hešovaného autentifikačného kódu - reprezentuje výstup funkcie Poly1305 a zaberá vždy 128 bitov.
 \end{itemize}
@@ -223,7 +223,7 @@ Samotný token sa skladá z blokov a niektorých globálnych informácií pre ce
 Každý blok obsahuje serializovaný datalogový program, podpis bloku a verejný kľúč, v prípade, že ide o externý blok, aj podpis bloku službou tretej strany a príslušný verejný kľúč služby tretej strany. Príklad základného Bisquits tokenu je na obrázku \ref{fig:bisquits_token}.
 
 Datalogový program sa skladá z faktov, pravidiel, kontrol a pomocných informácií, detailnú schému formátu nájdeme v súbore schema.proto repozitára \cite{biscuits_git}. Fakty a pravidlá sú bežné datalogové fakty a pravidlá. Kontroly sú množiny datalogových dotazov. Dotaz je splnený práve vtedy, keď je jeho výsledok aspoň jeden fakt. Kontrola je splnená práve vtedy, keď je splnený aspoň jeden dotaz z množiny dotazov danej kontroly. Okrem toho definuje Bisquits aj politiky, ktoré vytvára entita validujúca token. Viac o politikách rozoberieme v nasledujúcej podkapitole. Bloky a politiky môžu mať anotáciu definujúcu, ktorým blokom dôverujú a teda s faktami a pravidlami, ktorých blokov pracujú. Vždy platí, že blok verí autoritatívnemu bloku, sebe a informáciám v službe validujúcej token. Anotáciou môže blok definovať, že dôveruje aj všetkým predchádzajúcim blokom alebo všetkým blokom podpísaným konkrétnym verejným kľúčom. Posledná možnosť sa využíva pre integráciu služieb tretích strán do autorizačnej schémy.
-Datalogový program je serializovaný ako Protocol Buffer \cite{protobuf} podľa konkrétnej schémy definovanej v súbore schema.proto alebo v novšej verzii pomocou \textit{base64url} kódovania \cite{base64_rfc}.
+Datalogový program je serializovaný ako Protocol Buffer \cite{protobuf} podľa konkrétnej schémy definovanej v súbore schema.proto alebo v novšej verzii pomocou base64url kódovania \cite{base64_rfc}.
 
 \begin{figure}
     %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
