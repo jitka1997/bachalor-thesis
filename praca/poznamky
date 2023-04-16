@@ -305,6 +305,48 @@ bicuits specka - https://github.com/biscuit-auth/biscuit/blob/master/SPECIFICATI
 
     - pouziva sa ed25519 funkcia na vyrabanie public klucov
 
+API kluce konkretne v aws - https://docs.aws.amazon.com/AmazonS3/latest/userguide/RESTAuthentication.html
+    - nemas token, mas len podpisany request
+    - rozdas nejak kluce, dlhotrvajuce, lebo sa neposielaju nikam, teda nie je take nebezpecne ho mat dlho jeden
+    - pri posielani requestu, ho este Hmac-nes pomocou kluca, prilozis podpis a done
+    - aby som vedela podpisat request treba kanonizacnu schcemu requestu, lebo jeden http request robiaci to iste, moze mat viacero podob
+    - kanonizacia znie lahko - povie ake headre mozu byt a nejak to zretazim - ale bola to dost silna zranitelnost v zaciatkoch aws - https://www.daemonology.net/blog/2008-12-18-AWS-signature-version-1-is-insecure.html
+    - overenie je, ze api si pamata k svojim zdrojom kluce, ktore k nim patria a
+        - kanonizuje request
+        - podpise ho klucom k danym zdrojom
+        - overi podpis
+    - aws ma aj timestampy na requestoch, aby sa po odchyteni, nedal pouzivat viac krat niekym inym, ale len napr. 15 minut od timestamptu (15 minut ma aws)
+
+udrziavane implementacie:
+    jwt - >100 implementacii na https://jwt.io/libraries - tam aj autori napisani
+        - js - https://github.com/panva/jose - 3.3k stars
+        - python - https://github.com/jpadilla/pyjwt/ - 4.6 stars
+        - java - https://github.com/jwtk/jjwt - 8.9 stars
+        - vsetky velmi urdziavane - commity pred par dnami
+    paseto - 37 implementacii na https://paseto.io/
+        - js - https://github.com/panva/paseto - 287 stars - Filip Skokan
+        - python - https://github.com/dajiaji/pyseto - 34 stars - Ajitomi Daisuke
+        - java - https://github.com/nbaars/paseto4j - 28 stars - Nanne Baars
+        - vsetky udrziavane - commity dni az tyzdnom dozadu
+    fernet - nema taku stranku implemenetacii
+        - js - https://github.com/zoran-php/fernet-nodejs - 0 stars, vyzera byt hobby projekt ale je to z marca 2023
+        - js - https://github.com/csquared/fernet.js - 66 stars, vyzera byt pouzivana implementacia, ale posledny commit 2020
+        -python - https://github.com/pyca/cryptography - 5.5 stars - vramci oficialnej python cryptography kniznice - mega udrziavane
+        java - https://github.com/l0s/fernet-java8 - 32 stars - mega udrziavane
+    branca - 13 implementacii na - https://branca.io/ 
+        - js - https://github.com/tuupola/branca-js - 91 stars - april 2022 - Mika Tuupola
+        - python - https://github.com/tuupola/pybranca - 46 stars - 2021 - Mika Tuupola
+        - java - https://github.com/bjoernw/jbranca - 4 stars - 2018 - Bjoern Weidlich
+    macaroons - nema spolucnu stranku
+        - js - https://github.com/go-macaroon/js-macaroon - 39 stars - 2020 - Roger Peppe
+        - python - https://github.com/ecordell/pymacaroons - 71 stars - mega udrziavane - Evan Cordell
+        - python - https://github.com/rescrv/libmacaroons - 479  stars - 2021, ale viac cotributorov a vyzera viac legit - python aj c interface
+        - Robert Escriva
+        - java - https://github.com/nitram509/jmacaroons - 112 stars - mega udrziavane - Martin W. Kirst
+    biscuits - nema stranku implementacii
+        - js - neni
+        - python - neni 
+        - java, rust, go, haskell - https://github.com/biscuit-auth - to je organizacia kde je aj specka, jan 2023
 
 
 navrh kapitol:
@@ -337,9 +379,3 @@ CO SA CHCEM SPYTAT:
     - zatial mam tokeny jwt, paseto, fernet, branca, macaroons, este by som dala cat (mozno), Biscuits, oauth ani protobuf nie su tokeny, biscuits vyzera zaujimavo, nejake macaroons s datalogom
     - preco treba pri hmacu novy kluc za kazdy token? 
     - pride mi nejak vela ked tam pisem o kazdom tokene ako funguje, ale neviem si predstavit pisat porovnanie bez toho
-
-
-TODO: 
-- hmac citaciu vyriesit
-
-- bisquits 3rd party blok pridanie
