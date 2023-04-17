@@ -348,6 +348,18 @@ udrziavane implementacie:
         - python - neni 
         - java, rust, go, haskell - https://github.com/biscuit-auth - to je organizacia kde je aj specka, jan 2023
 
+paseto krypto funkcie:
+verzia  vyuzitie   funkcia
+1       local       AES-256-CTR + HMAC-SHA384 (Encrypt-then-MAC)
+1       public      2048-bit RSA keys
+2       local       XChaCha20-Poly1305 192-bit nonce, 256-bit key, 128-bit mac
+2       public      Ed25519 (EdDSA over Curve25519)
+3       local       AES-256-CTR + HMAC-SHA384 (Encrypt-then-MAC)
+3       public      ECDSA over NIST P-384, with SHA-384
+4       local       XChaCha20 + BLAKE2b-MAC (Encrypt-then-MAC)
+4       public      Ed25519 (EdDSA over Curve25519)
+    - implementuje algoritmic lucidity, proto algoritmus conf. utoku
+
 
 navrh kapitol:
     1. vyuzitie api tokenov - preco potrebujeme api tokeny a ich rozdiely oproti inym sposobom autentifikacia a autorizacie (api keys, meno heslo, session)
