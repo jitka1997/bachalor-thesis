@@ -2,4 +2,26 @@
 
 \label{kap:teoreticke} % id kapitoly pre prikaz ref
 
-V tejto kapitole porovnáme teoretické parametre rôznych typov API tokenov ako bezpečnosť, škálovateľnosť, jednoduchosť implementácie a flexibilita.
+V tejto kapitole porovnáme rôzne parametre konkrétnych tokenov podľa informácií získaných z ich dokumentácií a iným zdrojov. Tieto informácie sme zhrnuli v kapitole \ref{kap:typy}. Pri jednotlivých parametroch vysvetlíme ich význam a teda aj dôležitosť pri porovnávaní tokenov. Porovnávať budeme všetky tokeny popísané v kapitole \ref{kap:typy} a nepriehľadný token popísaný v podkapitole \ref{sec:opaque}. Nepriehľadný token je formát tokenu, nie konkrétny token. Pre jednoduchosť budeme v tejto kapitole pod pojmom nepriehľadný token myslieť náhodný reťazec s podpisom, ktorý vznikol pomocou asymetrického širovania. 
+
+Kapitola je štruktúrovaná podľa porovnávaných vlastností a jej výsledkom je tabuľka \ref{tab:porovnanie} zhrňujúca závery porovnania.
+
+\section{Bezpečnosť}
+
+V rámci porovnávania bezpečnosti tokenov nebudeme detailne rozoberať bezpečnosť jednotlivých kryptografických funkcií. Detaily ohľadom týchto funkcií je možné nájsť v ich citovaných dokumentáciach. Všetky tokeny ponúkajú možnosť použiť kryptografické funkcie, ktoré sú všeobecne považované za bezpečné.
+
+Zameriame sa na porovnanie kryptografických primitív a z nich vyplývajúcich bezpečnostných kvalít a na náchylnosti na zraniteľnosti vyplývajúcej zo špecifikácie tokenu.
+
+\subsection{Kryptografické primitíva}
+
+Pri tokenoch rozoznávame tri kryptografické primitíva a to asymetrické šifrovanie vo forme elektronického podpisu, symetrické šifrovanie a hešovanie s kľúčom. Výstupom hešovania s kľúčom je hešovaný autentifikačný kód. 
+
+Symetrické šiforvanie sa vrámci nami porovnávaných tokenov využíva na šifrovanie obsahu tokenu a teda na ochranu dôvernosti informácií uložených v tokene. Elektronický podpis a hešovanie zaručujú ochranu autenticity a integrity tokenu. Rozdiel v použití elektronického podpisu a hešovania je v tom, že v prípade elektronického podpisu ide o asymetrické šifrovanie, teda  podpis vie overiť ľubovoľná entita, ktorá pozná verejný kľúč tvoriaci dvojicu so súkromných kľúčom, ktorým bol token podpísaný. Takýto verejný kľúč je zväčša verejne dostupný a vie ho získať ľubovoľná entita. V prípade hešovania ide o symetrickú kryptografiu, pravosť hešovaného autentifikačného tokenu vie overiť len entita, ktorá pozná tajný kľúč, ktorým bol token zahešovaný, čo je často len entita, ktorá token vytvorila.
+
+Výhodou elektronického podpisu teda je, že autenticitu a integritu tokenu môže overiť ľubovoľná entita. Výhodou hešovania je, že je rýchlejšie. 
+
+V prípade JWT si môžeme vybrať, či budeme používať elektronický podpis alebo hešovanie s kľúčom a pomocou nastavenia oprávnenia \textit{alg} v hlavičke na požadovanú hodnotu. Všetky možnosti hodnôt oprávanenia \textit{alg} definuje  JWA \cite{jwa_rfc}. Štandard ponúka aj možnosť \textit{alg=none}, v tomto prípade nezaručuje JWT žiadne bezpečnostné kvality a je to jedna zo známych zraniteľností \cite{jwt_vul} JWT. Ak služba akceptuje aj JWT s \textit{alg=none} ako platné tokeny, útočník jednoducho zamení hodnotu \textit{alg='hocičo'} na \textit{none}, odstráni podpis z tokenu a môže ľubovoľne zmeniť token, napríklad si zvýši autorizačné práva. Bezpečné implementácie JWT, by nemali tokeny s \textit{alg=none} považovať za platné.
+
+PASETO využíva v prípade lokálneho využitia hešovanie a v prípade verejného využitia elektronický podpis. Fernet, Branca a Macaroon využívajú hešovanie s kľúčom a Biscuit využíva elektronický podpis. Nepriehľadný token sme pre potreby tejto kapitoly definovali s použitím elektronického podpisu.
+
+Symetrické šifrovanie a z neho vyplývajúcu ochranu dôvernosti umožňujú tokeny JWT, konkrétne vo forme JWE, PASETO s lokálnym využitím, Fernet a Branca. Biscuits a Macaroons neposkytujú žiadnu ochranu dôvernosti. Nepriehľadný token tiež neposkytuje ochranu dôvernosti, no z definície nenesie žiadnu informáciu, teda v jeho prípade nie je dôvernosť čoho chrániť.
