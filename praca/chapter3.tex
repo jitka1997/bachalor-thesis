@@ -10,7 +10,7 @@ Kapitola je štruktúrovaná podľa porovnávaných vlastností a jej výsledkom
 
 V rámci porovnávania bezpečnosti tokenov nebudeme detailne rozoberať bezpečnosť jednotlivých kryptografických funkcií. Detaily ohľadom týchto funkcií je možné nájsť v ich citovaných dokumentáciach. Všetky tokeny ponúkajú možnosť použiť kryptografické funkcie, ktoré sú všeobecne považované za bezpečné.
 
-Zameriame sa na porovnanie kryptografických primitív a z nich vyplývajúcich bezpečnostných kvalít a na náchylnosti na zraniteľnosti vyplývajúcej zo špecifikácie tokenu.
+Zameriame sa na porovnanie kryptografických primitív a z nich vyplývajúcich bezpečnostných kvalít a na náchylnosti na zraniteľnosti vyplývajúce zo špecifikácie tokenu.
 
 \subsection{Kryptografické primitíva}
 
@@ -20,8 +20,24 @@ Symetrické šiforvanie sa vrámci nami porovnávaných tokenov využíva na ši
 
 Výhodou elektronického podpisu teda je, že autenticitu a integritu tokenu môže overiť ľubovoľná entita. Výhodou hešovania je, že je rýchlejšie. 
 
-V prípade JWT si môžeme vybrať, či budeme používať elektronický podpis alebo hešovanie s kľúčom a pomocou nastavenia oprávnenia \textit{alg} v hlavičke na požadovanú hodnotu. Všetky možnosti hodnôt oprávanenia \textit{alg} definuje  JWA \cite{jwa_rfc}. Štandard ponúka aj možnosť \textit{alg=none}, v tomto prípade nezaručuje JWT žiadne bezpečnostné kvality a je to jedna zo známych zraniteľností \cite{jwt_vul} JWT. Ak služba akceptuje aj JWT s \textit{alg=none} ako platné tokeny, útočník jednoducho zamení hodnotu \textit{alg='hocičo'} na \textit{none}, odstráni podpis z tokenu a môže ľubovoľne zmeniť token, napríklad si zvýši autorizačné práva. Bezpečné implementácie JWT, by nemali tokeny s \textit{alg=none} považovať za platné.
+V prípade JWT si môžeme vybrať, či budeme používať elektronický podpis alebo hešovanie s kľúčom a pomocou nastavenia oprávnenia \textit{alg} v hlavičke na požadovanú hodnotu. Všetky možnosti hodnôt oprávanenia \textit{alg} definuje  JWA \cite{jwa_rfc}. Štandard ponúka aj možnosť \textit{alg=none}, v tomto prípade nezaručuje JWT žiadne bezpečnostné kvality a je to jedna zo známych zraniteľností \cite{jwt_vul} JWT. Ak služba akceptuje aj JWT s \textit{alg=none} ako platné tokeny, útočník jednoducho zamení hodnotu \textit{alg='čokoľvek'} na \textit{alg=none}, odstráni podpis z tokenu a môže ľubovoľne zmeniť token, napríklad si zvýši autorizačné práva. Bezpečné implementácie JWT, by nemali tokeny s \textit{alg=none} považovať za platné.
 
 PASETO využíva v prípade lokálneho využitia hešovanie a v prípade verejného využitia elektronický podpis. Fernet, Branca a Macaroon využívajú hešovanie s kľúčom a Biscuit využíva elektronický podpis. Nepriehľadný token sme pre potreby tejto kapitoly definovali s použitím elektronického podpisu.
 
 Symetrické šifrovanie a z neho vyplývajúcu ochranu dôvernosti umožňujú tokeny JWT, konkrétne vo forme JWE, PASETO s lokálnym využitím, Fernet a Branca. Biscuits a Macaroons neposkytujú žiadnu ochranu dôvernosti. Nepriehľadný token tiež neposkytuje ochranu dôvernosti, no z definície nenesie žiadnu informáciu, teda v jeho prípade nie je dôvernosť čoho chrániť.
+
+\subsection{Zraniteľnosti}
+
+Pozrieme sa na tri časté zraniteľnosti tokenov a akými prostriedkami im konkrétne tokeny predchádzajú. Rozoberieme zratiteľnosti:
+
+\begin{itemize}
+    \item Útok pomýlením algortimu (angl. algorithm confusion attack) -- útočník donúti overovaciu službu použiť nesprávny algoritmus na overenie podpisu tokenu. 
+    \item Útok opakovaním (angl. replay attack) -- útočník odchytí token a následne ho opakovane používa na autorizáciu vlastných požiadaviek. Tento útok je priamo spojený s hlavnou nevýhodou používania tokenov v autentifikačnej a autorizačnej schéme a to problém odvolania (angl. revocation).
+    \item Problém odvolania -- problém odvolania je spočíva v schopnosti služby zneplatniť vydané tokeny. Napríklad po odhlásení používateľa alebo po zitení, že token bol zneužitý.
+\end{itemize}
+
+V prípade podpisov tokeny používajú asymetrické šifrovanie a teda dvojicu súkromného a verejného kľúča alebo hešovanie s kľúčom, ktorý je súkromný. Jediný kľúč, ku ktorému má útočník ľahký prístup je verejný kľúč z dvojice kľúčov použitých pri asymetrickom šifrovaní. Útok pomýlením algoritmu následne prebehne tak, že útočník podpíše token funkciou hešovania s kľučom, kde ako kľúč použije získaný verejný kľúč. Následne oklame overovaciu službu, aby token overila pomocou funkcie hešovania s kľúčom, kde ako kľúč použije tento verejný kľúč. Takýmto spôsobom overovacia služba potrvdí platnosť ľubovoľného tokenu, ktorý jej útočník podvrhne. Aby bol tento útok úspešný, musí overovacia služba používať asymetrické šifrovanie na podpis tokenu a zároveň podporovať aj vyvtváranie podpisu tokenu pomocou funkcie hešovania s kľúčom.
+
+Existuje viacero spôsobov ako predchádzať útokom pomýlením algoritmu. Najspoľahlivejším spôsobom je podpora jediného kryptografického primitíva na podpis tokenu, napríklad jedine elektronický podpis alebo jedine hešovanie s kľúčom. Takto útočník jednoducho nemá ako oklamať overovaciu službu, ktorý algorimus má použiť pri overovaní, lebo pozná len jeden a ten má implicitne daný. 
+
+V prípade použitia viacerých kryptografických primitív sa dá predchádzať týmto útokom pomocou vloženia identifikátora kľúča, ktorým bol token podpísaný do tokenu. Následne pri overovaní služba zistí, ktorým algoritmom bol token podpísaný a taktiež, ktorý kľúč nato použila, ak je to súkromný kľúč z dvojice kľúčov pre asymetrické šifrovanie, ale zistený podpisový algoritmus z tokenu je hešovanie s kľúčom, vyhodnotí token za neplatný. Útočník nepozná kľúč a ani jeho identifikátor, ktorým bol token podpísaný, lebo ten je súkromný, preto nedokáže oklamať službu aby použila zlý algoritmus na overienie pospisu.
