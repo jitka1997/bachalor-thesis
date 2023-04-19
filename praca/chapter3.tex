@@ -50,17 +50,97 @@ PASETO využíva verzionovanie tokenu ako prevenciu voči útoku pomýlením alg
 
 \subsection{Útok opakovaním a problém odvolania}
 
+\label{sec:replay} % id kapitoly pre prikaz ref
+
 Útok opakovaním a problém odvodenia sú úzko späté pojmy. Konkrétne riešenie problému odvolania je ochranou voči útoku opakovaním. Ak by služba vedela okamžite zneplatniť ľubovoľný ňou vydaný token, k útoku opakovaním by nemohlo dôjsť, prípadne by bol ihneď zastavený po odhalení. Úplne predísť útoku opakovaním sa pri využívaní nositeľským tokenov na autorizáciu nedá. Z definície autorizuje nositeľský token požiadavku, ktorú sprevádza ak je sám platný. Teda ak ho dokáže útočník získať a použiť v správnom kontexte, bude úspešný.
 
 Hlavnou príčinou problému odvolania je udržiavanie stavu v tokene a nie v databáze autorizačnej služby. Ak by si služba udžiavala stav o vydaných tokenoch, jednoducho by token, ktorý chce odvolať označila za neplatný. Tento prístup sa dá využiť s nepriehľadným token, lebo v jeho prípade si už aj tak musí autorizačná služba udržiavať stav o vydaných tokenoch.
 
 Pri validáciá ostatných tokenov sa autorizačná služba spolieha len na informácie v tokene a uložené kľúče na overovanie podpisov. Samozrejme môže štruktúrovaný token obsahovať identifikátor a podľa tohto identifikátora si o ňom môže autorizačná služba udržiavať stav, či je token platný, v databáze. JWT má pre tento účel štandardom dané oprávnenie \textit{jti} (JWT ID). Takto by však použitie tokenov na autorizáciu stratilo signifikantnú výhodu oproti iným schémam zabezpečenia.
 
-Autorizačná služba by si nemusela o každom tokene pamätať, či je platný alebo nie, stačí si jej pamätať množinu platných (whitelist) alebo množinu odvolaných (blacklist) tokenov. Týmto sa zmenší veľkosť uloženého stavu.
+Autorizačná služba by si nemusela o každom tokene pamätať, či je platný alebo nie, stačí si jej pamätať množinu platných (biely zoznam -- angl. whitelist) alebo množinu odvolaných (čierny zoznam -- angl. blacklist) tokenov. Týmto sa zmenší veľkosť uloženého stavu.
 
 Iným, často využívaným, riešením je vydávať tokeny s krátkou platnosť. Platnosť tokenu môže byť uložená v samotnom tokene vo forme časovej pečiatky, času platnosti alebo času expirácie, teda nekladie nároky na stav autorizačnej služby. Pri odhlásení klienta ostatnú jemu vydané tokeny platné len krátku dobu, takže útočník má málo času na získanie a zneužitie tokenov. Pri odhalení útoku opakovaním sa klient, pre ktorého boli tokeny vydané odhlási a teda útok bude určite zastavený po krátkom čase, kedy vyprši platnosť tokenom, ktoré útočník získal.
 
 Nejde teda o dokonalú ochranu pred útokom opakovaním, ale zťaženie jeho vykonania útočníkovi a zníženie jeho dopadov. Túto ochranu podľa špecifikácie podporujú tokeny Fernet a Branca. Formáty oboch musia obsahovať časovú pečiatku vo formáte počet sekúnd od 1.1.1970 v UTC časovej zóne. V prípade Branca tokenu ide o 32 bitové číslo, no vo formáte bez znamienka, čo posúva 2038 problém \cite{epoch_end} na rok 2106. Stále však ide o potenciálny problém za cenu ušetrenia 4B dát v tokene. Všetky ostatné tokeny vedia túto metódu ľahko implemetntovať. Využíva ju aj populárny protokol OAuth 2.0 \cite{oauth2}.
 
-Macaroons a Biscuits poskytujú možnosť pridávať pravidlá tretích strán, takto môžu pridať pravidlo na službu udržujúcu whitelist alebo blacklist tokenov. Týmto odľahčia autorizačnú službu od udržiavania stavu o vydaných tokenoch a zároveň budú poskytovať úplnú ochranu pred útokom opakovaním. Stav však z autorizačnej schémy nezmizol, iba sa presunul do inej služby a nutnosť získať dôkaz o tom, že token nebol odvolaný sa presunul z autorizačnej služby na klienta posielajúceho požiadavku.
+Macaroons a Biscuits poskytujú možnosť pridávať pravidlá tretích strán, takto môžu pridať pravidlo na službu udržujúcu biely alebo čierny zoznam tokenov. Týmto odľahčia autorizačnú službu od udržiavania stavu o vydaných tokenoch a zároveň budú poskytovať úplnú ochranu pred útokom opakovaním. Stav však z autorizačnej schémy nezmizol, iba sa presunul do inej služby a nutnosť získať dôkaz o tom, že token nebol odvolaný sa presunul z autorizačnej služby na klienta posielajúceho požiadavku.
 
+\section{Flexibilita}
+
+Pod flexibilitou tokenu rozumieme flexibilitu a škálovateľnosť schémy zabezpečenia využívajúcej daný token. To znamená, napríklad akú mohutnú a členitú schému zabezpečenia ňou vieme vyjadriť, aká veľká časť autorizačnej schémy môže byť dynamicky vyjadrená v tokene a aká staticky v stave autorizačnej služby. Ďalej môžeme flexibilitu merať pomocou možnosti nezávislého podielania sa viacerých služieb na autorizácii a možnosti jednoducho a bezpečne delegovať autorizáciu na iné služby.
+
+\subsection{Bezstavovosť autorizačnej služby}
+
+V predchádzajúcej podkapitole \ref{sec:replay} sme naznačili, že autorizačná služba v schéme zabezpečenia využívajúcej tokeny nemusí byť vždy bezstavová, no v tejto podpitole uvažovať schému bez udžiavania bielych alebo čiernych zoznamov vydaných tokenov. Bezstavovosť je jednoznačne významný prvok pri riešení škálovateľnosti ľubovoľnej schémy zloženej z viacerých služieb. Dovoľuje nám jednoducho pridávať do schémy nové služby schopné autorizácie. Tieto nové služby potrebujú poznať teoreticky len príslušný kľúč pre overenie podpisu tokenu. Samozrejme v reálnych systémoch je autorizácia výrazne členená a pre úspešnú autorizáciu aj jednoduchej požiadavky treba overiť a porovnať viacero údajov z tokenu. Okrem nepriehľadného tokenu je možné všetky nami porovnávané tokeny validovať bezstavovo.
+
+\subsection{Delegácia autorizácie}
+
+Delegácia autorizácie je úzko spojená s možnosťou pridávania pravidiel tretích strán. V kapitole \ref{kap:typy} o možnosti pridávania pravidiel alebo blokov tretích strán hovorili len pri Macaroons a Biscuits, no teoreticky je možné pridávať pravidlá tretích strán aj pri iných tokenoch. 
+
+V prípade neprihľadného tokenu by to bolo veľmi nepraktické, lebo by museli byť zapísané v stave služby, ktorá token vydala a pri kontole ich naplnenia, by museli byť prečítané z tohto stavu. Následne by autorizačná služba sama získavala potrvdenie o splnení pravidla od príslušnej tretej strany, čo zbytočne zaťažuje autorizačnú službu.
+
+Pri JWT, PASETO, Fernet a Branca tokenoch je možné pridávať do tela tokenu ľubovoľnú informáciu, teda aj pravidlo tretej strany. Ani jeden z týchto tokenov však podľa špecifikácie nie je prispôsobený na takéto pravidlá. Preto ich pravdepodobne žiadna knižnica nepodporuje a v prípade rozhodnutia používať pravidlá tretích s týmito tokenmi flexibilným spôsobom ako pri Macaroons alebo Biscuits, by bolo treba implementovať celú logiku využívania tokenov v schéme, vrátane ich generácie a validácie. Čo môže byť náročné a viesť k chybám a z nich vyplývajúcich zraniteľnostiam.
+
+\subsection{Autorizačná schéma v tokene}
+
+Neberieme do úvahy validáciu podpisu tokenu ako časť autorizácie, táto kontrola musí prebehnúť úspešne pri každej autorizácii tokenu, preto ďalej považujeme podpis tokenu za úspešne validovaný.
+
+Nepriehľadný token z definície nemôže obsahovať žiadnu informáciu, teda ani autorizačnú logiku. Ostatné tokeny sú štruktúrované a nesú v sebe rôzne informácie. Väčšinou ide o statické informácie, napríklad časová pečiatka, administrátorské práva, vlastník tokenu, identifikátor služby, ktorá ho vydala a tak ďalej. Tieto informácie sa doplnia o kontext požiadavky, napríklad IP adresa klienta a aktuálny čas. Následne sa podľa logických pravidiel autorizácie neprogramovaných v autorizačnej službe vyhodnotí, či sa požiadavka autorizuje.
+
+Dynamické informácie dovoľujú autorizačnej službe overiť logické pravidlá, o ktorých nemusela vedieť pri vydávaní tokenu a na ich vyhodnotenie nepotrebuje vlastný stav. Napríklad pravidlá tretích strán v Macaroons tokene dovoľújú preniesť požiadavku na autentifikáciu alebo autorizáciu inou službou na klienta a danú službu. Autorizačná služba potom len validuje dôkaz o autorizácii treťou stranou predložený klientom spolu s požiadavkou.
+
+Biscuits prínášajú ešte väčšiu mieru prenesenia autorizačnej schémy do tokenu. Keďže ich autorizácia prebieha ako vyhodnotenie Datalogového programu po bokoch tokenu, každý blok môže zavieť vlastné symboly, fakty a kontroly v jednotnej syntaxi. Potom služba rozumejúca tejto syntaxi a schopná validovať autoritatívny blok tokenu, dokáže vyhodnotiť celý Datalogový program a validovať token.
+
+Aj Macaroons aj Biscuits umožňujú ľubovoľnej službe pridávať obmedzenia do tokenu bez komunikácie s autorizačnou službou, čo prenáša časť autorizačnej schémy do tokenu. No v prípade Macaroons musí autorizačná služba vedieť pravidlá tvoriace dané ombedzenia vyhodnotiť podľa naprogramovanej logiky vyhodnocovania pravidiel. Práca definujúca Macaroons \cite{macaroons_paper} nám v tomto prípade nijak nepomáha, lebo formát aj štrukúru pravidiel prenecháva na konkrétnu implementáciu. Naopak služba autorizujúca Biscuits dokáže vyhodnotiť aj kontroly, ktoré nepozná ak sú napísané v jednotnej syntaxi.
+
+\subsection{Štandardná validácia}
+
+V predchádzajúcej sekcii sme naznačili problém Macaroons s validáciou pravidiel, ktoré sú v tokene, ale autorizačná služba ich nepozná. Rozšírme toto pozorovanie na všetky tokeny. Opäť budeme uvažovať token s už úspešne validovaným podpisom.
+
+Nepriehľadný token sa validuje čisto podľa informácii v stave autorizačnej služby a kontexu požiadavky, teda jeho validácia je štandardná. JWT a PASETO obsahujú vo svojom tele oprávnenie, z ktorých všetky bežné sú definované špecifikáciou. Stačí aby sa ich implementácie riadili špecifikáciou a vyhodnocovanie základnej autorizačnej logiky bude rovnaké, teda štandardné.
+
+Pri Fernet a Branca tokenoch sa nedá hovoriť o štandardnej validácii. Ide síce o štruktúrované tokeny, ale formát ich tela nie je definovaný špecifikáciou a je prenechaný na konkrétne implementácie.
+
+Naopak špecifikácia Biscuits uvádza presný formát datalogového programu, ktorý treba používať v tokenoch.
+
+\section{Popularita a využiteľnosť}
+
+Popularitu tokenov posúdime podľa existencie používaných a udržiavaných knižníc v obľúbených programovacích jazykoch pri programovaní backendu. Neexistuje jeden zoznam najobľúbenejších programovacích jazykov, my sme sa rozhodli vybrať jazyky JavaScript, Python a Java.
+
+\begin{table}
+    \begin{center}
+      \caption{Vybrané implementácie tokenov}
+      \label{tab:implementacie} % create a label for the table, after caption
+  
+      \resizebox{\columnwidth}{!}{%
+      \begin{tabular}{cccccc}
+        \hline
+        Token & Programovací jazyk & Implementácia & Počet hviezdičiek & Počet commitov & Posledný commit \\
+        \hline
+         & JavaScript & panva/jose \cite{jwt_js} & 3,3k & 1232 & niekoľko dní \\
+        JWT & Python & jpadilla/pyjwt \cite{jwt_python} & 4,6k & 782 & niekoľko dní \\
+         & Java & jwtk/jjwt \cite{jwt_java} & 8,9k & 514 & niekoľko dní \\
+         & JavaScript & panva/paseto \cite{paseto_js} & 287 & 113 & 3 mesiace \\
+        PASETO & Python & dajiaji/pyseto \cite{paseto_python} & 34 & 601 & niekoľko dní \\
+         & Java & nbaars/paseto4j \cite{paseto_java} & 28 & 196 & 3 týždne \\
+         & JavaScript & csquared/fernet.js \cite{fernet_js} & 66 & 52 & 3 roky \\
+        Fernet & Python & pyca/cryptography \cite{fernet_python} & 5,5k & 10248 & dnes \\
+         & Java & l0s/fernet-java8 \cite{fernet_java} & 32 & 1335 & niekoľko dní \\
+         & JavaScript & tuupola/branca-js \cite{branca_js} & 91 & 51 & rok \\
+        Branca & Python & tuupola/pybranca \cite{branca_python} & 46 & 41 & 2 roky\\
+         & Java & bjoernw/jbranca \cite{branca_java} & 4 & 7 & 5 rokov \\
+         & JavaScript & js-macaroon \cite{macaroons_js} & 39 & 100 & 3 roky \\
+        Macaroons & Python & rescrv/libmacaroons \cite{macaroons_python} & 479 & 90 & 2 roky \\
+         & Java & nitram509/jmacaroons \cite{macaroons_java} & 122 & 316 & 2 týždne \\
+         & JavaScript & neexistuje & & & \\
+        Biscuits & Python & neexistuje & & & \\
+         & Java & biscuit-java \cite{biscuits_java} & 24 & 408 & 3 mesiace \\
+        \hline
+      \end{tabular}%
+      }
+    \end{center}
+  \end{table}
+
+
+Používanosť knižníc hodnotíme podľa počtu hviezd na platforme GitHub a urdžiavanosť podľa dátumu posledného commitu a celkového počtu commitov. Jednotlivé knižnice sú uvdené v tabuľke \ref{tab:implementacie}. Výsledky porovnania nájdeme v tabuľke \ref{tab:popularita}.
