@@ -384,6 +384,24 @@ navrh porovnania:
 
 CO SA CHCEM SPYTAT:
     - ked popisujem technologiu staci dat citaciu papra na zaciatok a potom popisat?
+    - k review:
+        - v zabezpeceni bez autentifikacie
+            - jednoduche poziadavky myslim v tom ze netreba rozhodovat zlozite autorizacne prava
+        - spojenie myslim ako session, nevedela som ako to lepsie prelozit, mozno relacia
+        - nechcela som rozpisovat konkretnu tls zranitelnost, nehodi sa mi to do strucneho uvodu, dala som tam citaciu, kde su nejake popisane
+        - monetizovat/spoplatnovat - mne sa monetizovat paci
+        - v zavislosti od toho, aky format - tam ma byt ciarka?
+        - vyhoda fantomoveho tokenu oproti cachovaniu v API je ze moze byt zdielany medzi viacerymi API - dopisala som 2 vety k o tom
+        - rozdeleny token - kebyze je nezahesovany podpis, tak niekto kto nabura API branu dostane platne tokeny, takto neziska nic skoro
+        - pouzivaju rozne aj na dovernost, ale v tej casti hovorim iba o tych podpisovych, teda len pre autenticitu a integritu
+        - lokalne a verejne vyuzitie suvisi so symetrickym a asymetrickym sifrovanim, vseobecne v tokenoch sa pouziva symetricke pre sifrovanie a asymetricke pre podpisovanie pokial viem
+        - pata sa v PASETO nesifruje, moze napriklad obsahovat id kluca a to treba vediet na ziskanie algoritmu
+        - branca ma iba 32 bitov na casovu peciatku, ale je to cislo bez znamienka takze pretecie az 2106, pisem o tom v tretej kapitole
+        - pri generovani Macaroons, novy podpis vznika hmac(token, predosly podpis), rewordla som trochu aby bolo jasnejsie
+        - preco mam nahradit derivovat-odvodit? chcela som pouzivat aj iny slovo nech to nie je moc repetitivne
+        - H v obrazku 2.3 je hesovacia funkcia (bez kluca, cisto hes), tym sa zabezpeci, ze sa uz nedaju pridavat pravidla do vybijacieho tokenu - pridala som o tom vetu do textu pri vytvarani vybijacieho tokenu
+        - kluc sk_last je v dokaze tokenu, je to napisane aj v tej vete, ci nerozumiem co sa pytate?
+        - obrazky opravim a doplnim a jednopismenkove spojky opravim neskor, myslim nato
 
     DONE:
     - je ok pouzivat slova ako servis - sluzba a cloud?
