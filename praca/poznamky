@@ -360,6 +360,18 @@ verzia  vyuzitie   funkcia
 4       public      Ed25519 (EdDSA over Curve25519)
     - implementuje algoritmic lucidity, proto algoritmus conf. utoku
 
+porovnanie kniznic:
+    - hviezdicky: >10, >100, >1000
+    - pocet commitov: >10, >50, >100, >1000
+    - posledny commit: roky, mesiace, tyzdne, dni
+
+    JWT: 3 + 3 + 3 / 4 + 3 + 3 / 4 + 4 + 4
+    PASETO: 3 + 1 + 1 / 3 + 3 + 3 / 2 + 4 + 3
+    Fernet: 0 + 3 + 1 / 1 + 1 + 4 / 3 + 3 + 4
+    Branca: 1 + 1 + 0 / 2 + 1 + 0 / 1 + 1 + 1
+    Macaroons: 1 + 2 + 2 / 3 + 2 + 3 / 1 + 1 + 3
+    Biscuits: 0 + 0 + 1 / 0 + 0 + 3 / 0 + 0 + 2
+
 
 navrh kapitol:
     1. vyuzitie api tokenov - preco potrebujeme api tokeny a ich rozdiely oproti inym sposobom autentifikacia a autorizacie (api keys, meno heslo, session)

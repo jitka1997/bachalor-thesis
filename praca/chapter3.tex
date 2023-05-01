@@ -98,7 +98,9 @@ Aj Macaroons aj Biscuits umožňujú ľubovoľnej službe pridávať obmedzenia 
 
 V predchádzajúcej sekcii sme naznačili problém Macaroons s validáciou pravidiel, ktoré sú v tokene, ale autorizačná služba ich nepozná. Rozšírme toto pozorovanie na všetky tokeny. Opäť budeme uvažovať token s už úspešne validovaným podpisom.
 
-Nepriehľadný token sa validuje čisto podľa informácii v stave autorizačnej služby a kontexu požiadavky, teda jeho validácia je štandardná. JWT a PASETO obsahujú vo svojom tele oprávnenie, z ktorých všetky bežné sú definované špecifikáciou. Stačí aby sa ich implementácie riadili špecifikáciou a vyhodnocovanie základnej autorizačnej logiky bude rovnaké, teda štandardné.
+Štandardnosť je žiadaná kvalita pri každej technológii. Prináša jednoznačnosť použitia aj zápisu a programátorovi uľahčuje prácu, lebo nemusí vymýšlať názvy premenných, funkcií, či parametrov. Taktiež zabezpečuje použiteľnosť toho istého kódu medzi viacerými aplikáciami. Ak aplikácia dodržuje štandard je zaručená jej interoperabilita s inými aplikáciami, ktoré ho dodržujú. Pri validácii tokenov budeme uvažovať, že validácia je štandardná ak je špecifikáciou dané, ktoré hodnoty majú byť v tokene uvedené, akou syntaxou sú zapísané a ako ich vyhodnotiť.
+
+Nepriehľadný token sa validuje čisto podľa informácii v stave autorizačnej služby a kontexu požiadavky, teda jeho validácia nie je štandardná. Závisí od autorizačnej služby aké informácie si k tokenu pamätá a ako ich vyhodnotí pri validovaní požiadavky s daným tokenom. JWT a PASETO obsahujú vo svojom tele oprávnenie, z ktorých všetky bežné sú definované špecifikáciou. Stačí aby sa ich implementácie riadili špecifikáciou a vyhodnocovanie základnej autorizačnej logiky bude rovnaké, teda štandardné.
 
 Pri Fernet a Branca tokenoch sa nedá hovoriť o štandardnej validácii. Ide síce o štruktúrované tokeny, ale formát ich tela nie je definovaný špecifikáciou a je prenechaný na konkrétne implementácie.
 
@@ -106,7 +108,7 @@ Naopak špecifikácia Biscuits uvádza presný formát datalogového programu, k
 
 \section{Popularita a využiteľnosť}
 
-Popularitu tokenov posúdime podľa existencie používaných a udržiavaných knižníc v obľúbených programovacích jazykoch pri programovaní backendu. Neexistuje jeden zoznam najobľúbenejších programovacích jazykov, my sme sa rozhodli vybrať jazyky JavaScript, Python a Java.
+Popularitu tokenov posúdime podľa existencie používaných a udržiavaných knižníc v populárnych programovacích jazykoch pri programovaní backendu. Neexistuje jeden zoznam najobľúbenejších programovacích jazykov, my sme sa rozhodli vybrať jazyky JavaScript, Python a Java.
 
 \begin{table}
     \begin{center}
@@ -114,25 +116,30 @@ Popularitu tokenov posúdime podľa existencie používaných a udržiavaných k
       \label{tab:implementacie} % create a label for the table, after caption
   
       \resizebox{\columnwidth}{!}{%
-      \begin{tabular}{cccccc}
+      \begin{tabular}{cllccc}
         \hline
         Token & Programovací jazyk & Implementácia & Počet hviezdičiek & Počet commitov & Posledný commit \\
         \hline
          & JavaScript & panva/jose \cite{jwt_js} & 3,3k & 1232 & niekoľko dní \\
         JWT & Python & jpadilla/pyjwt \cite{jwt_python} & 4,6k & 782 & niekoľko dní \\
          & Java & jwtk/jjwt \cite{jwt_java} & 8,9k & 514 & niekoľko dní \\
+        \hline
          & JavaScript & panva/paseto \cite{paseto_js} & 287 & 113 & 3 mesiace \\
         PASETO & Python & dajiaji/pyseto \cite{paseto_python} & 34 & 601 & niekoľko dní \\
          & Java & nbaars/paseto4j \cite{paseto_java} & 28 & 196 & 3 týždne \\
-         & JavaScript & csquared/fernet.js \cite{fernet_js} & 66 & 52 & 3 roky \\
-        Fernet & Python & pyca/cryptography \cite{fernet_python} & 5,5k & 10248 & dnes \\
+        \hline 
+         & JavaScript & zoran-php/fernet-nodejs \cite{fernet_js} & 0 & 14 & 2 týždne \\
+        Fernet & Python & pyca/cryptography \cite{fernet_python} & 5,5k & 40 & 3 týždne \\
          & Java & l0s/fernet-java8 \cite{fernet_java} & 32 & 1335 & niekoľko dní \\
+        \hline
          & JavaScript & tuupola/branca-js \cite{branca_js} & 91 & 51 & rok \\
         Branca & Python & tuupola/pybranca \cite{branca_python} & 46 & 41 & 2 roky\\
          & Java & bjoernw/jbranca \cite{branca_java} & 4 & 7 & 5 rokov \\
+        \hline
          & JavaScript & js-macaroon \cite{macaroons_js} & 39 & 100 & 3 roky \\
         Macaroons & Python & rescrv/libmacaroons \cite{macaroons_python} & 479 & 90 & 2 roky \\
          & Java & nitram509/jmacaroons \cite{macaroons_java} & 122 & 316 & 2 týždne \\
+        \hline 
          & JavaScript & neexistuje & & & \\
         Biscuits & Python & neexistuje & & & \\
          & Java & biscuit-java \cite{biscuits_java} & 24 & 408 & 3 mesiace \\
@@ -143,4 +150,26 @@ Popularitu tokenov posúdime podľa existencie používaných a udržiavaných k
   \end{table}
 
 
-Používanosť knižníc hodnotíme podľa počtu hviezd na platforme GitHub a urdžiavanosť podľa dátumu posledného commitu a celkového počtu commitov. Jednotlivé knižnice sú uvdené v tabuľke \ref{tab:implementacie}. Výsledky porovnania nájdeme v tabuľke \ref{tab:popularita}.
+Používanosť a udržiavanosť knižníc budeme hodnotiť podľa informácii o knižniciach na platforme GitHub. Konkrétne podľa počtu hviezdičiek, dátumu posledného commitu a celkového počtu commitov. Jednotlivé knižnice a informácie o nich sú uvedené v tabuľke \ref{tab:implementacie}, uvedené dáta pochádzajú z 19.4.2023. V prípade Python knižnice pre prácu s Fernet tokenom, ide o knižnicu vrámci repozitára pyca/cryptography, teda oficiálnej knižnice pre kryptografiu v Pythone. Počet commitov a údaj o poslednom commite uvádzame iba pre súbor fernet.py implementujúci Fernet. Hviedzdičky sa, ale udeľujú celému repozitáru, teda toto číslo je skresľujúce, kedže ide o veľký repozitár, ktorého len malá časť implementuje Fernet. 
+
+Používanosť sme vyhodnotili na základe počtu hviezdičiek a to konkrétne udelením bodu za každú splnenú úroveň, z úrovní: $(1)\ge10$, $(2)\ge100$ a $(3)\ge1000$. Podobne udržiavanosť ako súčet bodov z ostatných dvoch údajov. Konkrétne za splnenie úrovní: $(1)\ge10$, $(2)\ge50$, $(3)\ge100$, $(4)\ge1000$ v počte commitov a úrovní: $(1)$\textit{niekoľko dní}, $(2)$\textit{niekoľko týždňov}, $(3)$\textit{niekoľko mesiacov} a $(4)$\textit{niekoľko rokov} v časovom intervale od posledného commitu. Získané body tokenov v jednotlivých programovacích jazykov sme následne sčítali. Výsledky porovnania nájdeme v tabuľke \ref{tab:popularita}.
+
+\begin{table}
+  \begin{center}
+    \caption{Porovnanie tokenov na základe popularity a udržiavanosti}
+    \label{tab:popularita} % create a label for the table, after caption
+
+    \begin{tabular}{ccc}
+      \hline
+      Token & Používanosť [body z 9] & Udržiavanosť [body z 24]\\
+      \hline
+      JWT & 9 & 22 \\
+      PASETO & 5 & 18 \\
+      Fernet & 4 & 16 \\
+      Branca & 2 & 6 \\
+      Macaroons & 5 & 13 \\
+      Biscuits & 1 & 5 \\
+      \hline
+    \end{tabular}
+  \end{center}
+\end{table}
