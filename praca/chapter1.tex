@@ -50,15 +50,30 @@ Oproti predošlému riešeniu pribudla potreba spravovať spojenia, no veľkou v
 
 \section{Schéma zabezpečenia využívajúca API kľuče}
 
-API kľúč je identifikátor používaný na pripojenie k rozhraniu. Identifikuje však aplikáciu alebo službu, nie konkrétneho používateľa. Ak potrebuje aplikácia používať rozhranie, ktoré nie je verejné a na autentifikáciu používa API kľúče, musí si najprv vyžiadať API kľuč a následne ho posielať s každou požiadavkou.
+API kľúč je tajný kľúč slúžiaci na podpisovanie celej požiadavky na rozhranie. Podpísaním požiadavky vznikne autentifikovaná požiadavka (angl. authenticated request). Na podpisovanie sa väčšinou používa hešovanie s kľúčom a ako podpis potom slúži hešovaný autentifikačný kód. Tento kód potom klient posiela spolu s požiadavkou. API kľúče využíva napríklad populárna cloudová služba AWS \cite{aws_auth}.
 
-Tento kľúč môže byť zároveň spojený s právami umožňujúcimi vykonávať určité volania, ak dané rozhranie poskytuje rôzne úrovne prístupu.
+Na vytvorenie požiadavky teda klient potrebuje najprv získať API kľúč. Ten klient získa tak, že si ho vyžiada od rozhrania, ktorého služby alebo zdroje chce využívať. Rozhranie vygeneruje API kľúč pre klienta (po prípadnom overení jeho identity, či zaplatení poplatku za využívanie služieb rozhrania), uloží si ho a vráti ho klientovi. Klient tento kľúč následne používa pri vytváraní požiadaviek na rozhranie tým, že ich podpíše. Rozhranie zvaliduje podpis pomocou kľúča, ktorý si uložilo a ak je platný vykoná požiadavku.
 
-Použitie API kľúčov nie je veľmi bezpečné, lebo kľúče majú neobmedzenú platnosť a ak príde k ich odchyteniu, jediný spôsob ako zvrátiť ich zneužitie je ich zneplatniť a vygenerovať nové. Ďalšia zraniteľnosť API kľúčov často nastáva pri ich uložení na nesprávne miesto.
+HTTP požiadavka nemá jednotnú formu a teda požiadavka reprezentujúca to isté volanie môže mať viac reprezentácií, ktoré sa líšia napríklad poradím parametrov alebo využitím rôznych hlavičiek pre uloženie rovnakej informácie. Podobne serializácia požiadavky do textovej podoby môže byť rôzna. Preto je potrebné definovať kanonickú schému, ako sa má požiadavka serializovať. Inak by rozhranie nedokázalo serializovať požiadavku s rovnakým výstupom ako klient, podpísať ju a tento podpis porovnať s podpisom priloženým v požiadavke. Schéma na obrázku \ref{fig:api_key_schema} zobrazuje realizáciu schémy zabezpečenia pomocou API kľúčov.
 
-Napríklad pri webovej aplikácii nie je bezpečné ukladať kľúč na klientskej strane, ale na serveri a odtiaľ vykonávať API volania. Rovnako pri mobilnej aplikácii nie je bezpečné ukladať kľúč priamo v aplikácii, lebo sa dá získať reverzným inžinierstvom \cite{api_key_vulnerabilities}.
+\begin{figure}
+    %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
+    %obrazok je v subore images/session.png
+    \centerline{\includegraphics[width=0.8\textwidth]{images/api_key_schema}}
+    %popis obrazku
+    \caption[Schéma s použitím API kľúča]{Autentifikačná schéma s použitím API kľúča.}
+    %id obrazku, pomocou ktoreho sa budeme na obrazok odvolavat
+    \label{fig:api_key_schema}
+\end{figure}
 
-Preto sa vo všeobecnosti API kľúče nepoužívajú na ochranu kritických alebo citlivých volaní a zdrojov rozhrania. Naopak vhodné sú na zvýšenie kontroly nad požiadavkami na rozhranie. Je ľahké pomocou nich kontrolovať frekvenciu, či absolútny počet volaní a prípadne monetizovať ich používanie.
+Nevýhodou použitia API kľúčov je teda nutnosť udržiavania stavu v rozhraní. Rozhranie si musí pamätať kľúče, ktoré vydalo a ku každému kľúču nejaký identifikátor, s ktorým klientom je spojený, prípadne aj jeho oprávnenia, napríklad maximálny počet volaní za deň.
+
+Samotný API kľúč sa teda neposiela spolu s požiadavkou, ale iba raz po jeho vygenerovaní rozhraním. Tým pádom jeho odchytenie nie je jednoduché a preto máva API kľúč neobmedzenú platnosť. Avšak požiadavka, ktorá je už podpísaná pomocou API kľúča sa posiela po sieti a tým pádom sa dá odchytiť. Takáto požiadavka už je autentifikovaná. Preto po jej odchytení ju môže útočník použiť viac krát a tým používať nejaký cenný zdroj rozhrania alebo preťažiť rozhranie veľkým množstvom požiadaviek, ktoré rozhranie vykoná, lebo sú autentifikované.
+
+Ako obrana voči tejto zraniteľnosti sa využíva časová platnosť autentifikovanej požiadavky. Klient vloží do požiadavky, pri jej vytváraní, časovú pečiatku dokedy je platná, tento interval môže byť veľmi krátky, napríklad 5 minút.
+
+Ďalšia zraniteľnosť API kľúčov často nastáva pri ich uložení na nesprávne miesto. Napríklad pri webovej aplikácii nie je bezpečné ukladať kľúč na klientskej strane, ale na serveri a odtiaľ vykonávať volania na rozhranie. Rovnako pri mobilnej aplikácii nie je bezpečné ukladať kľúč priamo v aplikácii, lebo sa dá získať reverzným inžinierstvom \cite{api_key_vulnerabilities}.
+
 
 
 \section{Schéma zabezpečenia využívajúca API tokeny}
