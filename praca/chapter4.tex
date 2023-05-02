@@ -2,4 +2,36 @@
 
 \label{kap:prakticke} % id kapitoly pre prikaz ref
 
-V tejto kapitole navrhneme a implementujeme jednoduché rozhranie s použitím viecerých API tokenov pre autentifikáciu a autorizáciu. 
+V tejto kapitole navrhneme a implementujeme jednoduché rozhranie so schémou zabezpečenia využívajúcou jednotlivé tokeny popísané v kapitole \ref{kap:typy} a teoreticky porovnané v kapitole \ref{kap:teoreticke}. Nepriehľadný token budeme, rovnako ako v prechádzajúcej kapitole, chápať ako náhodný reťazec podpísaný pomocou hešovania s kľúčom. Cieľom implementácie je porovnať rýchlosť spracovania požiadaviek využívajúcich rôzne tokeny na autorizáciu a jednoduchosť práce s knižnicami implementujúcimi jednotlivé tokeny vo vybranom programovacom jazyku. Implementácia môže zároveň slúžiť ako základ pre implementovanie jednoduchej schémy zabezpečenia a jej integrovanie s vybranými knižnicami. Zdrojový kód je dostupný na GitHube \footnote{Zdrojový kód je dostupný na adrese https://github.com/jitka1997/bachelor-thesis/tree/main/simpleAPI}.
+
+\section{Použité technológie}
+
+Jednoduché rozhranie sme implementovali v jazyku JavaScript, konkrétne pomocou prostredia Node.js. Použili sme aplikačný rámec Express.js, ktorý umožňuje ľahko implementovať jednoduchý server.
+
+Na vytváranie a validáciu jednotlivých tokenov sme použili knižnice pre JavaScript z tabuľky \ref{tab:implementacie}, ktoré sme použili pri porovnaní popularity tokenov. Pre Biscuits neexistuje knižnica pre JavaScript, preto sme Biscuits v tejto kapitole neporovnávali. Prácu s nepriehľadným tokenom sme implementovali sami. Informácie spojené s nepriehľadným tokenom si ukladáme v databáze. Využili sme jednoduchú databázu sqlite.
+
+Klienta vykonávajúceho požiadavky na rozhranie sme tiež naprogramovali v Node.js.
+
+\section{Popis fungovania rozhrania}
+
+Vytvorili sme rozhranie s dvoma koncovými bodmi \textit{signin} a \textit{welcome}. Prvý z nich slúži na získanie tokenu klientom a druhý na vykonanie požiadavky, ktorá bude úspešná len v prípade, že bude obsahovať platný token, ktorý rozhranie úspešne validuje. Na získanie tokenu sa klient musí úspešne autentifikovať pomocou základnej HTTP autentifikácie, teda zaslaním base64url \cite{base64_rfc} zakódovaného mena a hesla v autentifikačnej hlavičke požiadavky.
+
+Rozhranie overí korektnosť prihlasovacích údajov a ak sú správne vygeneruje token. V reálnom systéme by boli prilasovacie údaje uložené v databáze, kde by ich rozhranie overilo. My pre jednoduchosť databázu používateľov simulujeme pomocou načítania objektu s používateľmi zo súboru usersDB. V tomto objekte sú používateľské mená a heslá uložené ako dvojice kľúč a hodnota.
+
+Po úspešnej autentifikácii klienta vygeneruje rozhranie token a vráti ho klientovi. Klient následne môže token použiť na vykonanie požiadavky na koncový bod \textit{welcome}. Rozhranie overí platnosť tokenu a ak je platný vykoná požiadavku, teda vráti klientovi uvítaciu správu obsahujúcu jeho prihlasovacie meno, získané z tokenu. Ak token nebol zaslaný alebo zlyhá jeho validácia, rozhranie vráti klientovi chybový kód.
+
+\section{Obsah a generovanie tokenu}
+
+Obsahovo vytvárame token nesúci štyri informácie overované pri autorizácii. Konkrétne čas vypršania platnosti tokenu, prihlasovacie meno používateľa, identifikátor vydavateľa tokenu a identifikátor príjimateľa tokenu. Čas vypršania platnosti tokenu je 5 minút od jeho vydania, identifikátory vydavateľa a príjemateľa sú pevne stanovené hodnoty a prihlasovacie meno používateľa je získané z prihlasovacích údajov klienta.
+
+Informácie sme do obsahu tokenu obsiahli, aby sme demonštrovali využitie údajov z tokenu na autorizáciu požiadavky, prípadne identifikáciu používateľa. Do konkrétneho tokenu sme vložili informácie spôsobom, ktorý nám umožnila špecifikácia daného tokenu a použitá knižnica implementujúca token. Konkrétne:
+
+\begin{itemize}
+    \item Nepriehľadný token -- do databázy sme vložili riadok obsahujúci samotný token ako identifikátor a ostatné informácie ako hodnoty jednotlivých stĺpcov.
+    \item JWT a PASETO -- meno používateľa sme vložili do tela tokenu ako oprávnenie \textit{username} a ostatné informácie ako štandardné atribúty.
+    \item Fernet -- všetky informácie sme vložili ako serializovaný JSON objekt do tela tokenu. Fernet síce obsahuje samostatnú časovú pečiatku, no vybraná knižnica nepodporuje jej použitie na validáciu časovej platnosti tokenu.
+    \item Branca -- čas vypršania platnosti tokenu sme zaznamenali ako časovú pečiatku vytvorenia tokenu a následne pri jeho validácii sme určili ako stará môže táto časová pečiatka byť. Ostatné informácie sme vložili do tela tokenu ako serializovaný JSON objekt.
+    \item Macaroons -- všetky informácie sme do tokenu vložili ako pravidlá prvej strany.
+  \end{itemize}
+
+JWT a PASETO aj vybrané knižnice, ktoré ich implementujú ponúkajú viacero funkcií na podpísanie a prípadné šifrovanie tokenu. Ostatné tokeny však používajú na podpisovanie jedine hešovanie s kľúčom. Konkrétne vybrané knižnice pre Fernet, Branca a Macaroons používajú postupne funkcie: HMAC-SHA256, Poly1305 a HMAC-SHA256. Podpisovanie nepriehľadného tokenu sme implementovali pomocou funkcie HMAC-SHA256. Fernet a Branca navyše šifrujú telo tokenu. Preto sme pre objektívne porovnanie tokenov zvolili aj pri JWT a PASETO šifrovanie obsahu a podpisovanie pomocou hešovania s kľúčom. Na podpisovanie sme v prípade JWT sme použili funkciu HMAC-SHA256 a v prípade PASETO funkciu HMAC-SHA384.

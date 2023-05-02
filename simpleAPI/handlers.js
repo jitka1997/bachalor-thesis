@@ -13,6 +13,7 @@ const { createMacaroon, verifyMacaroon } = pkg;
 const users = JSON.parse(fs.readFileSync("./usersDB", "utf8"));
 
 console.log("Users DB loaded successfully from file usersDB");
+console.log(Object.keys(users).length, "users loaded");
 // const USING_TOKEN = "JWT";
 // const USING_TOKEN = "PASETO";
 // const USING_TOKEN = "Fernet";
