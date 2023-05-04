@@ -246,7 +246,7 @@ Na vygenerovanie nového Biscuits tokenu potrebuje služba dvojicu súkromného 
 
 Takto vytvorený token môže služba poslať iným službám a tieto môžu pridávať ďalšie bloky a tým obmedzovať autorizačné práva tokenu. Na vytvorenie $i$-teho bloku potrebuje služba vygenerovať dvojicu kľúčov $pk_{i+1}$, $sk_{i+1}$, kde $pk_{i+1}$ vloží do bloku a $sk_{i+1}$ do dôkazu tokenu. Blok môže pridať aj služba tretej strany, v takom prípade musí vložiť aj podpis bloku služby tretej strany a verejný kľúč služby tretej strany. Celý blok následne podpíše kľúčom $sk_i$, ktorý vybrala z dôkazu tokenu pred jeho nahradením.
 
-Ľubovoľná služba môže token zapečatiť a znemožniť tak pridávanie nových blokov. Zapečatenie tokenu pozostáva z podpísania posledného bloku kľúčom $sk_{last}$ z dôkazu tokenu. Tento podpis sa vloží do dôkazu tokenu.
+Ľubovoľná služba môže token zapečatiť a znemožniť tak pridávanie nových blokov. Zapečatenie tokenu pozostáva z podpísania posledného bloku kľúčom z dôkazu tokenu. Tento podpis sa vloží do dôkazu tokenu.
 
 \subsection{Validácia Biscuits}
 
