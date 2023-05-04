@@ -2,24 +2,16 @@
 \addcontentsline{toc}{chapter}{Úvod} % rucne pridanie do obsahu
 \markboth{Úvod}{Úvod} % vyriesenie hlaviciek
 
-% Cieľom tejto práce je poskytnúť študentom posledného ročníka
-% bakalárskeho štúdia informatiky kostru práce v systéme LaTeX a ukážku
-% užitočných príkazov, ktoré pri písaní práce môžu potrebovať. Začneme
-% stručnou charakteristikou úvodu práce podľa smernice o záverečných
-% prácach \cite{smernica}, ktorú uvádzame ako doslovný citát.
+Pri nie plne verejných aplikačných rozhraniach (API) je potrebné navrhnúť spôsob autentifikácie a autorizácie. Tento spôsob a jeho riadenie sa nazýva schéma zabezpečenia API.
 
-% \begin{quote}
-% Úvod je prvou komplexnou informáciou o práci, jej cieli, obsahu a štruktúre. Úvod sa 
-% vzťahuje na spracovanú tému konkrétne, obsahuje stručný a výstižný opis 
-% problematiky, charakterizuje stav poznania alebo praxe v oblasti, ktorá je predmetom 
-% školského diela a oboznamuje s významom, cieľmi a zámermi školského diela. Autor 
-% v úvode zdôrazňuje, prečo je práca dôležitá a prečo sa rozhodol spracovať danú tému. 
-% Úvod ako názov kapitoly sa nečísluje a jeho rozsah je spravidla 1 až 2 strany.
-% \end{quote}
+Cieľom tejto práce je porovnanie konkrétnych API tokenov. API token slúži na autorizáciu požiadaviek na API. Naša práca môže slúžiť ako základ pri vytváraní schémy zabezpečenia v rámci vývoja API, konkrétne pri výbere adekvátneho API tokenu ku štruktúre a funkcionalite API. V práci sa zameriame na vybrané API tokeny, konkrétne: Nepriehľadný token, JWT, PASETO, Fernet, Braca, Macaroons a Biscuits. 
 
-% V nasledujúcej kapitole nájdete ukážku členenia kapitoly na menšie
-% časti a v kapitole \ref{kap:latex} nájdete príkazy na prácu s
-% tabuľkami, obrázkami a matematickými výrazmi. V kapitole
-% \ref{kap:lorem} uvádzame klasický text Lorem Ipsum a na koniec sa
-% budeme venovať záležitostiam záveru bakalárskej práce. 
+API tokeny sú úzko spojené s problematikou autentifikácie a autorizácie vo všeobecnosti. Preto sa zo začiatku práce venujeme aj tejto problematike, kde predstavujeme základné schémy zabezpečenia softvérových systémov.
 
+Pre komplexné porovnanie vybraných API tokenov je nutné pochopenie ich fungovania. Teda pochopenie štruktúry API tokenu, spôsobu jeho vytvorenia a overenia. Preto v práci detailne popisujeme špecifikácie jednotlivých API tokenov.
+
+API tokeny nejakým spôsobom autorizujú požiadavky na API. Taktiež môžu prenášať aj citlivé informácie o používateľoch. Preto je zaujímavé sa venovať bezpečnosti API tokenov. Moderné systémy často pozostávajú z veľa komponentov, ktoré medzi sebou komunikujú. Okrem iného môžu medzi sebou komunikovať aj pre účely autorizácie požiadaviek. Preto ak používajú v svojej architektúre API tokeny, je dôležité aby boli schémy týchto API tokenov schopné pracovať nad viacerými službami. Každý používaný softvér sa vyvíja, preto je pre dobré fungovanie akéhokoľvek softvéru je dôležité, aby bol aktívne udržiavaný a schopný reagovať na vývoj ostatných softvérov. Aby sa autorovi softvéru oplatilo ho udržiavať, musí byť tento softvér používaný a teda populárny.
+
+Všetky tieto pozorovania sa dajú zhrnúť do troch vlastností -- bezpečnosť, flexibilita a popularita. Tieto vlastnosti tvoria dôležité aspekty, ktoré je potrebné zohľadniť pri výbere API tokenu. Preto im sa v práci pri porovnaní API tokenov venujeme a porovnávame ich medzi rôznymi API tokenmi.
+
+Významným parametrom API je jeho výkonnosť. Teda koľko požiadaviek vie spracovať za určitý časový interval. Generovanie a validácia API tokenu sa spája aj s výpočtom rôznych kryptografických funkcií, ktoré sú často náročné na výpočet. Preto je pri porovnaní API tokenu zaujímavé zohľadniť aj rýchlosť jeho generovania a validácie. Z tohto dôvodu v práci navrhneme a implementujeme jednoduché API, na ktorom porovnáme rýchlosť generovania a validácie vybraných API tokenov.
