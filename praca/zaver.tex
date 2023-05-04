@@ -2,4 +2,48 @@
 \addcontentsline{toc}{chapter}{Záver} % rucne pridanie do obsahu
 \markboth{Záver}{Záver} % vyriesenie hlaviciek
 
+V práci sme sa venovali problematike autentifikácie a autorizácie v schéme zabezpepečenia so zamenraním na tokeny a ich porovnanie. Práca sa dá pomyselne rozdeliť na dva logické celky. V prvej časti sme sa venovali teoretickým poznatkom, ktoré sú potrebné pre pochopenie problematiky. 
 
+Kontkrétne v kapitole \ref{kap:vyuzitie} sme uviedli rôzne známe prístupy k architektúre schémy zabezpečenia. Jednotlivé prístupy sme stručne charakterizovali a uviedli ich hlavné výhody a nevýhody. Okrem toho sme pre prehľad v tematike tokenov popísali známe typy a formáty tokenov. Ďalej sme sa venovali iba schéme zabezpezpečenia využívajúcej tokeny.
+
+V nasledujúcej kapitole \ref{kap:typy} sme predstavili konkrétne tokeny, ktoré sme ďalej v práci porovnávali. Venovali sme sa najmä takým charakteristikám a parametrom tokenov, ktoré sú nevyhnutné pre analýzu ich vlastností a porovnávanie s inými tokenmi.
+
+V druhej časti práce sme sa venovali analýze a najprv teoretickému a potom aj praktickému porovnaniu tokenov. V kapitole \ref{kap:teoreticke} sme porovnali tokeny z pohľadu bezpečnosti, flexibility a popularity. Výsledkom tohto porovania je prehľadová tabuľka \ref{tab:porovnanie}. V kapitole \ref{kap:prakticke} sme navrhli a implementovali jednoduché rozhranie, na ktorom sme demonštrovali použitie jednotlivých tokenov v schéme zabezpečenia. Taktiež sme implementovali jednoduchého klienta, ktorý vykonával požiadavky na rozhranie a meral čas ich vykonania. Klient posielal také požiadavky, na ktorých vykonanie, muselo rozhranie vyenerovať token alebo validovať token. Namerané hodnoty sú uvedené v tabuľke \ref{tab:api_porovnanie} a ich interpretácia v sekcii \ref{sec:vyhodnotenie}.
+
+Hlavným cieľom práce bolo porovnať rôzne tokeny. Ako výsledok tohto porovnania uvádzame tabuľku \ref{tab:vysledok}, ktorá je spojením tabuliek \ref{tab:porovnanie} a \ref{tab:api_porovnanie}. Pre interpretáciu tabuľky je nutné si prečítať kapitoly \ref{kap:teoreticke} a \ref{kap:prakticke}.
+
+\begin{table}
+    \begin{center}
+      \caption{Porovnanie tokenov}
+      \label{tab:vysledok} % create a label for the table, after caption
+  
+      \resizebox{\columnwidth}{!}{%
+      \begin{tabular}{lccccccc}
+        \hline
+        Vlastnosť & Nepriehľadný & JWT & PASETO & Fernet & Branca & Macaroons & Biscuits\\
+        \hline
+        Počet kryptografických funkcií & 1 & 30 & 6 & 1 & 1 & 1 & 1\\
+        Určenie podpisového alg. z tokenu & $\varoslash$ & \CIRCLE & \CIRCLE & \Circle & \Circle & \Circle & \Circle \\
+        Náchylnosť na útok pomýlením algortimu & $\varoslash$ & \CIRCLE & \LEFTcircle & \Circle & \Circle & \Circle & \Circle \\
+        Riešenie problému odvolania & \CIRCLE & \Circle & \Circle & \Circle & \Circle & \LEFTcircle & \LEFTcircle \\
+        Náchylnosť na útok opakovaním & $\varoslash$ & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \LEFTcircle & \LEFTcircle \\
+        Ochrana dôvernosti & $\varoslash$ & \LEFTcircle & \LEFTcircle & \CIRCLE & \CIRCLE & \Circle & \Circle \\
+        Overenie autenticity a integrity hocikým & \Circle & \LEFTcircle & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE \\
+        zoslabenie tokenu hocikým & $\varoslash$ & $\varoslash$ & $\varoslash$ & $\varoslash$ & $\varoslash$ & \CIRCLE & \CIRCLE \\
+        Autorizačná schéma v tokene & $\varoslash$ & \LEFTcircle & \LEFTcircle & \LEFTcircle & \LEFTcircle & \CIRCLE & \CIRCLE \\
+        Bezstavová validácia & $\varoslash$ & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE \\
+        Štandardná validácia & $\varoslash$ & \CIRCLE & \CIRCLE & \Circle & \Circle & \LEFTcircle & \CIRCLE \\
+        Popularita & $\varoslash$ & \CIRCLE & \LEFTcircle & \LEFTcircle & \Circle & \LEFTcircle & \Circle \\
+        \hline
+        Jednoduchosť práce & $\varoslash$ & \CIRCLE & \CIRCLE & \Circle & \Circle & \LEFTcircle & $\varoslash$ \\
+        Generovanie priemer [ms] & 17.556 & 2.442 & 2.241 & 1.577 & 2.089 & 2.430 & $\varoslash$ \\
+        Generovanie medián [ms] & 17.087 & 2.160 & 2.093 & 1.457 & 1.898 & 2.266 & $\varoslash$ \\
+        Validácia priemer [ms] & 21.230 & 1.846 & 1.803 & 1.199 & 1.336 & 2.183 & $\varoslash$ \\
+        Validácia medián [ms] & 23.216 & 1.743 & 1.706 & 1.152 & 1.274 & 2.079 & $\varoslash$ \\
+        \hline
+      \end{tabular}%
+      }
+    \end{center}
+  \end{table}
+
+V budúcnosti je možné nadviazať na našu prácu buď porovnaním ďalších tokenov, ktoré vzniknú v budúcnosti alebo porovnaním tokenov, ktoré sme v práci nespomenuli. Ďalej je možné nadviazať na našu prácu rozšírením rozhrania o ďalšie funkcie, ktoré by boli zaujímavé z pohľadu porovnania tokenov, napríklad pridať tretie strany do procesu autorizácie požiadavky.

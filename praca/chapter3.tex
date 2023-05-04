@@ -9,7 +9,7 @@ Kapitola je štruktúrovaná podľa porovnávaných vlastností a jej výsledkom
 
 \begin{table}
   \begin{center}
-    \caption{Porovnanie tokenov}
+    \caption{Teoretické porovnanie tokenov}
     \label{tab:porovnanie} % create a label for the table, after caption
 
     \resizebox{\columnwidth}{!}{%
@@ -17,18 +17,18 @@ Kapitola je štruktúrovaná podľa porovnávaných vlastností a jej výsledkom
       \hline
       Vlastnosť & Nepriehľadný & JWT & PASETO & Fernet & Branca & Macaroons & Biscuits\\
       \hline
-      počet kryptografických funkcií & 1 & 30 & 6 & 1 & 1 & 1 & 1\\
-      určenie podpisového alg. z tokenu & $\varoslash$ & \CIRCLE & \CIRCLE & \Circle & \Circle & \Circle & \Circle \\
-      náchylnosť na útok pomýlením algortimu & $\varoslash$ & \CIRCLE & \LEFTcircle & \Circle & \Circle & \Circle & \Circle \\
-      riešenie problému odvolania & \CIRCLE & \Circle & \Circle & \Circle & \Circle & \LEFTcircle & \LEFTcircle \\
-      náchylnosť na útok opakovaním & $\varoslash$ & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \LEFTcircle & \LEFTcircle \\
-      ochrana dôvernosti & $\varoslash$ & \LEFTcircle & \LEFTcircle & \CIRCLE & \CIRCLE & \Circle & \Circle \\
-      overenie autenticity a integrity hocikým & \Circle & \LEFTcircle & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE \\
-      zoslabenie tokenu hocikým & $\varoslash$ & $\varoslash$ & $\varoslash$ & $\varoslash$ & $\varoslash$ & \CIRCLE & \CIRCLE \\
-      autorizačná schéma v tokene & $\varoslash$ & \LEFTcircle & \LEFTcircle & \LEFTcircle & \LEFTcircle & \CIRCLE & \CIRCLE \\
-      bezstavové overenie & $\varoslash$ & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE \\
-      štandardná validácia & $\varoslash$ & \CIRCLE & \CIRCLE & \Circle & \Circle & \LEFTcircle & \CIRCLE \\
-      popularita & $\varoslash$ & \CIRCLE & \LEFTcircle & \LEFTcircle & \Circle & \LEFTcircle & \Circle \\
+      Počet kryptografických funkcií & 1 & 30 & 6 & 1 & 1 & 1 & 1\\
+      Určenie podpisového alg. z tokenu & $\varoslash$ & \CIRCLE & \CIRCLE & \Circle & \Circle & \Circle & \Circle \\
+      Náchylnosť na útok pomýlením algortimu & $\varoslash$ & \CIRCLE & \LEFTcircle & \Circle & \Circle & \Circle & \Circle \\
+      Riešenie problému odvolania & \CIRCLE & \Circle & \Circle & \Circle & \Circle & \LEFTcircle & \LEFTcircle \\
+      Náchylnosť na útok opakovaním & $\varoslash$ & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \LEFTcircle & \LEFTcircle \\
+      Ochrana dôvernosti & $\varoslash$ & \LEFTcircle & \LEFTcircle & \CIRCLE & \CIRCLE & \Circle & \Circle \\
+      Overenie autenticity a integrity hocikým & \Circle & \LEFTcircle & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE \\
+      Zoslabenie tokenu hocikým & $\varoslash$ & $\varoslash$ & $\varoslash$ & $\varoslash$ & $\varoslash$ & \CIRCLE & \CIRCLE \\
+      Autorizačná schéma v tokene & $\varoslash$ & \LEFTcircle & \LEFTcircle & \LEFTcircle & \LEFTcircle & \CIRCLE & \CIRCLE \\
+      Bezstavová validácia & $\varoslash$ & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE \\
+      Štandardná validácia & $\varoslash$ & \CIRCLE & \CIRCLE & \Circle & \Circle & \LEFTcircle & \CIRCLE \\
+      Popularita & $\varoslash$ & \CIRCLE & \LEFTcircle & \LEFTcircle & \Circle & \LEFTcircle & \Circle \\
       \hline
     \end{tabular}%
     }
@@ -58,13 +58,13 @@ Zameriame sa na porovnanie kryptografických primitív a z nich vyplývajúcich 
       \hline
       Vlastnosť & Nepriehľadný & JWT & PASETO & Fernet & Branca & Macaroons & Biscuits\\
       \hline
-      počet kryptografických funkcií & 1 & 30 & 6 & 1 & 1 & 1 & 1\\
-      určenie podpisového alg. z tokenu & $\varoslash$ & \CIRCLE & \CIRCLE & \Circle & \Circle & \Circle & \Circle \\
-      náchylnosť na útok pomýlením algortimu & $\varoslash$ & \CIRCLE & \LEFTcircle & \Circle & \Circle & \Circle & \Circle \\
-      riešenie problému odvolania & \CIRCLE & \Circle & \Circle & \Circle & \Circle & \LEFTcircle & \LEFTcircle \\
-      náchylnosť na útok opakovaním & $\varoslash$ & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \LEFTcircle & \LEFTcircle \\
-      ochrana dôvernosti & $\varoslash$ & \LEFTcircle & \LEFTcircle & \CIRCLE & \CIRCLE & \Circle & \Circle \\
-      overenie autenticity a integrity hocikým & \Circle & \LEFTcircle & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE \\
+      Počet kryptografických funkcií & 1 & 30 & 6 & 1 & 1 & 1 & 1\\
+      Určenie podpisového alg. z tokenu & $\varoslash$ & \CIRCLE & \CIRCLE & \Circle & \Circle & \Circle & \Circle \\
+      Náchylnosť na útok pomýlením algortimu & $\varoslash$ & \CIRCLE & \LEFTcircle & \Circle & \Circle & \Circle & \Circle \\
+      Riešenie problému odvolania & \CIRCLE & \Circle & \Circle & \Circle & \Circle & \LEFTcircle & \LEFTcircle \\
+      Náchylnosť na útok opakovaním & $\varoslash$ & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \LEFTcircle & \LEFTcircle \\
+      Ochrana dôvernosti & $\varoslash$ & \LEFTcircle & \LEFTcircle & \CIRCLE & \CIRCLE & \Circle & \Circle \\
+      Overenie autenticity a integrity hocikým & \Circle & \LEFTcircle & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE \\
       \hline
     \end{tabular}%
     }
@@ -148,10 +148,10 @@ Pod flexibilitou tokenu rozumieme flexibilitu a škálovateľnosť schémy zabez
       \hline
       Vlastnosť & Nepriehľadný & JWT & PASETO & Fernet & Branca & Macaroons & Biscuits\\
       \hline
-      zoslabenie tokenu hocikým & $\varoslash$ & $\varoslash$ & $\varoslash$ & $\varoslash$ & $\varoslash$ & \CIRCLE & \CIRCLE \\
-      autorizačná schéma v tokene & $\varoslash$ & \LEFTcircle & \LEFTcircle & \LEFTcircle & \LEFTcircle & \CIRCLE & \CIRCLE \\
-      bezstavové overenie & $\varoslash$ & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE \\
-      štandardná validácia & $\varoslash$ & \CIRCLE & \CIRCLE & \Circle & \Circle & \LEFTcircle & \CIRCLE \\
+      Zoslabenie tokenu hocikým & $\varoslash$ & $\varoslash$ & $\varoslash$ & $\varoslash$ & $\varoslash$ & \CIRCLE & \CIRCLE \\
+      Autorizačná schéma v tokene & $\varoslash$ & \LEFTcircle & \LEFTcircle & \LEFTcircle & \LEFTcircle & \CIRCLE & \CIRCLE \\
+      Bezstavová validácia & $\varoslash$ & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE \\
+      Štandardná validácia & $\varoslash$ & \CIRCLE & \CIRCLE & \Circle & \Circle & \LEFTcircle & \CIRCLE \\
       \hline
     \end{tabular}%
     }
