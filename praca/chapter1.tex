@@ -28,14 +28,14 @@ Aj v prípade zabezpečeného spojenia však existujú zraniteľnosti \cite{tsl_
 Okrem priameho zneužitia získaných hesiel útočníkom, môže útočník ukladať heslá do databázy odchytených hesiel a následne môžu aj iní útočníci túto databázu použiť pri ďalších útokoch. Tento prístup sa nazýva \textit{slovníkový útok} a môže byť veľmi efektívny. \cite{fast_dict_attacks}. Ľudia tiež často používajú podobné heslá na všetky svoje účty. Potom sa podľa istých vzorov odhalených v sade hesiel jedného používateľa dajú ľahšie uhádnuť ďalšie heslá. \cite{password_patterns}.
 
 
-\section{Schéma zabezpečenia s využitím identifikátora spojenia}
+\section{Schéma zabezpečenia s využitím identifikátora sedenia}
 \label{sec:session}
 
-Prvé riešenie, kde môžeme hovoriť o nejakej schéme zabezpečenia, nie len o existencii prihlasovacích údajov a ich overení pri každej požiadavke, je sledovanie každého aktívneho spojenia s rozhraním (angl. session).
+Prvé riešenie, kde môžeme hovoriť o nejakej schéme zabezpečenia, nie len o existencii prihlasovacích údajov a ich overení pri každej požiadavke, je sledovanie každého aktívneho sedenia s rozhraním (angl. session).
 
-Pri prvej požiadavke sa používateľ autentifikuje voči serveru, ten si vytvorí a uloží záznam o spojení. Tento záznam môže obsahovať rôzne základné informácie o spojení (napríklad čas vytvorenia) a informácie o používateľovi, s ktorým je spojenie vytvorené. Dôležitá časť záznamu je jednoznačný identifikátor spojenia v podobe náhodného reťazca. Potom klientovi vráti identifikátor spojenia. Všetky nasledujúce požiadavky klienta budú obsahovať tento identifikátor, podľa ktorého vie server určiť, ktorému používateľovi patria, teda či je autentifikovaný, prípadne či má právo vykonať dané volanie (ak rozhranie implementuje nejakú autorizačnú schému). Popísaná schéma je znázornená na obrázku \ref{obr:session}.
+Pri prvej požiadavke sa používateľ autentifikuje voči serveru, ten si vytvorí a uloží záznam o sedení. Tento záznam môže obsahovať rôzne základné informácie o sedení (napríklad čas vytvorenia) a informácie o používateľovi, s ktorým je sedenie vytvorené. Dôležitá časť záznamu je jednoznačný identifikátor sedenia v podobe náhodného reťazca. Potom klientovi vráti identifikátor sedenia. Všetky nasledujúce požiadavky klienta budú obsahovať tento identifikátor, podľa ktorého vie server určiť, ktorému používateľovi patria, teda či je autentifikovaný, prípadne či má právo vykonať dané volanie (ak rozhranie implementuje nejakú autorizačnú schému). Popísaná schéma je znázornená na obrázku \ref{obr:session}.
 
-Oproti predošlému riešeniu pribudla potreba spravovať spojenia, no veľkou výhodou je, že sa už neposielajú citlivé prihlasovacie údaje v každej požiadavke. Rozhranie však stále potrebuje pri každej požiadavke preložiť identifikátor na záznam o používateľovi.
+Oproti predošlému riešeniu pribudla potreba spravovať sedenia, no veľkou výhodou je, že sa už neposielajú citlivé prihlasovacie údaje v každej požiadavke. Rozhranie však stále potrebuje pri každej požiadavke preložiť identifikátor na záznam o používateľovi.
 
 
 \begin{figure}
@@ -43,7 +43,7 @@ Oproti predošlému riešeniu pribudla potreba spravovať spojenia, no veľkou v
     %obrazok je v subore images/session.png
     \centerline{\includegraphics[width=0.8\textwidth]{images/session_schema}}
     %popis obrazku
-    \caption[Schéma s použitím identifikátora spojenia]{Autentifikačná schéma s použitím identifikátora spojenia.}
+    \caption[Schéma s použitím identifikátora sedenia]{Autentifikačná schéma s použitím identifikátora sedenia.}
     %id obrazku, pomocou ktoreho sa budeme na obrazok odvolavat
     \label{obr:session}
 \end{figure}
@@ -80,7 +80,7 @@ Ako obrana voči tejto zraniteľnosti sa využíva časová platnosť autentifik
 
 API token (ďalej token) je identifikátor, ktorý slúži na autorizáciu prípadne aj identifikáciu používateľa pri prístupe k rozhraniu. Token môže mať viaceré podoby, jednotlivým typom a formátom sa venujú podkapitoly \ref{sec:types} a \ref{sec:formats}.
 
-Tok v rámci schémy zabezpečenia rozhrania funguje podobne ako pri využití identifikátora spojenia, ktorý sme popísali v podkapitole \ref{sec:session}. Líši sa najmä v tom, že token môže niesť pridanú informáciu a rozhranie vie jeho platnosť overiť bezstavovo. Popísaná schéma s využitím tokenu je zobrazená na obrázku \ref{obr:token}. Na dosiahnutie tejto výhody je nutné použiť štruktúrovaný formát tokenu. Možné formáty tokenov detailnejšie popíšeme v podkapitole \ref{sec:formats}.
+Tok v rámci schémy zabezpečenia rozhrania funguje podobne ako pri využití identifikátora sedenia, ktorý sme popísali v podkapitole \ref{sec:session}. Líši sa najmä v tom, že token môže niesť pridanú informáciu a rozhranie vie jeho platnosť overiť bezstavovo. Popísaná schéma s využitím tokenu je zobrazená na obrázku \ref{obr:token}. Na dosiahnutie tejto výhody je nutné použiť štruktúrovaný formát tokenu. Možné formáty tokenov detailnejšie popíšeme v podkapitole \ref{sec:formats}.
 
 
 \begin{figure}
