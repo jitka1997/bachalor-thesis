@@ -2,7 +2,7 @@
 
 \label{kap:prakticke} % id kapitoly pre prikaz ref
 
-V tejto kapitole navrhneme a implementujeme jednoduché rozhranie so schémou zabezpečenia využívajúcou jednotlivé tokeny popísané v kapitole \ref{kap:typy} a teoreticky porovnané v kapitole \ref{kap:teoreticke}. Nepriehľadný token budeme, rovnako ako v prechádzajúcej kapitole, chápať ako náhodný reťazec podpísaný pomocou hešovania s kľúčom. Cieľom implementácie je porovnať rýchlosť spracovania požiadaviek využívajúcich rôzne tokeny na autorizáciu a jednoduchosť práce s knižnicami implementujúcimi jednotlivé tokeny vo vybranom programovacom jazyku. Implementácia môže zároveň slúžiť ako základ pre implementovanie jednoduchej schémy zabezpečenia a jej integrovanie s vybranými knižnicami. Zdrojový kód je dostupný na GitHube \footnote{Zdrojový kód je dostupný na adrese https://github.com/jitka1997/bachelor-thesis/tree/main/simpleAPI}.
+V tejto kapitole navrhneme a implementujeme jednoduché rozhranie so schémou zabezpečenia využívajúcou jednotlivé tokeny popísané v kapitole \ref{kap:typy} a teoreticky porovnané v kapitole \ref{kap:teoreticke}. Nepriehľadný token budeme, rovnako ako v prechádzajúcej kapitole, chápať ako náhodný reťazec podpísaný pomocou hešovania s kľúčom. Cieľom implementácie je porovnať rýchlosť spracovania požiadaviek využívajúcich rôzne tokeny na autorizáciu a jednoduchosť práce s knižnicami implementujúcimi jednotlivé tokeny vo vybranom programovacom jazyku. Implementácia môže zároveň slúžiť ako základ pre implementovanie jednoduchej schémy zabezpečenia a jej integrovanie s vybranými knižnicami. Zdrojový kód je dostupný na GitHube\footnote{Zdrojový kód je dostupný na adrese https://github.com/jitka1997/bachelor-thesis/tree/main/simpleAPI}.
 
 \section{Použité technológie}
 
@@ -21,6 +21,7 @@ Rozhranie overí korektnosť prihlasovacích údajov a ak sú správne vygeneruj
 Po úspešnej autentifikácii klienta vygeneruje rozhranie token a vráti ho klientovi. Klient následne môže token použiť na vykonanie požiadavky na koncový bod \textit{welcome}. Rozhranie overí platnosť tokenu a ak je platný vykoná požiadavku, teda vráti klientovi uvítaciu správu obsahujúcu jeho prihlasovacie meno, získané z tokenu. Ak token nebol zaslaný alebo zlyhá jeho validácia, rozhranie vráti klientovi chybový kód.
 
 \section{Obsah a generovanie tokenu}
+\label{sec:obsah}
 
 Obsahovo vytvárame token nesúci štyri informácie overované pri autorizácii. Konkrétne čas vypršania platnosti tokenu, prihlasovacie meno používateľa, identifikátor vydavateľa tokenu a identifikátor príjimateľa tokenu. Čas vypršania platnosti tokenu je 5 minút od jeho vydania, identifikátory vydavateľa a príjemateľa sú pevne stanovené hodnoty a prihlasovacie meno používateľa je získané z prihlasovacích údajov klienta.
 
@@ -34,4 +35,63 @@ Informácie sme do obsahu tokenu obsiahli, aby sme demonštrovali využitie úda
     \item Macaroons -- všetky informácie sme do tokenu vložili ako pravidlá prvej strany.
   \end{itemize}
 
-JWT a PASETO aj vybrané knižnice, ktoré ich implementujú ponúkajú viacero funkcií na podpísanie a prípadné šifrovanie tokenu. Ostatné tokeny však používajú na podpisovanie jedine hešovanie s kľúčom. Konkrétne vybrané knižnice pre Fernet, Branca a Macaroons používajú postupne funkcie: HMAC-SHA256, Poly1305 a HMAC-SHA256. Podpisovanie nepriehľadného tokenu sme implementovali pomocou funkcie HMAC-SHA256. Fernet a Branca navyše šifrujú telo tokenu. Preto sme pre objektívne porovnanie tokenov zvolili aj pri JWT a PASETO šifrovanie obsahu a podpisovanie pomocou hešovania s kľúčom. Na podpisovanie sme v prípade JWT sme použili funkciu HMAC-SHA256 a v prípade PASETO funkciu HMAC-SHA384.
+JWT a PASETO, aj vybrané knižnice, ktoré ich implementujú, ponúkajú viacero funkcií na podpísanie a prípadné šifrovanie tokenu. Ostatné tokeny však používajú na podpisovanie jedinú funkciu, vždy variant hešovania s kľúčom. Fernet a Branca navyše šifrujú telo tekenu. Preto sme pre objektívne porovnanie tokenov zvolili pri JWT a PASETO, čo najpodobnejšie funkcie na podpisovanie a taktiež šifrujeme telo tokenu. Kryptografické funkcie použité na podpisovanie a šifrovanie jednotlivých tokenov sú uvedené v tabuľke \ref{tab:funkcie}.
+
+\begin{table}
+  \begin{center}
+    \caption{Kryptografické funkcie na podpisovanie a šifrovanie tokenov}
+    \label{tab:funkcie} % create a label for the table, after caption
+
+    \resizebox{\columnwidth}{!}{%
+    \begin{tabular}{lcccccc}
+      \hline
+      Proces & Nepriehľadný & JWT & PASETO & Fernet & Branca & Macaroons \\
+      \hline
+      Šifrovanie & $\varoslash$ & AES-128-CBC & AES-256-CTR & AES-128-CBC & XChaCha20 & $\varoslash$ \\
+      Podpisovanie & HMAC-SHA256 & HMAC-SHA256 & HMAC-SHA384 & HMAC-SHA256 & Poly1305 & HMAC-SHA256 \\
+      \hline
+    \end{tabular}%
+    }
+  \end{center}
+\end{table}
+
+\section{Práca s knižnicami}
+
+Pre každý token sme pomocou danej knižnice implementovali 2 funkcie -- \textit{createToken(username)} a \textit{verifyToken(token)}. Funkcia \textit{createToken} vráti nový token s obsahom a formátom popísaným v podkapitole \ref{sec:obsah}. Funkcia \textit{verifyToken} validuje podpis tokenu. Následne dešifruje telo tokenu (ak bolo zašifrované) a validuje jeho obsah. Ako klúč pre kryptografické funkcie sme používali konštantný náhodne vygenerovaný reťazec s potrebným počtom bitov.
+
+Jednoduchosť práce s knižnicami implementujúcimi tokeny porovnávame na základe podpory jednoduchého generovania tokenu a štandardných validácií tela tokenu.
+Všetky knižnice podporujú jednoduché podpísanie a prípadné šifrovanie tokenu. Takisto všetky knižnice podporujú validáciu podpisu tokenu. 
+
+Pre JWT a PASETO nám knižnice ponúkli viacero štandardných oprávnení, ktoré sme mohli použiť pri vytváraní obsahu tokenu. Potom pri validácii tokenu stačilo uviesť požadanované hodnoty týchto oprávnení a knižničné volanie ich validovalo. Fernet nepodporuje nijaké štandardné validovanie obsahu tokenu ani na úrovni špecifikácie, teda ani kninžnica, ktorá ho implementuje, ho neponúkala. Overovanie formátu a obsahu tela tokenu sme teda implementovali sami. Branca podobne ako Fernet na úrovni špecifikácie neponúka štandardnú validáciu tela tokenu. No vybraná knižnica umožňuje validovať aspoň časovú platnosť tokenu pomocou časovej pečiatky v tokene a časového limitu zadaného ako argument pri dešifrovaní tela. Ani špecifikácia Macaroons nepodporuje žiadnu štandardnú validáciu pravidiel. Vybraná knižnica dovoľuje jednoducho pridávať pravidlá prvej strany tým, že riadi réžiu okolo postupného generovania podpisu tokenu. Neexistujú však žiadne štandardné pravidlá a preto sme ich validáciu implementovali sami.
+
+Na základe týchto pozorovaní sme porovnali jednoduchosť práce s rôznymi tokenmi, rovnakým spôsobom ako vlastnosti porovnané v tabuľke \ref{tab:porovnanie} pomocou symbolov \CIRCLE, \LEFTcircle, \Circle ~a $\varoslash$. Výsledky sú uvedené v tabuľke \ref{tab:api_porovnanie}.
+
+\section{Meranie rýchlosti}
+
+Pre porovnanie rýchlosti spracovania požiadavky sme implementovali jednoduchého klienta vykonávajúceho požiadavky na rozhranie. Klient sa najprv úspešne autentifikuje voči rozhraniu, ktoré mu vráti platný prístupový token. Následne klient vytvorí požiadavku na rozhranie s týmto tokenom.
+
+Klient teda vykonáva jednu požiadvku bez tokenu, na ktorej vykonanie musí rozhranie vygenerovať nový token a jednu požiadavku s platným tokenom, na ktorej vykonanie musí rozhranie validovať token. Teda v princípe meriame čas generovania a validácie tokenu. Na meranie času vytvorenia tokenu meria klient čas od odoslania požiadavky na autentifikáciu po vrátenie tokenu rozhraním. Na meranie času validácie tokenu meria klient čas od odoslania požiadavky na rozhranie po vrátenie odpovede rozhraním.
+
+Pre presnejšie meranie času vykoná klient 10000 požiadaviek na autentifikáciu a 10000 požiadaviek s platným tokenom a zaznamená priemer a medián nameraných časov. Pri meraní času sme paralelne pustili 5 klientov, ktorých zaznamenané priemery a mediány sme spriemerovali. Výsledky sú uvedené v tabuľke \ref{tab:api_porovnanie}.
+
+\begin{table}
+  \begin{center}
+    \caption{Kryptografické funkcie na podpisovanie a šifrovanie tokenov}
+    \label{tab:api_porovnanie} % create a label for the table, after caption
+
+    \resizebox{\columnwidth}{!}{%
+    \begin{tabular}{lcccccc}
+      \hline
+      Vlastnosť & Nepriehľadný & JWT & PASETO & Fernet & Branca & Macaroons \\
+      \hline
+      Jednoduchosť práce & $\varoslash$ & \CIRCLE & \CIRCLE & \Circle & \Circle & \LEFTcircle \\
+      Generovanie priemer [ms] & 17.556 & 2.442 & 2.241 & 1.577 & 2.089 & 2.430 \\
+      Generovanie medián [ms] & 17.087 & 2.160 & 2.093 & 1.457 & 1.898 & 2.266 \\
+      Validácia priemer [ms] & 21.230 & 1.846 & 1.803 & 1.199 & 1.336 & 2.183 \\
+      Validácia medián [ms] & 23.216 & 1.743 & 1.706 & 1.152 & 1.274 & 2.079 \\
+      \hline
+    \end{tabular}%
+    }
+  \end{center}
+\end{table}
+
