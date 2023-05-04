@@ -2,15 +2,15 @@
 \addcontentsline{toc}{chapter}{Záver} % rucne pridanie do obsahu
 \markboth{Záver}{Záver} % vyriesenie hlaviciek
 
-V práci sme sa venovali problematike autentifikácie a autorizácie v schéme zabezpepečenia so zamenraním na tokeny a ich porovnanie. Práca sa dá pomyselne rozdeliť na dva logické celky. V prvej časti sme sa venovali teoretickým poznatkom, ktoré sú potrebné pre pochopenie problematiky. 
+V práci sme sa venovali problematike autentifikácie a autorizácie v schéme zabezpečenia so zameraním na tokeny a ich porovnanie. Práca sa dá pomyselne rozdeliť na dva logické celky. V prvej časti sme sa venovali teoretickým poznatkom, ktoré sú potrebné pre pochopenie problematiky. 
 
-Kontkrétne v kapitole \ref{kap:vyuzitie} sme uviedli rôzne známe prístupy k architektúre schémy zabezpečenia. Jednotlivé prístupy sme stručne charakterizovali a uviedli ich hlavné výhody a nevýhody. Okrem toho sme pre prehľad v tematike tokenov popísali známe typy a formáty tokenov. Ďalej sme sa venovali iba schéme zabezpezpečenia využívajúcej tokeny.
+Konkrétne v kapitole \ref{kap:vyuzitie} sme uviedli rôzne známe prístupy k architektúre schémy zabezpečenia. Jednotlivé prístupy sme stručne charakterizovali a uviedli ich hlavné výhody a nevýhody. Okrem toho sme, pre prehľad v tematike tokenov, popísali známe typy a formáty tokenov. Ďalej sme sa venovali iba schéme zabezpečenia využívajúcej tokeny.
 
 V nasledujúcej kapitole \ref{kap:typy} sme predstavili konkrétne tokeny, ktoré sme ďalej v práci porovnávali. Venovali sme sa najmä takým charakteristikám a parametrom tokenov, ktoré sú nevyhnutné pre analýzu ich vlastností a porovnávanie s inými tokenmi.
 
-V druhej časti práce sme sa venovali analýze a najprv teoretickému a potom aj praktickému porovnaniu tokenov. V kapitole \ref{kap:teoreticke} sme porovnali tokeny z pohľadu bezpečnosti, flexibility a popularity. Výsledkom tohto porovania je prehľadová tabuľka \ref{tab:porovnanie}. V kapitole \ref{kap:prakticke} sme navrhli a implementovali jednoduché rozhranie, na ktorom sme demonštrovali použitie jednotlivých tokenov v schéme zabezpečenia. Taktiež sme implementovali jednoduchého klienta, ktorý vykonával požiadavky na rozhranie a meral čas ich vykonania. Klient posielal také požiadavky, na ktorých vykonanie, muselo rozhranie vyenerovať token alebo validovať token. Namerané hodnoty sú uvedené v tabuľke \ref{tab:api_porovnanie} a ich interpretácia v sekcii \ref{sec:vyhodnotenie}.
+V druhej časti práce sme sa venovali analýze a najprv teoretickému a potom aj praktickému porovnaniu tokenov. V kapitole \ref{kap:teoreticke} sme porovnali tokeny z pohľadu bezpečnosti, flexibility a popularity. Výsledkom tohto porovnania je prehľadová tabuľka \ref{tab:porovnanie}. V kapitole \ref{kap:prakticke} sme navrhli a implementovali jednoduché rozhranie, na ktorom sme demonštrovali použitie jednotlivých tokenov v schéme zabezpečenia. Taktiež sme implementovali jednoduchého klienta, ktorý vykonával požiadavky na rozhranie a meral čas ich vykonania. Klient posielal také požiadavky, na ktorých vykonanie, muselo rozhranie vygenerovať token alebo validovať token. Namerané hodnoty sú uvedené v tabuľke \ref{tab:api_porovnanie} a ich interpretácia v sekcii \ref{sec:vyhodnotenie}.
 
-Hlavným cieľom práce bolo porovnať rôzne tokeny. Ako výsledok tohto porovnania uvádzame tabuľku \ref{tab:vysledok}, ktorá je spojením tabuliek \ref{tab:porovnanie} a \ref{tab:api_porovnanie}. Pre interpretáciu tabuľky je nutné si prečítať kapitoly \ref{kap:teoreticke} a \ref{kap:prakticke}.
+Hlavným cieľom práce bolo porovnať rôzne tokeny. Ako výsledok tohto porovnania uvádzame tabuľku \ref{tab:vysledok}, ktorá je spojením tabuliek \ref{tab:porovnanie} a \ref{tab:api_porovnanie}. Pre interpretáciu nameraných hodnôt je nutné si prečítať kapitoly \ref{kap:teoreticke} a \ref{kap:prakticke}.
 
 \begin{table}
     \begin{center}
