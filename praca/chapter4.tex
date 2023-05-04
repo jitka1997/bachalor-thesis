@@ -1,8 +1,8 @@
-\chapter{Návrh a implementácia jednoduchého rozhrania}
+\chapter{Jednoduché rozhranie}
 
 \label{kap:prakticke} % id kapitoly pre prikaz ref
 
-V tejto kapitole navrhneme a implementujeme jednoduché rozhranie so schémou zabezpečenia využívajúcou jednotlivé tokeny popísané v kapitole \ref{kap:typy} a teoreticky porovnané v kapitole \ref{kap:teoreticke}. Nepriehľadný token budeme, rovnako ako v prechádzajúcej kapitole, chápať ako náhodný reťazec podpísaný pomocou hešovania s kľúčom. Cieľom implementácie je porovnať rýchlosť spracovania požiadaviek využívajúcich rôzne tokeny na autorizáciu a jednoduchosť práce s knižnicami implementujúcimi jednotlivé tokeny vo vybranom programovacom jazyku. Implementácia môže zároveň slúžiť ako základ pre implementovanie jednoduchej schémy zabezpečenia a jej integrovanie s vybranými knižnicami. Zdrojový kód je dostupný na GitHube\footnote{Zdrojový kód je dostupný na adrese https://github.com/jitka1997/bachelor-thesis/tree/main/simpleAPI}.
+V tejto kapitole navrhneme, implementujeme a otestujeme jednoduché rozhranie so schémou zabezpečenia využívajúcou jednotlivé tokeny popísané v kapitole \ref{kap:typy} a teoreticky porovnané v kapitole \ref{kap:teoreticke}. Nepriehľadný token budeme, rovnako ako v prechádzajúcej kapitole, chápať ako náhodný reťazec podpísaný pomocou hešovania s kľúčom. Cieľom implementácie je porovnať rýchlosť spracovania požiadaviek využívajúcich rôzne tokeny na autorizáciu a jednoduchosť práce s knižnicami implementujúcimi jednotlivé tokeny vo vybranom programovacom jazyku. Implementácia môže zároveň slúžiť ako základ pre implementovanie jednoduchej schémy zabezpečenia a jej integrovanie s vybranými knižnicami. Zdrojový kód je dostupný na GitHube\footnote{Zdrojový kód je dostupný na adrese https://github.com/jitka1997/bachelor-thesis/tree/main/simpleAPI}.
 
 \section{Použité technológie}
 
@@ -95,3 +95,14 @@ Pre presnejšie meranie času vykoná klient 10000 požiadaviek na autentifikác
   \end{center}
 \end{table}
 
+\section{Vyhodnotenie nameraných výsledkov}
+
+Keď budeme hovoriť o rýchlosti tokenu, myslíme tým rýchlosť generovania a validácie daného tokenu. 
+
+Vidíme, že nepriehľadný token je výrazne pomalší ako ostatné tokeny. Konkrétne je v priemere v prípade generovania 7-11 krát pomalší a v prípade validácie 10-16 krát pomalší. Toto je spôsobené tým, že rozhranie si pri generovaní nového tokenu musí tento token uložiť do databázy spolu s autorizačnými údajmi a pri validácii musí token spolu s údajmi vyhľadať v databáze.
+
+Ďalej si všimnime, že JWT a PASETO majú skoro identické časy pri všetkých meraných hodnotách. Tento výsledok je pri použití podobných kryptografických funkcií očakávaný, lebo ide o veľmi podobné tokeny. Fernet a Branca sú dva najrýchlejšie tokeny, čo je pravdepodobne spôsobé jednoduchosťou ich formátu. Branca je však priemerne 1.3 krát pomalší pri generovaní a 1.1 krát pomalší pri validácii ako Fernet. Tento rozdiel môžeme prisúdiť použitiu rôznych kryptografických funkcií alebo inej implementácii.
+
+Prekvapivým výsledkom je, že Macaroons je najpomalší pri generovaní aj validácií, pretože okrem nepriehľadného tokenu ide o jediný token, ktorého telo sa nešifruje. Tento výsledok je možné vysvetliť tým, že Macaroons je najkomplexnejší token, formátom aj procesom generovania. Pri generovaní sa aplikuje podpisová funkcia raz pri vyvorení nového tokenu a následne toľko krát koľko pravidiel do tokenu pridávame, v našom prípade štyri krát. Podobne pri validácii tokenu sa musí vypočítať podpis tokenu postupnou aplikáciu podpisovej funkcie na každé pravidlo v tele tokenu. Macaroons bol vytvorený pre komplexné systémy pre jeho flexibilitu spočívajúcu v možnosti pridávať pravidlá ľubovoľnou entitou a elegantného riešnia pravidiel tretích strán. Preto je pre jednodnoduchý systém, ako je nami implementované rozhranie, Macaroons nevhodný.
+
+Porovnaním mediánu a priemeru hodnôt vidíme, že medián je takmer vždy menší oproti priemeru. Jedinou výnimkou je validácia nepriehľadného tokenu. Menší medián ako priemer v nameraných hodnotách značí, že medzi nameranými hodnotami bolo viac vysokých extrémov. Rozhranie aj klienta sme spúšťali lokálne z jedného počítaču, teda sa mohlo stať, že výkonnosť rozhrania ovplyvnili iné procesy na počítači, čo spôsobilo aj výkyvy v nameraných hodnotách.
