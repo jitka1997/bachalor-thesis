@@ -177,7 +177,7 @@ Pri validácií tokenu ho ako prvé dekódujeme. Následne overíme, že prvý b
 
 Macaroons sú tokeny s kontextovými pravidlami. Vznikli v rámci výskumného projektu Belay v spoločnosti Google \cite{belay}. Google predstavil Macaroons v práci z roku 2014 \cite{macaroons_paper}. Macaroons sú autorizačné poverenia (angl. credentials) pre cloudové služby s podporou decentralizovanej delegácie medzi službami v rámci cloudu. Ľubovoľná entita vlastniaca token autorizujúci určitý prístup môže tento token \textit{zoslabiť} alebo aj \textit{kontextovo obmedziť} a posunúť ďalšej entite. Zoslabenie aj kontextové obmedzenie sa realizuje pomocou pravidiel. Entitu generujúcu nový Macaroons token budeme označovať ako \textit{cieľová služba}.
 
-Pravidlá sa delia podľa strany, ktorá potvrdí alebo zabezpečí ich naplnenie na pravidlá prvej a tretej strany. Pravidlá prvej strany sú jednoduché predikáty. Na autorizáciu požiadavky sprevádzanej Macaroons tokenom sa musia všetky tieto predikáty vyhodnotiť pravdivo v rámci kontextu danej požiadavky. Pravidlom prvej strany môže byť napríklad obmedzenie typu požiadaviek iba na čítacie. Pravidlá tretích strán vyžadujú dôkaz o nejakej skutočnosti od tretej strany. Pri dôkaze od tretích strán sa využíva princíp dôkazu držiteľa kľúča, kde tretia strana dokáže, že pozná nejaký tajný kľúč napríklad tak, že podpíše zadaný reťazec znakov. Pravidlom tretej strany môže byť požiadavka na doloženie dôkazu od autentifikačného servera, že používateľ je autentifikovaný. Pravidlá tretích strán sa používajú na delegáciu autorizácie medzi službami.
+Pravidlá sa delia podľa strany, ktorá potvrdí alebo zabezpečí ich naplnenie na pravidlá prvej a tretej strany. Pravidlá prvej strany sú jednoduché predikáty. Na autorizáciu požiadavky sprevádzanej Macaroons tokenom sa musia všetky tieto predikáty vyhodnotiť pravdivo v rámci kontextu danej požiadavky. Kontextom požiadavky môže byť napríklad aktuálny čas alebo IP adresa odosielateľa. Pravidlom prvej strany môže byť napríklad obmedzenie typu požiadaviek iba na čítacie. Pravidlá tretích strán vyžadujú dôkaz o nejakej skutočnosti od tretej strany. Pri dôkaze od tretích strán sa využíva princíp dôkazu držiteľa kľúča, kde tretia strana dokáže, že pozná nejaký tajný kľúč napríklad tak, že podpíše zadaný reťazec znakov. Pravidlom tretej strany môže byť požiadavka na doloženie dôkazu od nejakej autentifikačnej služby (napríklad autentifikačnej služby Google), že používateľ je autentifikovaný. Tento dôkaz musí získať používateľ pred odoslaním požiadavky na rozhranie a pri jej odoslaní ho priloží k požiadavke spolu s originálnym tokenom. Dôkaz má formu špeciálneho tokenu, ktorý predstavíme v podkapitole \ref{sec:macaroon_request}. Pravidlá tretích strán sa používajú na delegáciu autorizácie medzi službami.
 
 Macaroons zabezpečuje ochranu integrity a autenticity pomocou hešovaného autentifikačného kódu. Pôvodná práca \cite{macaroons_paper} nevyžaduje použitie konkrétnej hešovacej funkcie, no prvá implementácia \cite{macaroons_git} využíva funkciu HMAC-SHA256 \cite{hmac}.
 
@@ -209,24 +209,24 @@ Príklad Macaroons tokenu je zobrazený v obrázku \ref{fig:macaroon_example}.
 
 Každá cieľová služba disponuje tajným kľúčom, prípadne spôsobom ako ho vygenerovať. Ku každému tajnému kľúču musí vedieť odvodiť verejný nepriehľadný identifikátor, ktorý dokáže spätne previesť na tajný kľúč. Takého identifikátory môžu byť implementované napríklad ako náhodné príležitostné slová reprezentujúce kľúč v databáze alebo pomocou šifrovania s verejným alebo súkromným kľúčom \cite{macaroons_key_id}.
 
-Cieľová služba vytvorí nový token z danej lokácie, identifikátora a tajného kľúča tak, že podpíše identifikátor pomocou tajného kľúča a spojí lokáciu, identifikátor a podpis.
+Cieľová služba vytvorí nový token z danej lokácie, identifikátora a tajného kľúča $sk$ tak, že podpíše identifikátor pomocou $sk$ a spojí lokáciu, identifikátor a podpis. Podpis vypočíta ako $HMAC(sk, identifikátor)$.
 
-Takto vytvorený token si môžeme predstaviť ako zlatý kľúč, ktorý autorizuje ľubovoľnú požiadavku na cieľovú službu. Cieľová služba môže ďalej token poslať inej službe. Ako sme uviedli v úvode podkapitoly každá služba môže token zoslabiť alebo kontextovo obmedziť pridaním pravidiel.
+Takto vytvorený token si môžeme predstaviť ako zlatý kľúč, ktorý autorizuje ľubovoľnú požiadavku na cieľovú službu. Cieľová služba môže ďalej token poslať inej službe. Ako sme uviedli v úvode podkapitoly, každá služba môže token zoslabiť alebo kontextovo obmedziť pridaním pravidiel.
 
-Pravidlá prvej strany pridá služba tak, že pridá reťazec popisujúci pravidlo do tokenu a podpíše token pomocou doterajšieho podpisu tokenu ako kľúča. Takto vytvoreným podpisom nahradí predchádzajúci podpis. Tento proces môže zopakovať viac krát a tým pridať ľubovoľný počet pravidiel.
+Pravidlá prvej strany pridá služba do tokenu $M$ tak, že pridá reťazec popisujúci pravidlo (tento reťazec označme $rule$) do tokenu a vypočíta nový podpis tokenu pomocou doterajšieho podpisu $M.signature$ ako $HMAC(M.signature, rule)$. Takto vytvoreným podpisom nahradí predchádzajúci podpis. Tento proces môže zopakovať viac krát a tým pridať ľubovoľný počet pravidiel.
 
-Na pridanie pravidla tretej strany musí mať služba vzťah s danou službou tretej strany a dôverovať jej. Služba pridávajúca pravidlo vygeneruje koreňový kľúč pravidla a potrebuje zabezpečiť, aby ho vedela zderivovať daná služba tretej strany ako aj cieľová služba. 
+Na pridanie pravidla tretej strany musí mať služba vzťah s danou službou tretej strany a dôverovať jej. Služba $A$ pridávajúca pravidlo vygeneruje koreňový kľúč pravidla $RK$ a potrebuje zabezpečiť, aby ho vedela zderivovať daná služba tretej strany $B$ ako aj cieľová služba $CS$. 
 
-Prvý prípad môže pridávajúca služba zabezpečiť viacerými spôsobmi napríklad tak, že pošle kľúč a pravidlo službe tretej strany cez zabezpečený kanál a tá jej vráti jeho identifikátor $cId$. Alebo ak zverejňuje služba tretej strany verejný kľúč, prípadne služby zdieľajú tajný kľúč, môže pridávajúca služba vytvoriť $cId$ zašifrovaním koreňového kľúča a pravidla pomocou šifrovacieho kľúča $cRK$. Druhý prípad zabezpečí pridávajúca služba symetrickým zašifrovaním koreňového kľúča pomocou podpisu tokenu. Takto vzniknutý reťazec označme $vId$.
+Prvý prípad môže služba $A$ zabezpečiť viacerými spôsobmi napríklad tak, že pošle kľúč a pravidlo službe $B$ cez zabezpečený kanál a tá jej vráti jeho identifikátor $cId$. Alebo ak zverejňuje služba $B$ verejný kľúč, prípadne služby zdieľajú tajný kľúč, môže služba $A$ vytvoriť $cId$ zašifrovaním $RK$ a pravidla pomocou šifrovacieho kľúča $cRK$ (verejný kľúč služby $B$ alebo zdieľaný tajný kľúč). Druhý prípad zabezpečí služba $A$ symetrickým zašifrovaním $RK$ pomocou podpisu tokenu. Takto vzniknutý reťazec označme $vId$.
 
-Reťazec reprezentujúci pravidlo tretej stany obsahuje lokáciu služby tretej strany, $cId$ a $vId$. Pridávajúca služba vloží tento reťazec do zoznamu pravidiel tokenu a vytvorí nový podpis tokenu tým, že podpíše $cId$ a $vId$ pomocou aktuálneho podpisu tokenu. Príklad pridania pravidla tretej strany je na obrázku \ref{fig:add_caveat}. Služba tretej strany vie z $cId$ odvodiť koreňový kľúč pravidla, lebo ho buď sama vytvorila alebo pozná kľúč na dešifrovanie $cId$. Cieľová služba pozná koreňový kľúč tokenu, teda si vie pomocou postupného podpisovania pravidiel odvodiť kľúč pre dešifrovanie $vId$.
+Reťazec reprezentujúci pravidlo tretej stany je zreťazenie lokácie služby tretej strany, $cId$ a $vId$, označme tento reťazec $rule_B$. Služba $A$ vloží $rule_B$ do zoznamu pravidiel tokenu $M$ a vytvorí nový podpis tokenu pomocou aktuálneho podpisu tokenu $M.signature$ ako $HMAC(M.signature, rule_B)$. Príklad pridania pravidla tretej strany je na obrázku \ref{fig:add_caveat}. Služba tretej strany vie z $cId$ odvodiť koreňový kľúč pravidla, lebo $cId$ buď sama vytvorila alebo pozná kľúč na dešifrovanie $cId$. Cieľová služba pozná koreňový kľúč tokenu, teda si vie pomocou postupného podpisovania pravidiel odvodiť kľúč pre dešifrovanie $vId$ a dešifrovaním $vId$ získa koreňový kľúč pravidla.
 
 \begin{figure}
     %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
     %obrazok je v subore images/session.png
     \centerline{\includegraphics[width=0.8\textwidth]{images/3rd_party_caveat}}
     %popis obrazku
-    \caption[Pridanie pravidla tretej strany]{Príklad pridania pravidla tretej strany, konkrétne pravidla \textit{user=``Alice''} na autentifikačný server (AS). $RK$ je koreňový kľúč pravidla a | reprezentuje zreťazenie.}
+    \caption[Pridanie pravidla tretej strany]{Príklad pridania pravidla tretej strany, konkrétne pravidla \textit{user=``Alice''} na autentifikačný server (AS). $RK$ je koreňový kľúč pravidla a symbol | reprezentuje zreťazenie.}
     %id obrazku, pomocou ktoreho sa budeme na obrazok odvolavat
     \label{fig:add_caveat}
 \end{figure}
@@ -234,6 +234,7 @@ Reťazec reprezentujúci pravidlo tretej stany obsahuje lokáciu služby tretej 
 Tvorba podpisu tokenu teda zodpovedá reťazovej aplikácií funkcie HMAC na identifikátor a pravidlá tokenu. Hešovanie je ireverzibilná operácia, preto nie je možné pravidlá odstraňovať, lebo nato by bolo potrebné vypočítať predchádzajúci podpis tokenu. To je možné iba podpísaním identifikátora koreňovým kľúčom a následným podpisovaním pravidiel vždy pomocou posledného podpisu ako kľúča.
 
 \subsection{Vytvorenie požiadavky s Macaroons tokenom}
+\label{sec:macaroon_request}
 
 Služba komunikujúca s klientom pošle token klientovi. Na vytvorenie požiadavky autorizovanej týmto tokenom, musia byť splnené všetky pravidlá tokenu. Splnenie pravidiel prvej strany závisí od samotného kontextu požiadavky, no pre splnenie pravidiel tretej strany musí klient poskytnúť cieľovej službe dôkazy o ich splnení od daných služieb tretích strán.
 
@@ -244,7 +245,7 @@ Tieto dôkazy sú reprezentované \textit{vybíjacími tokenmi} (angl. discharge
     %obrazok je v subore images/session.png
     \centerline{\includegraphics[width=0.8\textwidth]{images/user_request}}
     %popis obrazku
-    \caption[Získanie vybíjacieho tokenu používateľom]{Príklad získania vybíjacieho tokenu používateľom. $RK$ je koreňový kľúč pravidla a | reprezentuje zreťazenie.}
+    \caption[Získanie vybíjacieho tokenu používateľom]{Príklad získania vybíjacieho tokenu používateľom. $RK$ je koreňový kľúč pravidla a symbol | reprezentuje zreťazenie.}
     %id obrazku, pomocou ktoreho sa budeme na obrazok odvolavat
     \label{fig:user_request}
 \end{figure}
@@ -253,14 +254,14 @@ Keď klient získa vybíjací token pre každé pravidlo tretej strany, vytvorí
 
 Vybíjacie tokeny sú silnými dôkazmi od tretích strán, dokazujú splnenie pravidla s rovnakým $cId$ a koreňovým kľúčom pravidla v každom Macaroons tokene. Ak by klient poslal požiadavku s vybíjacími tokenmi inej ako cieľovej službe (napríklad ako výsledok phishing útoku), táto služba môže jednoducho zneužiť vybíjacie tokeny klienta na dôkaz splnenia pravidiel vo vlastných tokenoch. Preto je potrebné aby klient vybíjacie tokeny zviazal s jeho Macaroons tokenom ešte predtým ako vytvorí požiadavku.
 
-Zviazanie pôvodného Macaroons tokenu $M$ s vybíjacím tokenom $M'$ prebieha úpravou podpisu $M'$. Špecifikácia necháva otvorené, ako presne má táto úprava vyzerať. Jedna z možných implementácií by bola vytvoriť podpis $M'$ zahešovaním podpisov $M$ a $M'$ pomocou hešovacej funkcie bez kľúča (H), napríklad SHA-256. Nový podpis $M'.signature$ by sa potom vypočítal $M'.signature = H(M.signature, M'.signature)$.
+Zviazanie pôvodného Macaroons tokenu $M$ s vybíjacím tokenom $M'$ prebieha úpravou podpisu $M'$. Špecifikácia necháva otvorené, ako presne má táto úprava vyzerať. Jedna z možných implementácií by bola vytvoriť nový podpis $M'$ zahešovaním podpisov $M$ a $M'$ pomocou hešovacej funkcie bez kľúča (H), napríklad SHA-256. Nový podpis $M'.signature$ by sa potom vypočítal ako $M'.signature = H(M.signature, M'.signature)$.
 
 
 \subsection{Spracovanie požiadavky cieľovou službou}
 
 Predtým ako cieľová služba autorizuje požiadavku od klienta zvaliduje priložený Macaroons token. Pre úspešnú validáciu tokenu musia byť všetky pravidlá splnené a podpis tokenu korektný.
 
-Splnenie pravidiel prvej strany overí cieľová služba overením splnenia predikátu každého pravidla v rámci kontextu požiadavky. Pravidlá tretej strany overí služba rekurzívne. Pre každé pravidlo nájde vybíjací token a z $vId$ pravidla zderivuje koreňový kľúč pravidla. Rekurzívne overí všetky pravidlá vo vybíjacom tokene a pomocou koreňového kľúča pravidla overí korektnosť podpisu vybíjacieho tokenu. Ak sú všetky pravidlá splnené a podpisy všetkých tokenov korektné, autorizuje služba požiadavku klienta.
+Splnenie pravidiel prvej strany overí cieľová služba overením splnenia predikátu každého pravidla v rámci kontextu požiadavky. Pravidlá tretej strany overí služba rekurzívne nasledovným postupom. Pre každé pravidlo nájde vybíjací token a z $vId$ pravidla zderivuje koreňový kľúč pravidla. Rekurzívne overí všetky pravidlá vo vybíjacom tokene a pomocou koreňového kľúča pravidla overí korektnosť podpisu vybíjacieho tokenu. Ak sú všetky pravidlá splnené a podpisy všetkých tokenov korektné, autorizuje služba požiadavku klienta.
 
 \section{Biscuits}
 
