@@ -2,7 +2,7 @@
 
 \label{kap:typy} % id kapitoly pre prikaz ref
 
-V tejto kapitole predstavíme v praxi využívané API tokeny, ktorými sa zaoberá naša práca. Uvedieme ich formát a základné postupy pre ich vytvorenie, či validáciu. Jednotlivé tokeny používajú rôzne kryptografické algoritmy na zabezpečenie integrity a autenticity tokenu. Využíva sa šifrovanie alebo hešovanie s kľúčom \cite{hmac_povodny}. Výsledkom týchto algroritmov je buď elektronický podpis alebo hešovaný autentifikačný kód (HMAC). V oboch prípadoch budeme hovoriť o podpise tokenu. A proces ich vytvárania budeme nazývať podpisovanie.
+V tejto kapitole predstavíme v praxi využívané API tokeny, ktorými sa zaoberá naša práca. Uvedieme ich formát a základné postupy pre ich vytvorenie, či validáciu. Jednotlivé tokeny používajú rôzne kryptografické algoritmy na zabezpečenie integrity a autenticity tokenu. Využíva sa šifrovanie alebo hešovanie s kľúčom \cite{hmac_povodny}. Výsledkom týchto algroritmov je buď digitálny podpis alebo hešovaný autentifikačný kód (HMAC). V oboch prípadoch budeme hovoriť o podpise tokenu. A proces ich vytvárania budeme nazývať podpisovanie.
 
 Ich využitie, výhody či nevýhody rozoberieme v kapitole \ref{kap:teoreticke}.
 
@@ -11,7 +11,7 @@ Ich využitie, výhody či nevýhody rozoberieme v kapitole \ref{kap:teoreticke}
 
 Prvý token, ktorým sa budeme zaoberať je JSON web token (JWT) \cite{jwt_rfc}. JWT vznikol ako súčasť JOSE (JSON object signing and encryption) štandardov \cite{jose_rfc}, čo je dokument vypracovaný pracovnou skupinou IETF (Internet Engineering Task Force) na základe aplikácií bezpečnostných mechanizmov v rámci vývoja softvéru.
 
-Definujú štandard pre bezpečný prenos JSON objektov medzi službami, ktoré sú schopné ich overiť a dešifrovať. Zavádzajú tri základné formáty JSON objektov a to JWS (JSON Web Signature), JWE (JSON Web Encryption) a JWK (JSON Web Key), ktorým sa detailnejšie venujú ďalšie štandardy \cite{jws_rfc, jwe_rfc, jwk_rfc}. Prvé dva sú formáty zabezpečujúce bezpečnostné vlastnosti JSON objektov. Oba zabezpečujú autentickosť a integritu pomocou elektronických podpisov alebo hešovaného autentifikačného kódu. JWE navyše zabezpečuje aj dôvernosť a to šifrovaním obsahu JSON objektu. Posledný formát JWK je formát pre reprezentáciu kľúčov, ktoré sú použité v kryptografických algoritmoch využitých v JWS a JWE. Kryptografické algoritmy a ich identifikátory sú definované JSON Web Algorithms (JWA) štandardom \cite{jwa_rfc}.
+Definujú štandard pre bezpečný prenos JSON objektov medzi službami, ktoré sú schopné ich overiť a dešifrovať. Zavádzajú tri základné formáty JSON objektov a to JWS (JSON Web Signature), JWE (JSON Web Encryption) a JWK (JSON Web Key), ktorým sa detailnejšie venujú ďalšie štandardy \cite{jws_rfc, jwe_rfc, jwk_rfc}. Prvé dva sú formáty zabezpečujúce bezpečnostné vlastnosti JSON objektov. Oba zabezpečujú autentickosť a integritu pomocou digitálnych podpisov alebo hešovaného autentifikačného kódu. JWE navyše zabezpečuje aj dôvernosť a to šifrovaním obsahu JSON objektu. Posledný formát JWK je formát pre reprezentáciu kľúčov, ktoré sú použité v kryptografických algoritmoch využitých v JWS a JWE. Kryptografické algoritmy a ich identifikátory sú definované JSON Web Algorithms (JWA) štandardom \cite{jwa_rfc}.
 
 
 \subsection{Štruktúra JWT}
@@ -38,7 +38,7 @@ Ak bol token vytvorený pomocou JWE, na prečítanie tela je potrebné ho najprv
 
 Platform Agnostic Security Token (PASETO) je relatívne nový štandard tokenu navrhnutý v roku 2018 a je stále v štádiu RFC draftu \cite{paseto_rfc}. Je inšpirovaný rodinou štandardov JOSE (JWT, JWS, JWE, JWK). Jednoducho povedané snaží sa zjednodušiť implementáciu a použitie kryptografických funkcií.
 
-Rovnako ako JWT, PASETO serializuje JSON objekty a zaručuje rôzne bezpečnostné kvality pri ich prenose cez internet. Pôvodne bol PASETO navrhnutý s dvoma verziami \textit{v1} a \textit{v2} líšiacimi sa v použitých kryptografických algoritmoch. Dnes už existujú štyri verzie \textit{v1}, \textit{v2}, \textit{v3} a \textit{v4} popísané štandardom \cite{paseto_git}. Každá verzia tokenu zaručuje autentickosť a integritu obsahu tokenu a to pomocou asymetrického šifrovania v zmysle elektronického podpisu alebo pomocou hešovaného autentifikačného kódu.
+Rovnako ako JWT, PASETO serializuje JSON objekty a zaručuje rôzne bezpečnostné kvality pri ich prenose cez internet. Pôvodne bol PASETO navrhnutý s dvoma verziami \textit{v1} a \textit{v2} líšiacimi sa v použitých kryptografických algoritmoch. Dnes už existujú štyri verzie \textit{v1}, \textit{v2}, \textit{v3} a \textit{v4} popísané štandardom \cite{paseto_git}. Každá verzia tokenu zaručuje autentickosť a integritu obsahu tokenu a to pomocou asymetrického šifrovania v zmysle digitálneho podpisu alebo pomocou hešovaného autentifikačného kódu.
 
 \subsection{Verzie PASETO}
 
