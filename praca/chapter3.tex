@@ -4,14 +4,11 @@
 
 V tejto kapitole porovnáme rôzne vlastnosti a parametre konkrétnych tokenov podľa informácií získaných z ich dokumentácií a iným zdrojov. Dáta, ktoré neuvedieme v tejto kapitole, sme už zhrnuli v kapitole \ref{kap:typy}. Pri jednotlivých parametroch vysvetlíme ich význam a teda aj dôležitosť pri porovnávaní tokenov. Porovnávať budeme všetky tokeny popísané v kapitole \ref{kap:typy} a nepriehľadný token popísaný v podkapitole \ref{sec:opaque}. Nepriehľadný token je formát tokenu, nie konkrétny token. Pre jednoduchosť budeme pod pojmom nepriehľadný token myslieť náhodný reťazec s podpisom vo forme hešovaného autentifikačného kódu. 
 
-Kapitola je štruktúrovaná podľa porovnávaných vlastností a jej výsledkom je tabuľka \ref{tab:porovnanie} zhrňujúca závery porovnania. Tabuľku uvádzame na začiatku kapitoly, aby si čitateľ mohol utvoriť istý prehľad o porovnávaných vlastnostiach. V tabuľke používame symboly \CIRCLE, \LEFTcircle ~a \Circle ~pre vyjadrenie stupňovitosti istej kvality tokenu. Symbol \CIRCLE ~znamená, že vlastnosť je pre daný token typická, častá alebo dôležitá. Symbol \Circle ~vyjadruje presný opak a symbol \LEFTcircle ~niečo medzi tým. Symbol $\varoslash$ ~znamená, že vlastnosť sa nedá pre daný token posúdiť alebo z nejakého dôvodu nemá zmysel o nej uvažovať a porovnávať ju. Na začiatku každej podkapitoly uvedieme časť tabuľky, ktorá sa venuje vlastnostiam porovnávaným v danej podkapitole.
-
-
-\begin{table}
+\begin{table}[H]
   \begin{center}
     \caption{Teoretické porovnanie tokenov}
     \label{tab:porovnanie} % create a label for the table, after caption
-
+    
     \resizebox{\columnwidth}{!}{%
     \begin{tabular}{lccccccc}
       \hline
@@ -35,20 +32,13 @@ Kapitola je štruktúrovaná podľa porovnávaných vlastností a jej výsledkom
   \end{center}
 \end{table}
 
+Kapitola je štruktúrovaná podľa porovnávaných vlastností a jej výsledkom je tabuľka \ref{tab:porovnanie} zhrňujúca závery porovnania. Tabuľku uvádzame na začiatku kapitoly, aby si čitateľ mohol utvoriť istý prehľad o porovnávaných vlastnostiach. V tabuľke používame symboly \CIRCLE, \LEFTcircle ~a \Circle ~pre vyjadrenie stupňovitosti istej kvality tokenu. Symbol \CIRCLE ~znamená, že vlastnosť je pre daný token typická, častá alebo dôležitá. Symbol \Circle ~vyjadruje presný opak a symbol \LEFTcircle ~niečo medzi tým. Symbol $\varoslash$ ~znamená, že vlastnosť sa nedá pre daný token posúdiť alebo z nejakého dôvodu nemá zmysel o nej uvažovať a porovnávať ju. Na začiatku každej podkapitoly uvedieme časť tabuľky, ktorá sa venuje vlastnostiam porovnávaným v danej podkapitole.
+
 \section{Bezpečnosť}
 
 V rámci porovnávania bezpečnosti tokenov nebudeme detailne rozoberať bezpečnosť jednotlivých kryptografických funkcií. Detaily ohľadom týchto funkcií je možné nájsť v ich citovaných dokumentáciách. Všetky tokeny ponúkajú možnosť použiť kryptografické funkcie, ktoré sú všeobecne považované za bezpečné. Zhrnutie výsledkov porovnania bezpečnosti tokenov je možné nájsť v tabuľke \ref{tab:bezpecnost}.
 
-Zameriame sa na porovnanie kryptografických primitív a z nich vyplývajúcich bezpečnostných kvalít a na náchylnosti na zraniteľnosti vyplývajúce zo špecifikácie tokenov. Konkrétne rozoberieme tri bezpečnostné problémy:
-
-
-\begin{itemize}
-  \item Útok pomýlením algoritmu (angl. algorithm confusion attack) -- útočník donúti overovaciu službu použiť nesprávny algoritmus na overenie podpisu tokenu. 
-  \item Útok opakovaním (angl. replay attack) -- útočník odchytí token a následne ho opakovane používa na autorizáciu vlastných požiadaviek. Tento útok je priamo spojený s hlavnou nevýhodou používania tokenov v autentifikačnej a autorizačnej schéme a to problémom odvolania (angl. revocation).
-  \item Problém odvolania -- problém odvolania spočíva v schopnosti služby zneplatniť vydané tokeny. Napríklad po odhlásení používateľa alebo po zistení, že token bol zneužitý.
-\end{itemize}
-
-\begin{table}
+\begin{table}[H]
   \begin{center}
     \caption{Bezpečnosť tokenov}
     \label{tab:bezpecnost} % create a label for the table, after caption
@@ -70,6 +60,16 @@ Zameriame sa na porovnanie kryptografických primitív a z nich vyplývajúcich 
     }
   \end{center}
 \end{table}
+
+Zameriame sa na porovnanie kryptografických primitív a z nich vyplývajúcich bezpečnostných kvalít a na náchylnosti na zraniteľnosti vyplývajúce zo špecifikácie tokenov. Konkrétne rozoberieme tri bezpečnostné problémy:
+
+
+\begin{itemize}
+  \item Útok pomýlením algoritmu (angl. algorithm confusion attack) -- útočník donúti overovaciu službu použiť nesprávny algoritmus na overenie podpisu tokenu. 
+  \item Útok opakovaním (angl. replay attack) -- útočník odchytí token a následne ho opakovane používa na autorizáciu vlastných požiadaviek. Tento útok je priamo spojený s hlavnou nevýhodou používania tokenov v autentifikačnej a autorizačnej schéme a to problémom odvolania (angl. revocation).
+  \item Problém odvolania -- problém odvolania spočíva v schopnosti služby zneplatniť vydané tokeny. Napríklad po odhlásení používateľa alebo po zistení, že token bol zneužitý.
+\end{itemize}
+
 
 \subsection{Kryptografické primitíva}
 
@@ -196,9 +196,9 @@ Naopak špecifikácia Biscuits uvádza presný formát a syntax datalogového pr
 
 \section{Popularita a využiteľnosť}
 
-Popularitu tokenov posúdime podľa existencie používaných a udržiavaných knižníc v populárnych programovacích jazykoch pri programovaní serveru. Neexistuje jeden zoznam najobľúbenejších programovacích jazykov, my sme sa rozhodli vybrať jazyky JavaScript, Python a Java. Popularitu nepriehľadného tokenu nedokážeme takto posúdiť, lebo nejde o konkrétny token a jeho implementácia sa veľmi líši od konkrétnej aplikácie. Neexistujú teda knižnice, ktoré ho implementujú a vedeli by sme ich použiť na porovnanie.
+Popularitu tokenov posúdime podľa existencie používaných a udržiavaných knižníc v populárnych programovacích jazykoch pri programovaní serveru. Neexistuje jeden zoznam najobľúbenejších programovacích jazykov, my sme sa rozhodli vybrať jazyky JavaScript, Python a Java.
 
-\begin{table}
+\begin{table}[H]
     \begin{center}
       \caption{Vybrané implementácie tokenov}
       \label{tab:implementacie} % create a label for the table, after caption
@@ -237,6 +237,7 @@ Popularitu tokenov posúdime podľa existencie používaných a udržiavaných k
     \end{center}
   \end{table}
 
+Popularitu nepriehľadného tokenu nedokážeme takto posúdiť, lebo nejde o konkrétny token a jeho implementácia sa veľmi líši od konkrétnej aplikácie. Neexistujú teda knižnice, ktoré ho implementujú a vedeli by sme ich použiť na porovnanie.
 
 Používanosť a udržiavanosť knižníc budeme hodnotiť podľa informácii o knižniciach na platforme GitHub. Konkrétne podľa počtu hviezdičiek, dátumu posledného commitu a celkového počtu commitov. Jednotlivé knižnice a informácie o nich sú uvedené v tabuľke \ref{tab:implementacie}, uvedené dáta pochádzajú z 19.4.2023. V prípade Python knižnice pre prácu s Fernet tokenom, ide o knižnicu v rámci repozitára pyca/cryptography, teda oficiálnej knižnice pre kryptografiu v Pythone. Počet commitov a údaj o poslednom commite uvádzame iba pre súbor fernet.py implementujúci Fernet. Hviezdičky sa, ale udeľujú celému repozitáru, teda toto číslo je skresľujúce, keďže ide o veľký repozitár, ktorého len malá časť implementuje Fernet. 
 
@@ -244,7 +245,7 @@ Používanosť sme vyhodnotili na základe počtu hviezdičiek a to konkrétne u
 
 Do výslednej tabuľky porovnania tokenov \ref{tab:porovnanie} sme preniesli získané body do symbolov \Circle, \LEFTcircle ~a \CIRCLE ~podľa toho, či token získal $\ge5$, $\ge15$ alebo $\ge30$ bodov.
 
-\begin{table}
+\begin{table}[H]
   \begin{center}
     \caption{Popularita tokenov}
     \label{tab:popularita} % create a label for the table, after caption
