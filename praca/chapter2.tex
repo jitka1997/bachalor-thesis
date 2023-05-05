@@ -34,6 +34,19 @@ Na základe hodnoty v kľúči \textit{alg} sa určí algoritmus, ktorý bol pou
 
 Ak bol token vytvorený pomocou JWE, na prečítanie tela je potrebné ho najprv dešifrovať pomocou algoritmu, ktorý je zapísaný ako oprávnenie s kľúčom \textit{enc} v hlavičke tokenu. V prípade využitia JWS je telo po dekódovaní priamo čitateľné. Následne môžeme overiť informácie o časovej platnosti tokenu, či právach používateľa a pod.
 
+Príklad vytvorenia nešifrovaného JWT tokenu s podpisovou funckiou HMAC-SHA256 a telom obsahujúcim oprávnenie \textit{iss} a \textit{iat} je zorbazený na obrázku \ref{fig:jwt_token}.
+
+\begin{figure}
+    %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
+    %obrazok je v subore images/session.png
+    \centerline{\includegraphics[width=0.8\textwidth]{images/jwt_token}}
+    %popis obrazku
+    \caption[JWT token]{Príklad jednoduchého JWT tokenu.}
+    %id obrazku, pomocou ktoreho sa budeme na obrazok odvolavat
+    \label{fig:jwt_token}
+\end{figure}
+
+
 \section{Platform Agnostic Security Token}
 
 Platform Agnostic Security Token (PASETO) je relatívne nový štandard tokenu navrhnutý v roku 2018 a je stále v štádiu RFC draftu \cite{paseto_rfc}. Je inšpirovaný rodinou štandardov JOSE (JWT, JWS, JWE, JWK). Jednoducho povedané snaží sa zjednodušiť implementáciu a použitie kryptografických funkcií.
@@ -70,6 +83,18 @@ Ak sme zvolili lokálne využitie, tak telo tokenu zašifrujeme. Následne vypo�
 
 Validácia tokenu je inverzný proces ku generovaniu. Najprv rozdelíme reťazec na časti a zistíme verziu a využitie tokenu a podľa toho vyberieme použitú kryptografickú funkciu. Následne zistíme, či je podpis tokenu platný pomocou adekvátnej kryptografickej funkcie a kľúča. Ak mal token lokálne využitie dešifrujeme jeho telo a skontrolujeme časovú platnosť tokenu, ak to využívaná schéma podporuje a telo obsahuje informácie o platnosti tokenu.
 
+Príklad vytvorenia PASETO tokenu verzie \textit{v2} s verejným využitím a telom obsahujúcim oprávnenie \textit{iss} a \textit{iat} je zobrazený na obrázku \ref{fig:paseto_token}.
+
+\begin{figure}
+    %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
+    %obrazok je v subore images/session.png
+    \centerline{\includegraphics[width=0.8\textwidth]{images/paseto_token}}
+    %popis obrazku
+    \caption[PASETO token]{Príklad jednoduchého PASETO tokenu.}
+    %id obrazku, pomocou ktoreho sa budeme na obrazok odvolavat
+    \label{fig:paseto_token}
+\end{figure}
+
 \section{Fernet}
 
 Pôvodne Fernet vznikol ako nástroj na zasielanie bezpečných správ v platforme cloudových služieb Heroku \cite{fernet_legacy}. V súčasnosti už podľa špecifikácie \cite{fernet_spec} vzniklo veľa implementácií Fernetu v rôznych programovacích jazykoch \cite{fernet_cpp, fernet_haskell}, v rámci Heroku bol implementovaný v Ruby. Fernet bol dokonca vybratý PYCA (Python Cryptographic Authority) \cite{pyca_crypto} ako štandard pre implementáciu symetrického šifrovania v Pythone.
@@ -94,6 +119,18 @@ Ako vidíme, všetky časti tokenu okrem tela majú pevne danú dĺžku. Vďaka 
 
 Pre jednoduché prenášanie je celý token zakódovaný pomocou base64url \cite{base64_rfc}.
 
+Príklad Fernet tokenu pred base64url zakódovaním s telom obsahujúcim reťazec \textit{issuer:AS.com} je schematicky vyjadrený na obrázku \ref{fig:fernet_token}.
+
+\begin{figure}
+    %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
+    %obrazok je v subore images/session.png
+    \centerline{\includegraphics[width=0.8\textwidth]{images/fernet_token}}
+    %popis obrazku
+    \caption[Fernet token]{Príklad jednoduchého Fernet tokenu.}
+    %id obrazku, pomocou ktoreho sa budeme na obrazok odvolavat
+    \label{fig:fernet_token}
+\end{figure}
+
 \subsection{Generovanie a validácia Fernet}
 
 Pri generovaní Fernet tokenu sa využívajú dva kryptografické algoritmy, ktoré vyžadujú kľúč. Fernet definuje 256 bitový kľúč, ktorý je rozdelený na dve 128 bitové časti. Prvá časť reprezentuje podpisový kľúč a druhá šifrovací kľúč.
@@ -117,6 +154,18 @@ Branca sa podobne ako Fernet skladá z piatich zreťazených častí. Tieto čas
     \item Zašifrované telo -- reprezentuje zašifrované dáta uložené v tokene. Môže mať ľubovoľnú dĺžku.
     \item Podpis -- v podobe hešovaného autentifikačného kódu - reprezentuje výstup funkcie Poly1305 a zaberá vždy 128 bitov.
 \end{itemize}
+
+Príklad Branca tokenu pred base64url zakódovaním s telom obsahujúcim reťazec \textit{issuer:AS.com} je schematicky vyjadrený na obrázku \ref{fig:branca_token}.
+
+\begin{figure}
+    %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
+    %obrazok je v subore images/session.png
+    \centerline{\includegraphics[width=0.8\textwidth]{images/branca_token}}
+    %popis obrazku
+    \caption[Branca token]{Príklad jednoduchého Branca tokenu.}
+    %id obrazku, pomocou ktoreho sa budeme na obrazok odvolavat
+    \label{fig:branca_token}
+\end{figure}
 
 \subsection{Generovanie a validácia Branca}
 
