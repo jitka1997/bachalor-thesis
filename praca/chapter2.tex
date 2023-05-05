@@ -9,14 +9,14 @@ V tejto kapitole predstavíme v praxi využívané API tokeny, ktorými sa zaobe
 
 Prvý token, ktorým sa budeme zaoberať je JSON web token (JWT) \cite{jwt_rfc}. JWT vznikol ako súčasť JOSE (JSON object signing and encryption) štandardov \cite{jose_rfc}, čo je dokument vypracovaný pracovnou skupinou IETF (Internet Engineering Task Force) na základe aplikácií bezpečnostných mechanizmov v rámci vývoja softvéru.
 
-Definujú štandard pre bezpečný prenos JSON objektov medzi službami, ktoré sú schopné ich overiť a dešifrovať. Zavádzajú tri základné formáty JSON objektov a to JWS (JSON Web Signature), JWE (JSON Web Encryption) a JWK (JSON Web Key), ktorým sa detailnejšie venujú ďalšie štandardy \cite{jws_rfc, jwe_rfc, jwk_rfc}. Prvé dva sú formáty zabezpečujúce bezpečnostné vlastnosti JSON objektov. Oba zabezpečujú autentickosť a integritu pomocou digitálnych podpisov alebo hešovaného autentifikačného kódu. JWE navyše zabezpečuje aj dôvernosť a to šifrovaním obsahu JSON objektu. Posledný formát JWK je formát pre reprezentáciu kľúčov, ktoré sú použité v kryptografických algoritmoch využitých v JWS a JWE. Kryptografické algoritmy a ich identifikátory sú definované JSON Web Algorithms (JWA) štandardom \cite{jwa_rfc}.
+Definujú štandard pre bezpečný prenos JSON objektov medzi službami, ktoré sú schopné ich overiť a dešifrovať. Zavádzajú tri základné formáty JSON objektov a to JWS (JSON Web Signature), JWE (JSON Web Encryption) a JWK (JSON Web Key), ktorým sa detailnejšie venujú ďalšie štandardy \cite{jws_rfc, jwe_rfc, jwk_rfc}. Prvé dva sú formáty zabezpečujúce bezpečnostné vlastnosti JSON objektov. Oba zabezpečujú autentickosť a~integritu pomocou digitálnych podpisov alebo hešovaného autentifikačného kódu. JWE navyše zabezpečuje aj dôvernosť a to šifrovaním obsahu JSON objektu. Posledný formát JWK je formát pre reprezentáciu kľúčov, ktoré sú použité v kryptografických algoritmoch využitých v JWS a JWE. Kryptografické algoritmy a ich identifikátory sú definované JSON Web Algorithms (JWA) štandardom \cite{jwa_rfc}.
 
 
 \subsection{Štruktúra JWT}
 
 Samotný JWT je v podstate iba serializovaný JSON objekt chránený JWS alebo JWE. Podľa štandardu JWT obsahuje tri samostatné časti oddelené bodkami - hlavičku, telo a podpis. Hlavička a telo sú serializované JSON objekty obsahujúce oprávnenia (angl. claim) vo forme dvojíc kľúč, hodnota. Niektoré oprávnenia (konkrétne ich kľúče) sú definované v štandarde a teda by sa nemali používať pre žiadne iné hodnoty. 
 
-A to konkrétne v hlavičke sú najdôležitejšie \textit{typ} a \textit{alg}. Prvý určuje typ tokenu a druhý algoritmus, ktorý bol použitý na vytvorenie podpisu alebo v rámci šifrovania obsahu tokenu. Rôzne možnosti pre algoritmy sú definované v JWA štandardoch.
+A to konkrétne v hlavičke sú najdôležitejšie \textit{typ} a \textit{alg}. Prvý určuje typ tokenu a~druhý algoritmus, ktorý bol použitý na vytvorenie podpisu alebo v rámci šifrovania obsahu tokenu. Rôzne možnosti pre algoritmy sú definované v JWA štandardoch.
 
 Telo tvorí logický obsah tokenu, napríklad môže obsahovať oprávnenia týkajúce sa konkrétnej autentifikácie a používateľa, pre ktorého bol token vydaný. Dôležité štandardom popísané kľúče sú napríklad \textit{iss}, \textit{sub}, \textit{exp}, \textit{nbf}, \textit{iat}. Popisujú postupne vydavateľa tokenu, identifikátor používateľa, čas vypršania platnosti tokenu, čas, kedy sa token začne považovať za platný a čas vydania tokenu.
 
@@ -106,14 +106,14 @@ Token je navrhnutý s možnosťou pridania viacerých verzií, no v súčasnosti
 Fernet sa skladá z piatich zreťazených častí. Každá časť reprezentuje jednu informáciu o tokene. Jednotlivé časti sú nasledovné:
 
 \begin{itemize}
-    \item Verzia -- reprezentuje verziu Fernet tokenu, aktuálne existuje len jedna verzia a je reprezentovaná číslom 0x80. Zaberá vždy 8 bitov.
+    \item Verzia -- reprezentuje verziu Fernet tokenu, aktuálne existuje len jedna verzia a~je reprezentovaná číslom 0x80. Zaberá vždy 8 bitov.
     \item Časová pečiatka -- reprezentuje čas vytvorenia tokenu. Čas je zachytení ako počet sekúnd od 1.1.1970 v UTC časovej zóne. Zaberá vždy 64 bitov.
     \item Inicializačný vektor (IV) -- reprezentuje náhodný reťazec znakov, ktorý je použitý pri šifrovaní a dešifrovaní tokenu. IV musí byť unikátny a najmä nepredvídateľný pre každý token, preto sa generuje náhodnou funkciou. Zaberá vždy 128 bitov.
     \item Zašifrované telo -- reprezentuje zašifrované dáta uložené v tokene. Môže mať premenlivú dĺžku, no vždy násobok 128 bitov.
     \item Podpis -- reprezentuje výstup HMAC-SHA256 funkcie a zaberá vždy 256 bitov.
 \end{itemize}
 
-Ako vidíme, všetky časti tokenu okrem tela majú pevne danú dĺžku. Vďaka tejto vlastnosti nemusia byť zreťazené časti oddelené žiadnym špeciálnym symbolom, napríklad bodkou, lebo vieme jednoznačne oddeliť verziu, časovú pečiatku, IV aj podpis a tým pádom aj zašifrované telo.
+Ako vidíme, všetky časti tokenu okrem tela majú pevne danú dĺžku. Vďaka tejto vlastnosti nemusia byť zreťazené časti oddelené žiadnym špeciálnym symbolom, napríklad bodkou, lebo vieme jednoznačne oddeliť verziu, časovú pečiatku, IV aj podpis a~tým pádom aj zašifrované telo.
 
 Pre jednoduché prenášanie je celý token zakódovaný pomocou base64url \cite{base64_rfc}.
 
@@ -146,7 +146,7 @@ Motiváciou k vzniku Branca tokenu \cite{branca_spec} bolo modernizovanie použi
 Branca sa podobne ako Fernet skladá z piatich zreťazených častí. Tieto časti sa však jemne líšia od častí Fernet tokenu a zakódované sú \textit{base62} kódovaním \cite{base62}.
 
 \begin{itemize}
-    \item Verzia -- reprezentuje verziu Branca tokenu, aktuálne existuje len jedna verzia a je reprezentovaná číslom 0xBA. Zaberá vždy 8 bitov.
+    \item Verzia -- reprezentuje verziu Branca tokenu, aktuálne existuje len jedna verzia a~je reprezentovaná číslom 0xBA. Zaberá vždy 8 bitov.
     \item Časová pečiatka -- reprezentuje čas vytvorenia tokenu. Čas je zachytení ako počet sekúnd od 1.1.1970 v UTC časovej zóne. Zaberá vždy 32 bitov a je zapísaná ako číslo bez znamienka.
     \item Príležitostné slovo (angl. nonce) -- reprezentuje náhodný reťazec znakov, ktorý využíva šifrovacia funkcia. Ide v podstate o IV, ale využíva sa naozaj len raz, zatiaľ čo IV sa v blokovej šifre využije viac krát. Zaberá vždy 192 bitov.
     \item Zašifrované telo -- reprezentuje zašifrované dáta uložené v tokene. Môže mať ľubovoľnú dĺžku.
@@ -167,13 +167,13 @@ Príklad Branca tokenu pred base64url zakódovaním s telom obsahujúcim reťaze
 
 \subsection{Generovanie a validácia Branca}
 
-Vygenerujeme 192 bitový reťazec znakov, ktorý bude slúžiť ako príležitostné slovo a zachytíme aktuálny čas do časovej pečiatky. Vyrobíme hlavičku zreťazením verzie, časovej pečiatky a príležitostné slovo. Následne zašifrujeme telo tokenu pomocou šifrovacej funkcie, do ktorej vložíme tajný kľúč, príležitostné slovo a ako dodatočnú informáciu použijeme hlavičku. Funkcia vráti zašifrované telo a hešovaný autentifikačný kód vypočítaný aj z hlavičky. Nakoniec všetky časti spojíme do jedného reťazca a zakódujeme pomocou \textit{base62} kódovania \cite{base62}.
+Vygenerujeme 192 bitový reťazec znakov, ktorý bude slúžiť ako príležitostné slovo a~zachytíme aktuálny čas do časovej pečiatky. Vyrobíme hlavičku zreťazením verzie, časovej pečiatky a príležitostné slovo. Následne zašifrujeme telo tokenu pomocou šifrovacej funkcie, do ktorej vložíme tajný kľúč, príležitostné slovo a ako dodatočnú informáciu použijeme hlavičku. Funkcia vráti zašifrované telo a hešovaný autentifikačný kód vypočítaný aj z hlavičky. Nakoniec všetky časti spojíme do jedného reťazca a zakódujeme pomocou \textit{base62} kódovania \cite{base62}.
 
 Pri validácií tokenu ho ako prvé dekódujeme. Následne overíme, že prvý bajt je 0xBA a token rozdelíme na jednotlivé časti. Dešifrujeme telo a overíme podpis pomocou funkcie XChaCha20-Poly1305 AEAD. Následne môžeme overiť napríklad časovú platnosť tokenu pomocou dodatočných informácií v tele tokenu a časovej pečiatky.
 
 \section{Macaroons}
 
-Macaroons sú tokeny s kontextovými pravidlami. Vznikli v rámci výskumného projektu Belay v spoločnosti Google \cite{belay}. Google predstavil Macaroons v práci z roku 2014 \cite{macaroons_paper}. Macaroons sú autorizačné poverenia (angl. credentials) pre cloudové služby s podporou decentralizovanej delegácie medzi službami v rámci cloudu. Ľubovoľná entita vlastniaca token autorizujúci určitý prístup môže tento token \textit{zoslabiť} alebo aj \textit{kontextovo obmedziť} a posunúť ďalšej entite. Zoslabenie aj kontextové obmedzenie sa realizuje pomocou pravidiel. Entitu generujúcu nový Macaroons token budeme označovať ako \textit{cieľová služba}.
+Macaroons sú tokeny s kontextovými pravidlami. Vznikli v rámci výskumného projektu Belay v spoločnosti Google \cite{belay}. Google predstavil Macaroons v práci z roku 2014 \cite{macaroons_paper}. Macaroons sú autorizačné poverenia (angl. credentials) pre cloudové služby s~podporou decentralizovanej delegácie medzi službami v rámci cloudu. Ľubovoľná entita vlastniaca token autorizujúci určitý prístup môže tento token \textit{zoslabiť} alebo aj \textit{kontextovo obmedziť} a posunúť ďalšej entite. Zoslabenie aj kontextové obmedzenie sa realizuje pomocou pravidiel. Entitu generujúcu nový Macaroons token budeme označovať ako \textit{cieľová služba}.
 
 Pravidlá sa delia podľa strany, ktorá potvrdí alebo zabezpečí ich naplnenie na pravidlá prvej a tretej strany. Pravidlá prvej strany sú jednoduché predikáty. Na autorizáciu požiadavky sprevádzanej Macaroons tokenom sa musia všetky tieto predikáty vyhodnotiť pravdivo v rámci kontextu danej požiadavky. Kontextom požiadavky môže byť napríklad aktuálny čas alebo IP adresa odosielateľa. Pravidlom prvej strany môže byť napríklad obmedzenie typu požiadaviek iba na čítacie. Pravidlá tretích strán vyžadujú dôkaz o nejakej skutočnosti od tretej strany. Pri dôkaze od tretích strán sa využíva princíp dôkazu držiteľa kľúča, kde tretia strana dokáže, že pozná nejaký tajný kľúč napríklad tak, že podpíše zadaný reťazec znakov. Pravidlom tretej strany môže byť požiadavka na doloženie dôkazu od nejakej autentifikačnej služby (napríklad autentifikačnej služby Google), že používateľ je autentifikovaný. Tento dôkaz musí získať používateľ pred odoslaním požiadavky na rozhranie a pri jej odoslaní ho priloží k požiadavke spolu s originálnym tokenom. Dôkaz má formu špeciálneho tokenu, ktorý predstavíme v podkapitole \ref{sec:macaroon_request}. Pravidlá tretích strán sa používajú na delegáciu autorizácie medzi službami.
 
@@ -236,7 +236,7 @@ Tvorba podpisu tokenu teda zodpovedá reťazovej aplikácií funkcie HMAC na ide
 
 Služba komunikujúca s klientom pošle token klientovi. Na vytvorenie požiadavky autorizovanej týmto tokenom, musia byť splnené všetky pravidlá tokenu. Splnenie pravidiel prvej strany závisí od samotného kontextu požiadavky, no pre splnenie pravidiel tretej strany musí klient poskytnúť cieľovej službe dôkazy o ich splnení od daných služieb tretích strán.
 
-Tieto dôkazy sú reprezentované \textit{vybíjacími tokenmi} (angl. discharge Macaroons). Vybíjacie tokeny majú rovnakú štruktúru aj postup generácie ako obyčajné Macaroons tokeny. Potom, čo klient obdrží Macaroons token, ho prehľadá pre všetky pravidlá tretích strán. Pre každé pravidlo tretej strany, pošle požiadavku na službu tretej strany s $cId$ daného pravidla. Služba tretej strany zderivuje koreňový kľúč pravidla a samotné pravidlo z $cId$. Následne môže vykonať akékoľvek opatrenia na overenie splnenia pravidla klientom, napríklad vyzvať klienta, aby zadal heslo. Ak je pravidlo splnené, vytvorí služba tretej strany vybíjací token z $cId$ pomocou koreňového kľúča pravidla. Následne môže pridať do vybíjacieho tokenu ľubovoľné ďalšie pravidlá vrátane pravidiel tretích strán. Potom podpis tokenu zahešuje (hešovaním bez kľúča), aby sa nedali do vybíjacieho tokenu pridávať ďalšie pravidlá. Nakoniec pošle vybíjací token klientovi. Príklad získania vybíjacieho tokenu je na obrázku \ref{fig:user_request}.
+Tieto dôkazy sú reprezentované \textit{vybíjacími tokenmi} (angl. discharge Macaroons). Vybíjacie tokeny majú rovnakú štruktúru aj postup generácie ako obyčajné Macaroons tokeny. Potom, čo klient obdrží Macaroons token, ho prehľadá pre všetky pravidlá tretích strán. Pre každé pravidlo tretej strany, pošle požiadavku na službu tretej strany s~$cId$ daného pravidla. Služba tretej strany zderivuje koreňový kľúč pravidla a samotné pravidlo z $cId$. Následne môže vykonať akékoľvek opatrenia na overenie splnenia pravidla klientom, napríklad vyzvať klienta, aby zadal heslo. Ak je pravidlo splnené, vytvorí služba tretej strany vybíjací token z $cId$ pomocou koreňového kľúča pravidla. Následne môže pridať do vybíjacieho tokenu ľubovoľné ďalšie pravidlá vrátane pravidiel tretích strán. Potom podpis tokenu zahešuje (hešovaním bez kľúča), aby sa nedali do vybíjacieho tokenu pridávať ďalšie pravidlá. Nakoniec pošle vybíjací token klientovi. Príklad získania vybíjacieho tokenu je na obrázku \ref{fig:user_request}.
 
 \begin{figure}
     %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
@@ -250,7 +250,7 @@ Tieto dôkazy sú reprezentované \textit{vybíjacími tokenmi} (angl. discharge
 
 Keď klient získa vybíjací token pre každé pravidlo tretej strany, vytvorí požiadavku na cieľovú službu, ku ktorej priloží Macaroons token a všetky vybíjacie tokeny.
 
-Vybíjacie tokeny sú silnými dôkazmi od tretích strán, dokazujú splnenie pravidla s rovnakým $cId$ a koreňovým kľúčom pravidla v každom Macaroons tokene. Ak by klient poslal požiadavku s vybíjacími tokenmi inej ako cieľovej službe (napríklad ako výsledok phishing útoku), táto služba môže jednoducho zneužiť vybíjacie tokeny klienta na dôkaz splnenia pravidiel vo vlastných tokenoch. Preto je potrebné aby klient vybíjacie tokeny zviazal s jeho Macaroons tokenom ešte predtým ako vytvorí požiadavku.
+Vybíjacie tokeny sú silnými dôkazmi od tretích strán, dokazujú splnenie pravidla s~rovnakým $cId$ a koreňovým kľúčom pravidla v každom Macaroons tokene. Ak by klient poslal požiadavku s vybíjacími tokenmi inej ako cieľovej službe (napríklad ako výsledok phishing útoku), táto služba môže jednoducho zneužiť vybíjacie tokeny klienta na dôkaz splnenia pravidiel vo vlastných tokenoch. Preto je potrebné aby klient vybíjacie tokeny zviazal s jeho Macaroons tokenom ešte predtým ako vytvorí požiadavku.
 
 Zviazanie pôvodného Macaroons tokenu $M$ s vybíjacím tokenom $M'$ prebieha úpravou podpisu $M'$. Špecifikácia necháva otvorené, ako presne má táto úprava vyzerať. Jedna z možných implementácií by bola vytvoriť nový podpis $M'$ zahešovaním podpisov $M$ a $M'$ pomocou hešovacej funkcie bez kľúča (H), napríklad SHA-256. Nový podpis $M'.signature$ by sa potom vypočítal ako $M'.signature = H(M.signature, M'.signature)$.
 
@@ -267,7 +267,7 @@ Ako posledný predstavíme najmladší token rozoberaný v tejto práci. Biscuit
 
 Biscuits bol inšpirovaný Macaroons, implementuje podobnú schému zabezpečenia aj funkcionality. Rovnako dovoľuje delegovať autorizáciu medzi službami a ľubovoľná entita vlastniaca token ho môže \textit{zoslabiť} alebo aj \textit{kontextovo obmedziť}. Hlavným rozdielom oproti Macaroons je, že Biscuits tokeny používajú na postupné vytváranie podpisu asymetrické šifrovanie, konkrétne podpisovú funkciu Ed25519 \cite{ed_rfc}. Ďalším veľkým rozdielom je, že Biscuits používa na modelovanie práv, kontrol a dát v rámci tokenu špeciálny variant Datalogu bez negácie a na konkrétnych dátových typoch \cite{datalog_bis}.
 
-Zoslabenie a kontextové obmedzenie tokenu sa realizuje pomocou pridania nového bloku. Blok môže pridať aj služba tretej strany, v takom prípadne budeme hovoriť o externom bloku.
+Zoslabenie a kontextové obmedzenie tokenu sa realizuje pomocou pridania nového bloku. Blok môže pridať aj služba tretej strany, v takom prípadne budeme hovoriť o~externom bloku.
 
 \subsection{Štruktúra Biscuits}
 
@@ -290,17 +290,17 @@ Datalogový program je serializovaný ako Protocol Buffer \cite{protobuf} podľa
 
 \subsection{Generovanie a delegácia autorizácie}
 
-Na vygenerovanie nového Biscuits tokenu potrebuje služba dvojicu súkromného a verejného kľúča. Do tokenu vloží verejný kľúč alebo jeho identifikátor ako koreňový verejný kľúč daného tokenu. Vytvorí autoritatívny blok, do ktorého vloží základné fakty a pravidlá platné pre tento token. Následne vygeneruje novú dvojicu kľúčov $pk_1$ a $sk_1$. Kľúč $pk_1$ vloží do autoritatívneho bloku a $sk_1$ do dôkazu tokenu. Kľúč $sk_1$ bude slúžiť na podpísanie ďalšieho bloku tokenu a $pk_1$ na overenie tohto podpisu. Nakoniec celý autoritatívny blok podpíše súkromným koreňovým kľúčom a podpis vloží do bloku.
+Na vygenerovanie nového Biscuits tokenu potrebuje služba dvojicu súkromného a verejného kľúča. Do tokenu vloží verejný kľúč alebo jeho identifikátor ako koreňový verejný kľúč daného tokenu. Vytvorí autoritatívny blok, do ktorého vloží základné fakty a~pravidlá platné pre tento token. Následne vygeneruje novú dvojicu kľúčov $pk_1$ a $sk_1$. Kľúč $pk_1$ vloží do autoritatívneho bloku a $sk_1$ do dôkazu tokenu. Kľúč $sk_1$ bude slúžiť na podpísanie ďalšieho bloku tokenu a $pk_1$ na overenie tohto podpisu. Nakoniec celý autoritatívny blok podpíše súkromným koreňovým kľúčom a podpis vloží do bloku.
 
-Takto vytvorený token môže služba poslať iným službám a tieto môžu pridávať ďalšie bloky a tým obmedzovať autorizačné práva tokenu. Na vytvorenie $i$-teho bloku potrebuje služba vygenerovať dvojicu kľúčov $pk_{i+1}$, $sk_{i+1}$, kde $pk_{i+1}$ vloží do bloku a $sk_{i+1}$ do dôkazu tokenu. Blok môže pridať aj služba tretej strany, v takom prípade musí vložiť aj podpis bloku služby tretej strany a verejný kľúč služby tretej strany. Celý blok následne podpíše kľúčom $sk_i$, ktorý vybrala z dôkazu tokenu pred jeho nahradením.
+Takto vytvorený token môže služba poslať iným službám a tieto môžu pridávať ďalšie bloky a tým obmedzovať autorizačné práva tokenu. Na vytvorenie $i$-teho bloku potrebuje služba vygenerovať dvojicu kľúčov $pk_{i+1}$, $sk_{i+1}$, kde $pk_{i+1}$ vloží do bloku a~$sk_{i+1}$ do dôkazu tokenu. Blok môže pridať aj služba tretej strany, v takom prípade musí vložiť aj podpis bloku služby tretej strany a verejný kľúč služby tretej strany. Celý blok následne podpíše kľúčom $sk_i$, ktorý vybrala z dôkazu tokenu pred jeho nahradením.
 
 Ľubovoľná služba môže token zapečatiť a znemožniť tak pridávanie nových blokov. Zapečatenie tokenu pozostáva z podpísania posledného bloku kľúčom z dôkazu tokenu. Tento podpis sa vloží do dôkazu tokenu.
 
 \subsection{Validácia Biscuits}
 
-Služba validujúca Biscuits token musí vedieť odvodiť koreňový verejný kľúč tokenu z jeho identifikátora. Služba token deserializuje a postupne zvaliduje všetky podpisy tokenov. Podpis $i+1$-vého bloku validuje pomocou kľúča $pk_{i+1}$ vloženého vnútri $i$-teho bloku. Podpis autoritatívneho bloku validuje pomocou koreňového verejného kľúča a podpis služby tretej strany pomocou verejného kľúča danej služby uloženého vnútri daného bloku. Ak je token zapečatený validuje podpis v dôkaze tokenu pomocou verejného kľúča v poslednom bloku, ak token nie je zapečatený skontroluje, či verejný kľúč v poslednom bloku tvorí dvojicu so súkromným v dôkaze tokenu.
+Služba validujúca Biscuits token musí vedieť odvodiť koreňový verejný kľúč tokenu z jeho identifikátora. Služba token deserializuje a postupne zvaliduje všetky podpisy tokenov. Podpis $i+1$-vého bloku validuje pomocou kľúča $pk_{i+1}$ vloženého vnútri $i$-teho bloku. Podpis autoritatívneho bloku validuje pomocou koreňového verejného kľúča a~podpis služby tretej strany pomocou verejného kľúča danej služby uloženého vnútri daného bloku. Ak je token zapečatený validuje podpis v dôkaze tokenu pomocou verejného kľúča v poslednom bloku, ak token nie je zapečatený skontroluje, či verejný kľúč v poslednom bloku tvorí dvojicu so súkromným v dôkaze tokenu.
 
-Ak je token validný, prebehnú postupne všetky kontroly v blokoch a to tak, že sa spustí daný datalogový program nad faktami a pravidlami podľa anotácie bloku a následne sa vykonajú dotazy v kontrolách. Fakty definuje aj samotná služba, napríklad vytvorí fakty na základe kontextu požiadavky. Príkladom takýchto faktov je typ operácie a IP adresa volajúceho. Token je validný iba ak sú splnené všetky kontroly. 
+Ak je token validný, prebehnú postupne všetky kontroly v blokoch a to tak, že sa spustí daný datalogový program nad faktami a pravidlami podľa anotácie bloku a~následne sa vykonajú dotazy v kontrolách. Fakty definuje aj samotná služba, napríklad vytvorí fakty na základe kontextu požiadavky. Príkladom takýchto faktov je typ operácie a IP adresa volajúceho. Token je validný iba ak sú splnené všetky kontroly. 
 
 Okrem kontrol v rámci blokov tokenu môže validujúca služba definovať ďalšie kontroly a politiky a pravidlá. Pravidlá odvádzajú nové fakty len z faktov odvodených autoritatívnym blokom prípadne samotnou službou. Kontroly a politiky pracujú len nad faktami odvodenými autoritatívnym blokom a službou samotnou. Tieto kontroly musia byť tiež všetky splnené, aby bol token validný.
 
@@ -308,4 +308,4 @@ Politiky definujú väčšie kontroly, taktiež pozostávajú zo zoznamu dotazov
 
 \subsection{Delegácia časti autorizácie na tretiu stranu}
 
-Každá služba môže využiť inú službu na nejakú časť autorizácie. Na tento účel slúžia externé bloky. Ak chce služba $A$ delegovať autorizáciu na službu $B$, vytvorí blok s anotáciou obsahujúcou verejný kľúč služby $B$ a vytvorí kontrolu, ktorá používa fakty, ktoré vie zabezpečiť len služba $B$. Následne pošle službe $B$ informácie potrebné pre autorizáciu danej požiadavky službou $B$, ktorá vykoná ľubovoľné operácia nutné pre autorizáciu danej požiadavky a ak je úspešná vráti službe $A$ nový externý blok obsahujúci potrebné fakty a kontroly. 
+Každá služba môže využiť inú službu na nejakú časť autorizácie. Na tento účel slúžia externé bloky. Ak chce služba $A$ delegovať autorizáciu na službu $B$, vytvorí blok s~anotáciou obsahujúcou verejný kľúč služby $B$ a vytvorí kontrolu, ktorá používa fakty, ktoré vie zabezpečiť len služba $B$. Následne pošle službe $B$ informácie potrebné pre autorizáciu danej požiadavky službou $B$, ktorá vykoná ľubovoľné operácia nutné pre autorizáciu danej požiadavky a ak je úspešná vráti službe $A$ nový externý blok obsahujúci potrebné fakty a kontroly. 

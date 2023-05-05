@@ -54,7 +54,7 @@ API kľúč je tajný kľúč slúžiaci na podpisovanie celej požiadavky na ro
 
 Na vytvorenie požiadavky teda klient potrebuje najprv získať API kľúč. Ten klient získa tak, že si ho vyžiada od rozhrania, ktorého služby alebo zdroje chce využívať. Rozhranie vygeneruje API kľúč pre klienta (po prípadnom overení jeho identity, či zaplatení poplatku za využívanie služieb rozhrania), uloží si ho a vráti ho klientovi. Klient tento kľúč následne používa pri vytváraní požiadaviek na rozhranie tým, že ich podpíše. Rozhranie zvaliduje podpis pomocou kľúča, ktorý si uložilo a ak je platný vykoná požiadavku.
 
-HTTP požiadavka nemá jednotnú formu a teda požiadavka reprezentujúca to isté volanie môže mať viac reprezentácií, ktoré sa líšia napríklad poradím parametrov alebo využitím rôznych hlavičiek pre uloženie rovnakej informácie. Podobne serializácia požiadavky do textovej podoby môže byť rôzna. Preto je potrebné definovať kanonickú schému, ako sa má požiadavka serializovať. Inak by rozhranie nedokázalo serializovať požiadavku s rovnakým výstupom ako klient, podpísať ju a tento podpis porovnať s podpisom priloženým v požiadavke. Schéma na obrázku \ref{fig:api_key_schema} zobrazuje realizáciu schémy zabezpečenia pomocou API kľúčov.
+HTTP požiadavka nemá jednotnú formu a teda požiadavka reprezentujúca to isté volanie môže mať viac reprezentácií, ktoré sa líšia napríklad poradím parametrov alebo využitím rôznych hlavičiek pre uloženie rovnakej informácie. Podobne serializácia požiadavky do textovej podoby môže byť rôzna. Preto je potrebné definovať kanonickú schému, ako sa má požiadavka serializovať. Inak by rozhranie nedokázalo serializovať požiadavku s rovnakým výstupom ako klient, podpísať ju a tento podpis porovnať s~podpisom priloženým v požiadavke. Schéma na obrázku \ref{fig:api_key_schema} zobrazuje realizáciu schémy zabezpečenia pomocou API kľúčov.
 
 \begin{figure}
     %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
@@ -66,7 +66,7 @@ HTTP požiadavka nemá jednotnú formu a teda požiadavka reprezentujúca to ist
     \label{fig:api_key_schema}
 \end{figure}
 
-Nevýhodou použitia API kľúčov je teda nutnosť udržiavania stavu v rozhraní. Rozhranie si musí pamätať kľúče, ktoré vydalo a ku každému kľúču nejaký identifikátor, s ktorým klientom je spojený, prípadne aj jeho oprávnenia, napríklad maximálny počet volaní za deň.
+Nevýhodou použitia API kľúčov je teda nutnosť udržiavania stavu v rozhraní. Rozhranie si musí pamätať kľúče, ktoré vydalo a ku každému kľúču nejaký identifikátor, s~ktorým klientom je spojený, prípadne aj jeho oprávnenia, napríklad maximálny počet volaní za deň.
 
 Samotný API kľúč sa teda neposiela spolu s požiadavkou, ale iba raz po jeho vygenerovaní rozhraním. Tým pádom jeho odchytenie nie je jednoduché a preto máva API kľúč neobmedzenú platnosť. Avšak požiadavka, ktorá je už podpísaná pomocou API kľúča sa posiela po sieti a tým pádom sa dá odchytiť. Takáto požiadavka už je autentifikovaná. Preto po jej odchytení ju môže útočník použiť viac krát a tým používať nejaký cenný zdroj rozhrania alebo preťažiť rozhranie veľkým množstvom požiadaviek, ktoré rozhranie vykoná, lebo sú autentifikované.
 
@@ -102,12 +102,12 @@ Tokeny využívané v schéme zabezpečenia rozhrania sa dajú rozdeliť podľa 
 
 Prístupový token \cite{access_token} je najzákladnejší a najčastejšie používaný typ tokenu. Tento token vygeneruje autentifikačný server po autentifikácii používateľa a ďalej slúži na autorizáciu v rozsahu, ktorý sa určil v rámci autentifikácie konkrétneho používateľa. Prístupový token môže mať rôzne formáty podľa toho ako funguje schéma zabezpečenia rozhrania.
 
-Token je spojený s istými údajmi o používateľovi, ako napríklad identifikátor a prístupové práva. Tieto údaje môžu byť uložené priamo v tokene alebo na serveri, v závislosti od toho aký formát tokenu je použitý. Zároveň je s tokenom spojený aj časový limit platnosti tokenu, ktorý býva kvôli bezpečnosti krátky. Po odchytení tokenu totiž môže útočník vystupovať v mene používateľa, ktorého údaje sú uložené v tokene. Po uplynutí časového limitu platnosti tokenu sa používateľ musí opätovne autentifikovať voči autentifikačnému serveru a ten mu vydá nový token.
+Token je spojený s istými údajmi o používateľovi, ako napríklad identifikátor a~prístupové práva. Tieto údaje môžu byť uložené priamo v tokene alebo na serveri, v~závislosti od toho aký formát tokenu je použitý. Zároveň je s tokenom spojený aj časový limit platnosti tokenu, ktorý býva kvôli bezpečnosti krátky. Po odchytení tokenu totiž môže útočník vystupovať v mene používateľa, ktorého údaje sú uložené v tokene. Po uplynutí časového limitu platnosti tokenu sa používateľ musí opätovne autentifikovať voči autentifikačnému serveru a ten mu vydá nový token.
 
 
 \subsection{Nositeľský token}
 
-Nositeľský token reprezentuje najčastejší spôsob použitia prístupového tokenu. Pri jeho použití má nositeľ tokenu prístup k rozhraniu bez ohľadu nato, kto je. Stačí aby v požiadavke poslal platný nositeľský token.
+Nositeľský token reprezentuje najčastejší spôsob použitia prístupového tokenu. Pri jeho použití má nositeľ tokenu prístup k rozhraniu bez ohľadu nato, kto je. Stačí aby v~požiadavke poslal platný nositeľský token.
 
 Následne rozhranie nekontroluje identitu používateľa, ale iba platnosť tokenu. Preto pri jeho využití treba prikladať väčší dôraz na bezpečnosť tokenu napríklad tak, že jeho platnosť bude veľmi krátka, napríklad 5 minút.
 
@@ -125,7 +125,7 @@ Schému s obnovovacími tokenmi využíva napríklad populárny autentifikačný
 
 \subsection{Identifikačný token}
 
-Identifikačný token je špeciálny typ prístupového tokenu. V tomto prípade musí ísť o štruktúrovaný formát tokenu. Token obsahuje identifikátor používateľa a autorizačné údaje. Navyše môže token obsahovať doplnkové údaje ako vydavateľa tokenu, čas platnosti tokenu, čas vydania tokenu a podobne.
+Identifikačný token je špeciálny typ prístupového tokenu. V tomto prípade musí ísť o~štruktúrovaný formát tokenu. Token obsahuje identifikátor používateľa a autorizačné údaje. Navyše môže token obsahovať doplnkové údaje ako vydavateľa tokenu, čas platnosti tokenu, čas vydania tokenu a podobne.
 
 Identifikačný token využíva napríklad protokol OpenID Connect (OIDC), čo je nadstavba protokolu OAuth 2.0 o identitu používateľa \cite{oidc}. OIDC dokonca presne špecifikuje použitie JWT (JSON Web Token), ktorý viac predstavíme v kapitole \ref{kap:typy}.
 
@@ -142,7 +142,7 @@ Tokeny často zaručujú ochranu autenticity a integrity. Vybrané tokeny, ktor�
 
 Ide o najjednoduchší formát tokenu. Nepriehľadný token je náhodný reťazec znakov. Jednoduchý je v tom, že nenesie žiadnu pridanú informáciu. Všetky metadáta o tokene si musí pamätať rozhranie.
 
-Takýto prístup so sebou nesie významné výhody aj nevýhody. Výhodou je, že samotné vytvorenie tokenu je veľmi rýchle, rozhranie jednoducho vygeneruje náhodný reťazec. Vďaka tomu, že nenesie žiadne pridané informácie, nenesie ani citlivé informácie o používateľovi. Navyše je jeho platnosť obmedzená (narozdiel od platnosti prihlasovacích údajov), teda jeho zachytenie útočníkom nie je také nebezpečné. Nevýhodou však je, že rozhranie ho nevie bezstavovo overiť, teda ho musí napríklad vyhľadať v databáze platných tokenov a to je časovo náročné.
+Takýto prístup so sebou nesie významné výhody aj nevýhody. Výhodou je, že samotné vytvorenie tokenu je veľmi rýchle, rozhranie jednoducho vygeneruje náhodný reťazec. Vďaka tomu, že nenesie žiadne pridané informácie, nenesie ani citlivé informácie o používateľovi. Navyše je jeho platnosť obmedzená (narozdiel od platnosti prihlasovacích údajov), teda jeho zachytenie útočníkom nie je také nebezpečné. Nevýhodou však je, že rozhranie ho nevie bezstavovo overiť, teda ho musí napríklad vyhľadať v~databáze platných tokenov a to je časovo náročné.
 
 
 \subsection{Štruktúrovaný token}
@@ -152,7 +152,7 @@ Na rozdiel od nepriehľadného tokenu štruktúrovaný token obsahuje pridanú i
 
 Aby sa predišlo úniku citlivých informácií z tokenu, je token šifrovaný. Využívajú sa rôzne symetrické aj asymetrické algoritmy. Všetky konkrétne protokoly, ktoré rozoberáme v tejto práci, používajú štruktúrované tokeny a v kapitole \ref{kap:typy} sa venujeme ich vytváraniu a s ním spojenému šifrovaniu alebo hešovaniu tokenov.
 
-Najväčšou výhodou štruktúrovaného tokenu je, že rozhranie ho môže bezstavovo overiť, lebo pozná kľúč, ktorým bol token zašifrovaný, teda ho vie dešifrovať a získať informácie, ktoré nesie. Zo získaných informácií vie rozhranie overiť platnosť tokenu a autorizovať používateľa.
+Najväčšou výhodou štruktúrovaného tokenu je, že rozhranie ho môže bezstavovo overiť, lebo pozná kľúč, ktorým bol token zašifrovaný, teda ho vie dešifrovať a získať informácie, ktoré nesie. Zo získaných informácií vie rozhranie overiť platnosť tokenu a~autorizovať používateľa.
 
 
 \subsection{Fantómový token}
@@ -161,7 +161,7 @@ Ako sme naznačili v úvode podkapitoly, fantómový token \cite{phantom_token} 
 
 Následne, keď klient pošle požiadavku na rozhranie, tak pridá nepriehľadný token. API brána alebo RPS ho preloží na štruktúrovaný token a tento štruktúrovaný token poskytne rozhraniu. Rozhranie ho môže bezstavovo overiť a využiť pridané informácie, ktoré nesie.
 
-Brána alebo RPS síce musí vyhľadať záznam s dvojicou tokenov, kde je kľúčom poslaný nepriehľadný token, ale môže si výsledok uložiť do medzipamäte (napríklad služba Redis \cite{redis}) pre ďalšie požiadavky. Tým sa zvýši priepustnosť brány alebo RPS a zároveň ubudnú nároky na výkonnosť rozhrania. Moderné systémy majú často architektúru mikroslužieb, kde jeden autentifikačný server môže vydávať tokeny autorizujúce požiadavky na viacero rozhraní. V takomto systéme môže byť jedna brána alebo jeden RPS zdieľaný medzi viacerými rozhraniami.
+Brána alebo RPS síce musí vyhľadať záznam s dvojicou tokenov, kde je kľúčom poslaný nepriehľadný token, ale môže si výsledok uložiť do medzipamäte (napríklad služba Redis \cite{redis}) pre ďalšie požiadavky. Tým sa zvýši priepustnosť brány alebo RPS a~zároveň ubudnú nároky na výkonnosť rozhrania. Moderné systémy majú často architektúru mikroslužieb, kde jeden autentifikačný server môže vydávať tokeny autorizujúce požiadavky na viacero rozhraní. V takomto systéme môže byť jedna brána alebo jeden RPS zdieľaný medzi viacerými rozhraniami.
 
 Výhodou oproti obyčajnému štruktúrovanému tokenu je, že klient, teda prehliadač alebo iná aplikácia nedržia v pamäti štruktúrovaný token obsahujúci, aj keď zašifrované, citlivé informácie.
 
@@ -172,4 +172,4 @@ Rozdelený token \cite{split_token} má podobnú schému a výhodu ako fantómov
 
 V schéme rozdeleného tokenu vydá autentifikačný server len štruktúrovaný token. Podpis z tohto tokenu pošle klientovi a do medzipamäte brány alebo RPS zapíše celý token so zahešovaným podpisom ako kľúčom.
 
-Požiadavky od klienta budú obsahovať ako nepriehľadný token získaný podpis a brána alebo RPS ho zahešuje a preloží na štruktúrovaný token pomocou medzipamäte. Token následne spolu s požiadavkou pošle rozhraniu.
+Požiadavky od klienta budú obsahovať ako nepriehľadný token získaný podpis a~brána alebo RPS ho zahešuje a preloží na štruktúrovaný token pomocou medzipamäte. Token následne spolu s požiadavkou pošle rozhraniu.

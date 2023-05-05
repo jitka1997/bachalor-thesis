@@ -8,22 +8,22 @@ V tejto kapitole navrhneme, implementujeme a otestujeme jednoduché rozhranie so
 
 Jednoduché rozhranie sme implementovali v jazyku JavaScript, konkrétne pomocou prostredia Node.js. Použili sme aplikačný rámec Express.js, ktorý umožňuje ľahko implementovať jednoduchý server.
 
-Na vytváranie a validáciu jednotlivých tokenov sme použili knižnice pre JavaScript z tabuľky \ref{tab:implementacie}, ktoré sme použili pri porovnaní popularity tokenov. Pre Biscuits neexistuje knižnica pre JavaScript, preto sme Biscuits v tejto kapitole neporovnávali. Prácu s nepriehľadným tokenom sme implementovali sami. Informácie spojené s nepriehľadným tokenom si ukladáme v databáze. Využili sme jednoduchú databázu sqlite.
+Na vytváranie a validáciu jednotlivých tokenov sme použili knižnice pre JavaScript z~tabuľky \ref{tab:implementacie}, ktoré sme použili pri porovnaní popularity tokenov. Pre Biscuits neexistuje knižnica pre JavaScript, preto sme Biscuits v tejto kapitole neporovnávali. Prácu s~nepriehľadným tokenom sme implementovali sami. Informácie spojené s nepriehľadným tokenom si ukladáme v databáze. Využili sme jednoduchú databázu sqlite.
 
 Klienta vykonávajúceho požiadavky na rozhranie sme tiež naprogramovali v Node.js.
 
 \section{Popis fungovania rozhrania}
 
-Vytvorili sme rozhranie s dvoma koncovými bodmi \textit{signin} a \textit{welcome}. Prvý z nich slúži na získanie tokenu klientom a druhý na vykonanie požiadavky, ktorá bude úspešná len v prípade, že bude obsahovať platný token, ktorý rozhranie úspešne validuje. Na získanie tokenu sa klient musí úspešne autentifikovať pomocou základnej HTTP autentifikácie, teda zaslaním base64url \cite{base64_rfc} zakódovaného mena a hesla v autentifikačnej hlavičke požiadavky.
+Vytvorili sme rozhranie s dvoma koncovými bodmi \textit{signin} a \textit{welcome}. Prvý z nich slúži na získanie tokenu klientom a druhý na vykonanie požiadavky, ktorá bude úspešná len v~prípade, že bude obsahovať platný token, ktorý rozhranie úspešne validuje. Na získanie tokenu sa klient musí úspešne autentifikovať pomocou základnej HTTP autentifikácie, teda zaslaním base64url \cite{base64_rfc} zakódovaného mena a hesla v autentifikačnej hlavičke požiadavky.
 
-Rozhranie overí korektnosť prihlasovacích údajov a ak sú správne vygeneruje token. V reálnom systéme by boli prihlasovacie údaje uložené v databáze, kde by ich rozhranie overilo. My pre jednoduchosť databázu používateľov simulujeme pomocou načítania objektu s používateľmi zo súboru usersDB. V tomto objekte sú používateľské mená a heslá uložené ako dvojice kľúč a hodnota.
+Rozhranie overí korektnosť prihlasovacích údajov a ak sú správne vygeneruje token. V reálnom systéme by boli prihlasovacie údaje uložené v databáze, kde by ich rozhranie overilo. My pre jednoduchosť databázu používateľov simulujeme pomocou načítania objektu s používateľmi zo súboru usersDB. V tomto objekte sú používateľské mená a~heslá uložené ako dvojice kľúč a hodnota.
 
 Po úspešnej autentifikácii klienta vygeneruje rozhranie token a vráti ho klientovi. Klient následne môže token použiť na vykonanie požiadavky na koncový bod \textit{welcome}. Rozhranie overí platnosť tokenu a ak je platný, vykoná požiadavku, teda vráti klientovi uvítaciu správu obsahujúcu jeho prihlasovacie meno, získané z tokenu. Ak token nebol zaslaný alebo zlyhá jeho validácia, rozhranie vráti klientovi chybový kód.
 
 \section{Obsah a generovanie tokenu}
 \label{sec:obsah}
 
-Obsahovo vytvárame token nesúci štyri informácie overované pri autorizácii. Konkrétne čas vypršania platnosti tokenu, prihlasovacie meno používateľa, identifikátor vydavateľa tokenu a identifikátor prijímateľa tokenu. Čas vypršania platnosti tokenu je 5 minút od jeho vydania, identifikátory vydavateľa a prijímateľa sú pevne stanovené hodnoty a prihlasovacie meno je získané z prihlasovacích údajov klienta.
+Obsahovo vytvárame token nesúci štyri informácie overované pri autorizácii. Konkrétne čas vypršania platnosti tokenu, prihlasovacie meno používateľa, identifikátor vydavateľa tokenu a identifikátor prijímateľa tokenu. Čas vypršania platnosti tokenu je 5~minút od jeho vydania, identifikátory vydavateľa a prijímateľa sú pevne stanovené hodnoty a prihlasovacie meno je získané z prihlasovacích údajov klienta.
 
 Informácie sme do obsahu tokenu obsiahli, aby sme demonštrovali využitie údajov z tokenu na autorizáciu požiadavky, prípadne identifikáciu používateľa. Do konkrétneho tokenu sme vložili informácie spôsobom, ktorý nám umožnila špecifikácia daného tokenu a použitá knižnica implementujúca token. Konkrétne:
 
@@ -36,7 +36,7 @@ Informácie sme do obsahu tokenu obsiahli, aby sme demonštrovali využitie úda
     \item Macaroons -- všetky informácie sme do tokenu vložili ako pravidlá prvej strany.
 \end{itemize}
 
-JWT a PASETO, aj vybrané knižnice, ktoré ich implementujú, ponúkajú viacero funkcií na podpísanie a prípadné šifrovanie tokenu. Ostatné tokeny však používajú na podpisovanie jedinú funkciu, vždy variant hešovania s kľúčom. Fernet a Branca navyše šifrujú telo tokenu. Preto sme pre objektívne porovnanie tokenov zvolili pri JWT a PASETO, čo najpodobnejšie funkcie na podpisovanie a taktiež šifrujeme telo tokenu. Kryptografické funkcie použité na podpisovanie a šifrovanie jednotlivých tokenov sú uvedené v tabuľke \ref{tab:funkcie}.
+JWT a PASETO, aj vybrané knižnice, ktoré ich implementujú, ponúkajú viacero funkcií na podpísanie a prípadné šifrovanie tokenu. Ostatné tokeny však používajú na podpisovanie jedinú funkciu, vždy variant hešovania s kľúčom. Fernet a Branca navyše šifrujú telo tokenu. Preto sme pre objektívne porovnanie tokenov zvolili pri JWT a~PASETO, čo najpodobnejšie funkcie na podpisovanie a taktiež šifrujeme telo tokenu. Kryptografické funkcie použité na podpisovanie a šifrovanie jednotlivých tokenov sú uvedené v tabuľke \ref{tab:funkcie}.
 
 \begin{table}
   \begin{center}
@@ -58,7 +58,7 @@ JWT a PASETO, aj vybrané knižnice, ktoré ich implementujú, ponúkajú viacer
 
 \section{Práca s knižnicami}
 
-Pre každý token sme pomocou danej knižnice implementovali 2 funkcie -- \textit{createToken(username)} a \textit{verifyToken(token)}. Funkcia \textit{createToken} vráti nový token s obsahom a formátom popísaným v podkapitole \ref{sec:obsah}. Funkcia \textit{verifyToken} validuje podpis tokenu. Následne dešifruje telo tokenu (ak bolo zašifrované) a validuje jeho obsah. Ako kľuč pre kryptografické funkcie sme používali konštantný náhodne vygenerovaný reťazec s potrebným počtom bitov.
+Pre každý token sme pomocou danej knižnice implementovali 2 funkcie -- \textit{createToken(username)} a \textit{verifyToken(token)}. Funkcia \textit{createToken} vráti nový token s obsahom a formátom popísaným v podkapitole \ref{sec:obsah}. Funkcia \textit{verifyToken} validuje podpis tokenu. Následne dešifruje telo tokenu (ak bolo zašifrované) a validuje jeho obsah. Ako kľuč pre kryptografické funkcie sme používali konštantný náhodne vygenerovaný reťazec s~potrebným počtom bitov.
 
 Jednoduchosť práce s knižnicami implementujúcimi tokeny porovnávame na základe podpory jednoduchého generovania tokenu a štandardných validácií tela tokenu.
 Všetky knižnice podporujú jednoduché podpísanie a prípadné šifrovanie tokenu. Takisto všetky knižnice podporujú validáciu podpisu tokenu. 
@@ -73,7 +73,7 @@ Pre porovnanie rýchlosti spracovania požiadavky sme implementovali jednoduché
 
 Klient teda vykonáva jednu požiadavku bez tokenu, na ktorej vykonanie musí rozhranie vygenerovať nový token a jednu požiadavku s platným tokenom, na ktorej vykonanie musí rozhranie validovať token. Teda v princípe meriame čas generovania a validácie tokenu. Na meranie času vytvorenia tokenu meria klient čas od odoslania požiadavky na autentifikáciu po vrátenie tokenu rozhraním. Na meranie času validácie tokenu meria klient čas od odoslania požiadavky na rozhranie po vrátenie odpovede rozhraním.
 
-Pre presnejšie meranie času vykoná klient 10000 požiadaviek na autentifikáciu a 10000 požiadaviek s platným tokenom a zaznamená priemer a medián nameraných časov. Pri meraní času sme paralelne pustili 5 klientov, ktorých zaznamenané priemery a mediány sme spriemerovali. Výsledky sú uvedené v tabuľke \ref{tab:api_porovnanie}.
+Pre presnejšie meranie času vykoná klient 10000 požiadaviek na autentifikáciu a~10000 požiadaviek s platným tokenom a zaznamená priemer a medián nameraných časov. Pri meraní času sme paralelne pustili 5 klientov, ktorých zaznamenané priemery a mediány sme spriemerovali. Výsledky sú uvedené v tabuľke \ref{tab:api_porovnanie}.
 
 \begin{table}
   \begin{center}
