@@ -25,7 +25,7 @@ Používanie nezabezpečeného spojenia je všeobecne nebezpečné bez ohľadu n
 
 Aj v prípade zabezpečeného spojenia však existujú zraniteľnosti \cite{tsl_vulnerabilities}. Prihlasovacie údaje sú zriedkavo menený identifikátor a teda po ich odchytení sa dajú dlho zneužívať. Okrem samotného úniku citlivých údajov a z toho vyplývajúcich nepríjemností pre používateľa má tento prístup aj ďalšie nevýhody.
 
-Okrem priameho zneužitia získaných hesiel útočníkom, môže útočník ukladať heslá do databázy odchytených hesiel a následne môžu aj iní útočníci túto databázu použiť pri ďalších útokoch. Tento prístup sa nazýva \textit{slovníkový útok} a môže byť veľmi efektívny. \cite{fast_dict_attacks}. Ľudia tiež často používajú podobné heslá na všetky svoje účty. Potom sa podľa istých vzorov odhalených v sade hesiel jedného používateľa dajú ľahšie uhádnuť ďalšie heslá. \cite{password_patterns}.
+Okrem priameho zneužitia získaných hesiel útočníkom, môže útočník ukladať heslá do databázy odchytených hesiel, ktorá môže byť využitá aj inými útočníkmi pri ďalších útokoch. Tento prístup sa nazýva \textit{slovníkový útok} a môže byť veľmi efektívny. \cite{fast_dict_attacks}. Ľudia tiež často používajú podobné heslá na všetky svoje účty. Potom sa podľa istých vzorov odhalených v sade hesiel jedného používateľa dajú ľahšie uhádnuť ďalšie heslá. \cite{password_patterns}.
 
 
 \section{Schéma zabezpečenia s využitím identifikátora sedenia}
@@ -102,7 +102,7 @@ Tokeny využívané v schéme zabezpečenia rozhrania sa dajú rozdeliť podľa 
 
 Prístupový token \cite{access_token} je najzákladnejší a najčastejšie používaný typ tokenu. Tento token vygeneruje autentifikačný server po autentifikácii používateľa a ďalej slúži na autorizáciu v rozsahu, ktorý sa určil v rámci autentifikácie konkrétneho používateľa. Prístupový token môže mať rôzne formáty podľa toho ako funguje schéma zabezpečenia rozhrania.
 
-Token je spojený s istými údajmi o používateľovi, ako napríklad identifikátor a~prístupové práva. Tieto údaje môžu byť uložené priamo v tokene alebo na serveri, v~závislosti od toho aký formát tokenu je použitý. Zároveň je s tokenom spojený aj časový limit platnosti tokenu, ktorý býva kvôli bezpečnosti krátky. Po odchytení tokenu totiž môže útočník vystupovať v mene používateľa, ktorého údaje sú uložené v tokene. Po uplynutí časového limitu platnosti tokenu sa používateľ musí opätovne autentifikovať voči autentifikačnému serveru a ten mu vydá nový token.
+Token je spojený s istými údajmi o používateľovi, ako napríklad identifikátor a~prístupové práva. Tieto údaje môžu byť uložené priamo v tokene alebo na serveri, v~závislosti od toho aký formát tokenu je použitý. Zároveň je s tokenom spojený aj časový limit platnosti, ktorý býva kvôli bezpečnosti krátky. Po odchytení tokenu totiž môže útočník vystupovať v mene používateľa, ktorého údaje sú uložené v tokene. Po uplynutí časového limitu platnosti tokenu sa používateľ musí opätovne autentifikovať voči autentifikačnému serveru a ten mu vydá nový token.
 
 
 \subsection{Nositeľský token}
@@ -133,7 +133,7 @@ Identifikačný token využíva napríklad protokol OpenID Connect (OIDC), čo j
 \section{Formáty tokenov}
 \label{sec:formats}
 
-Už sme spomenuli, že existujú rôzne typy tokenov, no iba pri identifikačnom tokene je striktne daný formát tokenu. Pri ostatných typoch sa stretávame s rôznymi formátmi tokenu. Vo všeobecnosti rozoznávame dva formáty tokenov a to nepriehľadné (angl. opaque) a štruktúrované. Existujú aj hybridné formáty, ktoré kombinujú výhody obidvoch spomínaných typov, no pri nich sa dá hovoriť skôr o istých vzoroch ako o formátoch. Najpoužívanejšie sú fantómové a rozdelené (angl. split) tokeny.
+Už sme spomenuli, že existujú rôzne typy tokenov, no iba pri identifikačnom tokene je striktne daný formát tokenu. Pri ostatných typoch sa stretávame s rôznymi formátmi tokenu. Vo všeobecnosti rozoznávame dva formáty tokenov a to nepriehľadné (angl. opaque) a štruktúrované tokeny. Existujú aj hybridné formáty, ktoré kombinujú výhody obidvoch spomínaných typov, no pri nich sa dá hovoriť skôr o istých vzoroch ako o~formátoch. My predstavíme dva hybridné formáty a to konkrétne fantómové a~rozdelené (angl. split) tokeny.
 
 Tokeny často zaručujú ochranu autenticity a integrity. Vybrané tokeny, ktoré porovnávame v tejto práci, používajú rôzne kryptografické algoritmy na zabezpečenie integrity a autenticity tokenu. Využíva sa buď asymetrické šifrovanie alebo hešovanie s kľúčom \cite{hmac_povodny}. Výsledkom týchto algoritmov je buď digitálny podpis alebo hešovaný autentifikačný kód (HMAC). V celej práci budeme v oboch prípadoch hovoriť o podpise tokenu. A proces ich vytvárania budeme nazývať podpisovanie. V prípade, že budeme chcieť hovoriť iba o podpise, ktorý vznikol pomocou asymetrického šifrovania, budeme explicitne hovoriť o digitálnom podpise.
 
@@ -163,7 +163,7 @@ Následne, keď klient pošle požiadavku na rozhranie, tak pridá nepriehľadn�
 
 Brána alebo RPS síce musí vyhľadať záznam s dvojicou tokenov, kde je kľúčom poslaný nepriehľadný token, ale môže si výsledok uložiť do medzipamäte (napríklad služba Redis \cite{redis}) pre ďalšie požiadavky. Tým sa zvýši priepustnosť brány alebo RPS a~zároveň ubudnú nároky na výkonnosť rozhrania. Moderné systémy majú často architektúru mikroslužieb, kde jeden autentifikačný server môže vydávať tokeny autorizujúce požiadavky na viacero rozhraní. V takomto systéme môže byť jedna brána alebo jeden RPS zdieľaný medzi viacerými rozhraniami.
 
-Výhodou oproti obyčajnému štruktúrovanému tokenu je, že klient, teda prehliadač alebo iná aplikácia nedržia v pamäti štruktúrovaný token obsahujúci, aj keď zašifrované, citlivé informácie.
+Výhodou oproti obyčajnému štruktúrovanému tokenu je, že klient nedrží v pamäti žiadne citlivé informácie.
 
 
 \subsection{Rozdelený token}

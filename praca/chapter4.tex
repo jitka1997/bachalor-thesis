@@ -2,17 +2,17 @@
 
 \label{kap:prakticke} % id kapitoly pre prikaz ref
 
-V tejto kapitole navrhneme, implementujeme a otestujeme jednoduché rozhranie so schémou zabezpečenia využívajúcou jednotlivé tokeny popísané v kapitole \ref{kap:typy} a teoreticky porovnané v kapitole \ref{kap:teoreticke}. Nepriehľadný token budeme, rovnako ako v prechádzajúcej kapitole, chápať ako náhodný reťazec podpísaný pomocou hešovania s kľúčom. Cieľom implementácie je porovnať rýchlosť spracovania požiadaviek využívajúcich rôzne tokeny na autorizáciu a jednoduchosť práce s knižnicami implementujúcimi jednotlivé tokeny vo vybranom programovacom jazyku. Implementácia môže zároveň slúžiť ako základ pre implementovanie jednoduchej schémy zabezpečenia a jej integrovanie s vybranými knižnicami. Zdrojový kód je dostupný na GitHube\footnote{Zdrojový kód je dostupný na adrese https://github.com/jitka1997/bachelor-thesis/tree/main/simpleAPI}.
+V tejto kapitole navrhneme, implementujeme a otestujeme jednoduché rozhranie so schémou zabezpečenia využívajúcou jednotlivé tokeny popísané v kapitole \ref{kap:typy} a teoreticky porovnané v kapitole \ref{kap:teoreticke}. Nepriehľadný token budeme, rovnako ako v prechádzajúcej kapitole, chápať ako náhodný reťazec podpísaný pomocou hešovania s kľúčom. Cieľom implementácie je porovnať rýchlosť spracovania požiadaviek využívajúcich rôzne tokeny na autorizáciu a jednoduchosť práce s knižnicami implementujúcimi jednotlivé tokeny vo vybranom programovacom jazyku. Implementácia môže zároveň slúžiť ako základ pre implementovanie jednoduchej schémy zabezpečenia a jej integrovanie s vybranými knižnicami. Zdrojový kód je dostupný na platforme GitHub\footnote{Zdrojový kód je dostupný na adrese https://github.com/jitka1997/bachelor-thesis/tree/main/simpleAPI}.
 
 \section{Použité technológie}
 
-Jednoduché rozhranie sme implementovali v jazyku JavaScript, konkrétne pomocou prostredia Node.js. Použili sme aplikačný rámec Express.js, ktorý umožňuje ľahko implementovať jednoduchý server.
+Jednoduché rozhranie sme implementovali v jazyku JavaScript, konkrétne pomocou prostredia Node.js. Použili sme knižnicu Express.js, ktorá umožňuje jednoducho implementovať jednoduchý server.
 
 Na vytváranie a validáciu jednotlivých tokenov sme použili knižnice pre JavaScript z~tabuľky \ref{tab:implementacie}, ktoré sme použili pri porovnaní popularity tokenov. Pre Biscuits neexistuje knižnica pre JavaScript, preto sme Biscuits v tejto kapitole neporovnávali. Prácu s~nepriehľadným tokenom sme implementovali sami. Informácie spojené s nepriehľadným tokenom si ukladáme v databáze. Využili sme jednoduchú databázu sqlite.
 
 Klienta vykonávajúceho požiadavky na rozhranie sme tiež naprogramovali v Node.js.
 
-\section{Popis fungovania rozhrania}
+\section{Popis rozhrania}
 
 Vytvorili sme rozhranie s dvoma koncovými bodmi \textit{signin} a \textit{welcome}. Prvý z nich slúži na získanie tokenu klientom a druhý na vykonanie požiadavky, ktorá bude úspešná len v~prípade, že bude obsahovať platný token, ktorý rozhranie úspešne validuje. Na získanie tokenu sa klient musí úspešne autentifikovať pomocou základnej HTTP autentifikácie, teda zaslaním base64url \cite{base64_rfc} zakódovaného mena a hesla v autentifikačnej hlavičke požiadavky.
 
@@ -38,7 +38,7 @@ Informácie sme do obsahu tokenu obsiahli, aby sme demonštrovali využitie úda
 
 JWT a PASETO, aj vybrané knižnice, ktoré ich implementujú, ponúkajú viacero funkcií na podpísanie a prípadné šifrovanie tokenu. Ostatné tokeny však používajú na podpisovanie jedinú funkciu, vždy variant hešovania s kľúčom. Fernet a Branca navyše šifrujú telo tokenu. Preto sme pre objektívne porovnanie tokenov zvolili pri JWT a~PASETO, čo najpodobnejšie funkcie na podpisovanie a taktiež šifrujeme telo tokenu. Kryptografické funkcie použité na podpisovanie a šifrovanie jednotlivých tokenov sú uvedené v tabuľke \ref{tab:funkcie}.
 
-\begin{table}
+\begin{table}[H]
   \begin{center}
     \caption{Kryptografické funkcie na podpisovanie a šifrovanie tokenov}
     \label{tab:funkcie} % create a label for the table, after caption
@@ -105,6 +105,6 @@ Vidíme, že nepriehľadný token je výrazne pomalší ako ostatné tokeny. Kon
 
 Ďalej si všimnime, že JWT a PASETO majú skoro identické časy pri všetkých meraných hodnotách. Tento výsledok je pri použití podobných kryptografických funkcií očakávaný, lebo ide o veľmi podobné tokeny. Fernet a Branca sú dva najrýchlejšie tokeny, čo je pravdepodobne spôsobené jednoduchosťou ich formátu. Branca je však priemerne 1.3 krát pomalší pri generovaní a 1.1 krát pomalší pri validácii ako Fernet. Tento rozdiel môžeme prisúdiť použitiu rôznych kryptografických funkcií alebo inej implementácii.
 
-Prekvapivým výsledkom je, že Macaroons je najpomalší pri generovaní aj validácii, pretože okrem nepriehľadného tokenu ide o jediný token, ktorého telo sa nešifruje. Tento výsledok je možné vysvetliť tým, že Macaroons je najkomplexnejší token, formátom aj procesom generovania. Pri generovaní sa aplikuje podpisová funkcia raz pri vytvorení nového tokenu a následne toľko krát koľko pravidiel do tokenu pridávame, v našom prípade štyri krát. Podobne pri validácii tokenu sa musí vypočítať podpis tokenu postupnou aplikáciu podpisovej funkcie na každé pravidlo v tele tokenu. Macaroons bol vytvorený pre komplexné systémy pre jeho flexibilitu spočívajúcu v možnosti pridávať pravidlá ľubovoľnou entitou a elegantného riešenia zapojenia tretích strán do autorizácie pomocou pravidiel tretích strán. Preto je pre jednoduchý systém, ako je nami implementované rozhranie, Macaroons nevhodný.
+Prekvapivým výsledkom je, že Macaroons je najpomalší pri generovaní aj validácii, pretože okrem nepriehľadného tokenu ide o jediný token, ktorého telo sa nešifruje. Tento výsledok je možné vysvetliť tým, že Macaroons je najkomplexnejší token, formátom aj procesom generovania. Pri generovaní sa aplikuje podpisová funkcia raz pri vytvorení nového tokenu a následne toľko krát koľko pravidiel do tokenu pridávame, v~našom prípade štyrikrát. Podobne pri validácii tokenu sa musí vypočítať podpis tokenu postupnou aplikáciou podpisovej funkcie na každé pravidlo v tele tokenu. Macaroons bol vytvorený pre komplexné systémy pre jeho flexibilitu spočívajúcu v možnosti pridávať pravidlá ľubovoľnou entitou a elegantného riešenia zapojenia tretích strán do autorizácie pomocou pravidiel tretích strán. Preto je pre jednoduchý systém, ako je nami implementované rozhranie, Macaroons nevhodný.
 
 Porovnaním mediánu a priemeru hodnôt vidíme, že medián je takmer vždy menší oproti priemeru. Jedinou výnimkou je validácia nepriehľadného tokenu. Menší medián ako priemer v nameraných hodnotách značí, že medzi nameranými hodnotami bolo viac vysokých extrémov. Rozhranie aj klienta sme spúšťali lokálne z jedného počítaču, teda sa mohlo stať, že výkonnosť rozhrania ovplyvnili iné bežiace procesy na počítači, čo spôsobilo aj výkyvy v nameraných hodnotách.

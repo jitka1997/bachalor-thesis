@@ -77,9 +77,9 @@ Telo a päta sú vo forme JSON objektu, ktorý je serializovaný pomocou base64u
 
 Pri vytváraní tokenu sa musíme najprv rozhodnúť pre verziu a využitie podľa toho aké bezpečnostné požiadavky máme na token. Následne vytvoríme telo tokenu obsahujúce informácie, ktoré chceme pomocou tokenu prenášať, napríklad informácie o vzniku tokenu, jeho platnosti, jeho autorovi, či určenom subjekte. Ďalej môžeme pridať ďalšie informácie do päty tokenu ako napríklad identifikátor kľúča kryptografickej funkcie. 
 
-Ak sme zvolili lokálne využitie, tak telo tokenu zašifrujeme. Následne vypočítame podpis z tela a päty tokenu. Šifrovanie aj podpisovanie sa deje pomocou kryptografickej funkcie vybratej podľa verzie a využitia. Nakoniec všetky časti spojíme do jedného reťazca a oddelíme bodkami.
+Ak sme zvolili lokálne využitie, tak telo tokenu zašifrujeme. Následne vypočítame podpis z tela a päty tokenu. Šifrovanie aj podpisovanie sa dosahuje pomocou kryptografickej funkcie vybratej podľa verzie a využitia. Nakoniec všetky časti spojíme do jedného reťazca a oddelíme bodkami.
 
-Validácia tokenu je inverzný proces ku generovaniu. Najprv rozdelíme reťazec na časti a zistíme verziu a využitie tokenu a podľa toho vyberieme použitú kryptografickú funkciu. Následne zistíme, či je podpis tokenu platný pomocou adekvátnej kryptografickej funkcie a kľúča. Ak mal token lokálne využitie dešifrujeme jeho telo a skontrolujeme časovú platnosť tokenu, ak to využívaná schéma podporuje a telo obsahuje informácie o platnosti tokenu.
+Validácia tokenu je komplementárny proces ku generovaniu. Najprv rozdelíme reťazec na časti a zistíme verziu a využitie tokenu a podľa toho vyberieme použitú kryptografickú funkciu. Následne zistíme, či je podpis tokenu platný pomocou adekvátnej kryptografickej funkcie a kľúča. Ak mal token lokálne využitie dešifrujeme jeho telo a skontrolujeme časovú platnosť tokenu, ak to využívaná schéma podporuje a telo obsahuje informácie o platnosti tokenu.
 
 Príklad vytvorenia PASETO tokenu verzie \textit{v2} s verejným využitím a telom obsahujúcim oprávnenie \textit{iss} a \textit{iat} je zobrazený na obrázku \ref{fig:paseto_token}.
 
@@ -99,7 +99,7 @@ Pôvodne Fernet vznikol ako nástroj na zasielanie bezpečných správ v platfor
 
 Fernet je štruktúrovaný token, lebo v sebe nesie rôzne informácie, no nijak nešpecifikuje formát týchto informácií. Väčšina implementácií s nimi pracuje ako s obyčajným reťazcom znakov. 
 
-Token je navrhnutý s možnosťou pridania viacerých verzií, no v súčasnosti existuje len jediná verzia. V tejto verzií je obsah tokenu zašifrovaný pomocou AES-128-CBC \cite{aes_cbc} a celý token je podpísaný pomocou HMAC-SHA256 \cite{hmac}. Z toho vyplýva, že Fernet zaručuje autentickosť, integritu a dôvernosť.
+Token je navrhnutý s možnosťou pridania viacerých verzií, no v súčasnosti existuje len jediná verzia. V tejto verzii je obsah tokenu zašifrovaný pomocou AES-128-CBC \cite{aes_cbc} a celý token je podpísaný pomocou HMAC-SHA256 \cite{hmac}. Z toho vyplýva, že Fernet zaručuje autentickosť, integritu a dôvernosť.
 
 \subsection{Štruktúra Fernet}
 
@@ -167,17 +167,17 @@ Príklad Branca tokenu pred base64url zakódovaním s telom obsahujúcim reťaze
 
 \subsection{Generovanie a validácia Branca}
 
-Vygenerujeme 192 bitový reťazec znakov, ktorý bude slúžiť ako príležitostné slovo a~zachytíme aktuálny čas do časovej pečiatky. Vyrobíme hlavičku zreťazením verzie, časovej pečiatky a príležitostné slovo. Následne zašifrujeme telo tokenu pomocou šifrovacej funkcie, do ktorej vložíme tajný kľúč, príležitostné slovo a ako dodatočnú informáciu použijeme hlavičku. Funkcia vráti zašifrované telo a hešovaný autentifikačný kód vypočítaný aj z hlavičky. Nakoniec všetky časti spojíme do jedného reťazca a zakódujeme pomocou \textit{base62} kódovania \cite{base62}.
+Vygenerujeme 192 bitový reťazec znakov, ktorý bude slúžiť ako príležitostné slovo a~zachytíme aktuálny čas do časovej pečiatky. Vyrobíme hlavičku zreťazením verzie, časovej pečiatky a príležitostného slova. Následne zašifrujeme telo tokenu pomocou šifrovacej funkcie, do ktorej vložíme tajný kľúč, príležitostné slovo a ako dodatočnú informáciu použijeme hlavičku. Funkcia vráti zašifrované telo a hešovaný autentifikačný kód vypočítaný aj z hlavičky. Nakoniec všetky časti spojíme do jedného reťazca a zakódujeme pomocou \textit{base62} kódovania \cite{base62}.
 
-Pri validácií tokenu ho ako prvé dekódujeme. Následne overíme, že prvý bajt je 0xBA a token rozdelíme na jednotlivé časti. Dešifrujeme telo a overíme podpis pomocou funkcie XChaCha20-Poly1305 AEAD. Následne môžeme overiť napríklad časovú platnosť tokenu pomocou dodatočných informácií v tele tokenu a časovej pečiatky.
+Pri validácii tokenu ho ako prvé dekódujeme. Následne overíme, že prvých 8 bitov je 0xBA a token rozdelíme na jednotlivé časti. Dešifrujeme telo a overíme podpis pomocou funkcie XChaCha20-Poly1305 AEAD. Následne môžeme overiť napríklad časovú platnosť tokenu pomocou dodatočných informácií v tele tokenu a časovej pečiatky.
 
 \section{Macaroons}
 
 Macaroons sú tokeny s kontextovými pravidlami. Vznikli v rámci výskumného projektu Belay v spoločnosti Google \cite{belay}. Google predstavil Macaroons v práci z roku 2014 \cite{macaroons_paper}. Macaroons sú autorizačné poverenia (angl. credentials) pre cloudové služby s~podporou decentralizovanej delegácie medzi službami v rámci cloudu. Ľubovoľná entita vlastniaca token autorizujúci určitý prístup môže tento token \textit{zoslabiť} alebo aj \textit{kontextovo obmedziť} a posunúť ďalšej entite. Zoslabenie aj kontextové obmedzenie sa realizuje pomocou pravidiel. Entitu generujúcu nový Macaroons token budeme označovať ako \textit{cieľová služba}.
 
-Pravidlá sa delia podľa strany, ktorá potvrdí alebo zabezpečí ich naplnenie na pravidlá prvej a tretej strany. Pravidlá prvej strany sú jednoduché predikáty. Na autorizáciu požiadavky sprevádzanej Macaroons tokenom sa musia všetky tieto predikáty vyhodnotiť pravdivo v rámci kontextu danej požiadavky. Kontextom požiadavky môže byť napríklad aktuálny čas alebo IP adresa odosielateľa. Pravidlom prvej strany môže byť napríklad obmedzenie typu požiadaviek iba na čítacie. Pravidlá tretích strán vyžadujú dôkaz o nejakej skutočnosti od tretej strany. Pri dôkaze od tretích strán sa využíva princíp dôkazu držiteľa kľúča, kde tretia strana dokáže, že pozná nejaký tajný kľúč napríklad tak, že podpíše zadaný reťazec znakov. Pravidlom tretej strany môže byť požiadavka na doloženie dôkazu od nejakej autentifikačnej služby (napríklad autentifikačnej služby Google), že používateľ je autentifikovaný. Tento dôkaz musí získať používateľ pred odoslaním požiadavky na rozhranie a pri jej odoslaní ho priloží k požiadavke spolu s originálnym tokenom. Dôkaz má formu špeciálneho tokenu, ktorý predstavíme v podkapitole \ref{sec:macaroon_request}. Pravidlá tretích strán sa používajú na delegáciu autorizácie medzi službami.
+Pravidlá sa delia podľa strany, ktorá potvrdí alebo zabezpečí ich naplnenie na pravidlá prvej a tretej strany. Pravidlá prvej strany sú jednoduché predikáty. Na autorizáciu požiadavky sprevádzanej Macaroons tokenom sa musia všetky tieto predikáty vyhodnotiť pravdivo v rámci kontextu danej požiadavky. Kontextom požiadavky môže byť napríklad aktuálny čas alebo IP adresa odosielateľa. Pravidlom prvej strany môže byť napríklad obmedzenie typu požiadaviek iba na čítacie. Pravidlá tretích strán vyžadujú dôkaz o nejakej skutočnosti od tretej strany. Pri dôkaze od tretích strán sa využíva princíp dôkazu držiteľa kľúča, kde tretia strana dokáže, že pozná nejaký tajný kľúč napríklad tak, že podpíše zadaný reťazec znakov, ktorý vie cieľová služba overiť. Pravidlom tretej strany môže byť požiadavka na doloženie dôkazu od nejakej autentifikačnej služby (napríklad autentifikačnej služby Google), že používateľ je autentifikovaný. Tento dôkaz musí získať používateľ pred odoslaním požiadavky na rozhranie a~pri jej odoslaní ho priloží k požiadavke spolu s originálnym tokenom. Dôkaz má formu špeciálneho tokenu, ktorý predstavíme v podkapitole \ref{sec:macaroon_request}. Pravidlá tretích strán sa používajú na delegáciu autorizácie medzi službami.
 
-Macaroons zabezpečuje ochranu integrity a autenticity pomocou hešovaného autentifikačného kódu. Pôvodná práca \cite{macaroons_paper} nevyžaduje použitie konkrétnej hešovacej funkcie, no prvá implementácia \cite{macaroons_git} využíva funkciu HMAC-SHA256 \cite{hmac}.
+Macaroons zabezpečuje ochranu integrity a autenticity pomocou hešovaného autentifikačného kódu. Pôvodná práca \cite{macaroons_paper} nevyžaduje použitie konkrétnej hešovacej funkcie, no napríklad implementácia \cite{macaroons_git} využíva funkciu HMAC-SHA256 \cite{hmac}.
 
 \subsection{Štruktúra Macaroons}
 
@@ -209,15 +209,17 @@ Každá cieľová služba disponuje tajným kľúčom, prípadne spôsobom ako h
 
 Cieľová služba vytvorí nový token z danej lokácie, identifikátora a tajného kľúča $sk$ tak, že podpíše identifikátor pomocou $sk$ a spojí lokáciu, identifikátor a podpis. Podpis vypočíta ako $HMAC(sk, identifikátor)$.
 
-Takto vytvorený token si môžeme predstaviť ako zlatý kľúč, ktorý autorizuje ľubovoľnú požiadavku na cieľovú službu. Cieľová služba môže ďalej token poslať inej službe. Ako sme uviedli v úvode podkapitoly, každá služba môže token zoslabiť alebo kontextovo obmedziť pridaním pravidiel.
+Takto vytvorený token si môžeme predstaviť ako univerzálny kľúč, ktorý autorizuje ľubovoľnú požiadavku na cieľovú službu. Cieľová služba môže ďalej token poslať inej službe. Ako sme uviedli v úvode podkapitoly, každá služba môže token zoslabiť alebo kontextovo obmedziť pridaním pravidiel.
 
-Pravidlá prvej strany pridá služba do tokenu $M$ tak, že pridá reťazec popisujúci pravidlo (tento reťazec označme $rule$) do tokenu a vypočíta nový podpis tokenu pomocou doterajšieho podpisu $M.signature$ ako $HMAC(M.signature, rule)$. Takto vytvoreným podpisom nahradí predchádzajúci podpis. Tento proces môže zopakovať viac krát a tým pridať ľubovoľný počet pravidiel.
+Pravidlá prvej strany pridá služba do tokenu $M$ tak, že pridá reťazec popisujúci pravidlo (tento reťazec označme ako $rule$) do tokenu a vypočíta nový podpis tokenu pomocou doterajšieho podpisu $M.signature$ ako $HMAC(M.signature, rule)$. Takto vytvoreným podpisom nahradí predchádzajúci podpis. Tento proces môže zopakovať viac krát a tým pridať ľubovoľný počet pravidiel.
 
 Na pridanie pravidla tretej strany musí mať služba vzťah s danou službou tretej strany a dôverovať jej. Služba $A$ pridávajúca pravidlo vygeneruje koreňový kľúč pravidla $RK$ a potrebuje zabezpečiť, aby ho vedela zderivovať daná služba tretej strany $B$ ako aj cieľová služba $CS$. 
 
 Prvý prípad môže služba $A$ zabezpečiť viacerými spôsobmi napríklad tak, že pošle kľúč a pravidlo službe $B$ cez zabezpečený kanál a tá jej vráti jeho identifikátor $cId$. Alebo ak zverejňuje služba $B$ verejný kľúč, prípadne služby zdieľajú tajný kľúč, môže služba $A$ vytvoriť $cId$ zašifrovaním $RK$ a pravidla pomocou šifrovacieho kľúča $cRK$ (verejný kľúč služby $B$ alebo zdieľaný tajný kľúč). Druhý prípad zabezpečí služba $A$ symetrickým zašifrovaním $RK$ pomocou podpisu tokenu. Takto vzniknutý reťazec označme $vId$.
 
 Reťazec reprezentujúci pravidlo tretej stany je zreťazenie lokácie služby tretej strany, $cId$ a $vId$, označme tento reťazec $rule_B$. Služba $A$ vloží $rule_B$ do zoznamu pravidiel tokenu $M$ a vytvorí nový podpis tokenu pomocou aktuálneho podpisu tokenu $M.signature$ ako $HMAC(M.signature, rule_B)$. Príklad pridania pravidla tretej strany je na obrázku \ref{fig:add_caveat}. Služba tretej strany vie z $cId$ odvodiť koreňový kľúč pravidla, lebo $cId$ buď sama vytvorila alebo pozná kľúč na dešifrovanie $cId$. Cieľová služba pozná koreňový kľúč tokenu, teda si vie pomocou postupného podpisovania pravidiel odvodiť kľúč pre dešifrovanie $vId$ a dešifrovaním $vId$ získa koreňový kľúč pravidla.
+
+Ako príklad využitia pravidla tretej strany si môžeme službu $A$ predstaviť ako službu spravujúcu nejaké fórum. Cieľová služba je v tomto prípade iná služba, ktorá autorizuje požiadavky na fórum. Fórum vlastní token $M$, oprávňujúci pridať príspevok na fórum. Používateľka Alica chce pridať príspevok na fórum. Fórum pridá do tokenu $M$ pravidlo tretej strany, vyžadujúce potvrdenie od autentifikačného serveru, že používateľ je naozaj Alica a pošle upravený $M$ Alici. Alica preskenuje $M$ a nájde pravidlo tretej strany s autentifikačným serverom ako lokáciou. Pošle toto pravidlo autentifikačnému serveru, ktorý po prečítaní pravidla vyzve Alicu aby sa autentifikovala prihlasovacím menom a~heslom. Ak sa Alica úspešne autentifikuje, autentifikačný server vráti Alici dôkaz, že toto pravidlo je splnené a Alica teraz môže poslať požiadavku na fórum spolu s~$M$~a~priloženým dôkazom od autentifikačného serveru. Fórum prenechá validáciu $M$~a~priloženého dôkazu na cieľovú službu. Ak je validácia úspešná, pridá služba spravujúca fórum príspevok od Alice na fórum. Presný tvar dôkazu od autentifikačného serveru popíšeme v nasledujúcej podkapitole.
 
 \begin{figure}
     %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
@@ -229,7 +231,7 @@ Reťazec reprezentujúci pravidlo tretej stany je zreťazenie lokácie služby t
     \label{fig:add_caveat}
 \end{figure}
 
-Tvorba podpisu tokenu teda zodpovedá reťazovej aplikácií funkcie HMAC na identifikátor a pravidlá tokenu. Hešovanie je ireverzibilná operácia, preto nie je možné pravidlá odstraňovať, lebo nato by bolo potrebné vypočítať predchádzajúci podpis tokenu. To je možné iba podpísaním identifikátora koreňovým kľúčom a následným podpisovaním pravidiel vždy pomocou posledného podpisu ako kľúča.
+Tvorba podpisu tokenu teda zodpovedá reťazovej aplikácii funkcie HMAC na identifikátor a pravidlá tokenu. Hešovanie je ireverzibilná operácia, preto nie je možné pravidlá odstraňovať, lebo nato by bolo potrebné vypočítať predchádzajúci podpis tokenu. To je možné iba podpísaním identifikátora koreňovým kľúčom a následným podpisovaním pravidiel vždy pomocou posledného podpisu ako kľúča.
 
 \subsection{Vytvorenie požiadavky s Macaroons tokenom}
 \label{sec:macaroon_request}
@@ -250,6 +252,8 @@ Tieto dôkazy sú reprezentované \textit{vybíjacími tokenmi} (angl. discharge
 
 Keď klient získa vybíjací token pre každé pravidlo tretej strany, vytvorí požiadavku na cieľovú službu, ku ktorej priloží Macaroons token a všetky vybíjacie tokeny.
 
+V príklade z predchádzajúcej podkapitoly je práve vybíjací token dôkazom od autentifikačného serveru, ktorý server zašle Alici po úspešnej autentifikácii.
+
 Vybíjacie tokeny sú silnými dôkazmi od tretích strán, dokazujú splnenie pravidla s~rovnakým $cId$ a koreňovým kľúčom pravidla v každom Macaroons tokene. Ak by klient poslal požiadavku s vybíjacími tokenmi inej ako cieľovej službe (napríklad ako výsledok phishing útoku), táto služba môže jednoducho zneužiť vybíjacie tokeny klienta na dôkaz splnenia pravidiel vo vlastných tokenoch. Preto je potrebné aby klient vybíjacie tokeny zviazal s jeho Macaroons tokenom ešte predtým ako vytvorí požiadavku.
 
 Zviazanie pôvodného Macaroons tokenu $M$ s vybíjacím tokenom $M'$ prebieha úpravou podpisu $M'$. Špecifikácia necháva otvorené, ako presne má táto úprava vyzerať. Jedna z možných implementácií by bola vytvoriť nový podpis $M'$ zahešovaním podpisov $M$ a $M'$ pomocou hešovacej funkcie bez kľúča (H), napríklad SHA-256. Nový podpis $M'.signature$ by sa potom vypočítal ako $M'.signature = H(M.signature, M'.signature)$.
@@ -263,7 +267,7 @@ Splnenie pravidiel prvej strany overí cieľová služba overením splnenia pred
 
 \section{Biscuits}
 
-Ako posledný predstavíme najmladší token rozoberaný v tejto práci. Biscuits token bol predstavený v roku 2021 v blogu od spoluautora z firmy Clever Cloud \cite{biscuits_blog}. Vo voľne dostupnom repozitári \cite{biscuits_git} nájdeme detailne popísanú motiváciu a vývoj tokenu. Pôvodne bol Biscuits implementovaný v jazyku Rust, no v súčasnosti je k dispozícii aj implementácia v ďalších jazykoch, všetky nájdeme v repozitári \cite{biscuits_git}.
+Ako posledný predstavíme najmladší token rozoberaný v tejto práci. Biscuits token bol predstavený v roku 2021 v blogu od spoluautora z firmy Clever Cloud \cite{biscuits_blog}. Vo voľne dostupnom repozitári \cite{biscuits_git} nájdeme detailne popísanú motiváciu a vývoj tokenu. Pôvodne bol Biscuits implementovaný v jazyku Rust, no v súčasnosti sú k dispozícii aj implementácie v ďalších jazykoch, všetky nájdeme v repozitári \cite{biscuits_git}.
 
 Biscuits bol inšpirovaný Macaroons, implementuje podobnú schému zabezpečenia aj funkcionality. Rovnako dovoľuje delegovať autorizáciu medzi službami a ľubovoľná entita vlastniaca token ho môže \textit{zoslabiť} alebo aj \textit{kontextovo obmedziť}. Hlavným rozdielom oproti Macaroons je, že Biscuits tokeny používajú na postupné vytváranie podpisu asymetrické šifrovanie, konkrétne podpisovú funkciu Ed25519 \cite{ed_rfc}. Ďalším veľkým rozdielom je, že Biscuits používa na modelovanie práv, kontrol a dát v rámci tokenu špeciálny variant Datalogu bez negácie a na konkrétnych dátových typoch \cite{datalog_bis}.
 
@@ -308,4 +312,4 @@ Politiky definujú väčšie kontroly, taktiež pozostávajú zo zoznamu dotazov
 
 \subsection{Delegácia časti autorizácie na tretiu stranu}
 
-Každá služba môže využiť inú službu na nejakú časť autorizácie. Na tento účel slúžia externé bloky. Ak chce služba $A$ delegovať autorizáciu na službu $B$, vytvorí blok s~anotáciou obsahujúcou verejný kľúč služby $B$ a vytvorí kontrolu, ktorá používa fakty, ktoré vie zabezpečiť len služba $B$. Následne pošle službe $B$ informácie potrebné pre autorizáciu danej požiadavky službou $B$, ktorá vykoná ľubovoľné operácia nutné pre autorizáciu danej požiadavky a ak je úspešná vráti službe $A$ nový externý blok obsahujúci potrebné fakty a kontroly. 
+Každá služba môže využiť inú službu na nejakú časť autorizácie. Na tento účel slúžia externé bloky. Ak chce služba $A$ delegovať autorizáciu na službu $B$, vytvorí blok s~anotáciou obsahujúcou verejný kľúč služby $B$ a vytvorí kontrolu, ktorá používa fakty, ktoré vie zabezpečiť len služba $B$. Následne pošle službe $B$ informácie potrebné pre autorizáciu danej požiadavky službou $B$, ktorá vykoná ľubovoľné operácie nutné pre autorizáciu danej požiadavky a ak je úspešná vráti službe $A$ nový externý blok obsahujúci potrebné fakty a kontroly. 
