@@ -2,9 +2,9 @@
 \addcontentsline{toc}{chapter}{Úvod} % rucne pridanie do obsahu
 \markboth{Úvod}{Úvod} % vyriesenie hlaviciek
 
-Pri nie plne verejných aplikačných rozhraniach (API) je potrebné navrhnúť spôsob autentifikácie a autorizácie. Tento spôsob a jeho riadenie sa nazýva schéma zabezpečenia API.
+Pri aplikačných rozhraniach (API), ktoré aspoň z časti nie sú verejné, je potrebné navrhnúť spôsob autentifikácie a autorizácie. Tento spôsob a jeho riadenie sa nazýva schéma zabezpečenia API. Úlohou API tokenu v schéme zabezpečenia je prenášať informácie nutné pre autorizáciu požiadavky klienta na API. Tieto informácie môžu byť napríklad identifikátor používateľa, jeho prístupové práva, čas platnosti tokenu a podobne. API token väčšinou získa používateľ úspešnou autentifikáciou voči API.
 
-Cieľom tejto práce je porovnanie konkrétnych API tokenov. API token slúži na autorizáciu požiadaviek na API. Naša práca môže slúžiť ako základ pri vytváraní schémy zabezpečenia v rámci vývoja API, konkrétne pri výbere adekvátneho API tokenu ku štruktúre a funkcionalite API. V práci sa zameriame na vybrané API tokeny, konkrétne: Nepriehľadný token, JWT, PASETO, Fernet, Braca, Macaroons a Biscuits. 
+Cieľom tejto práce je porovnanie konkrétnych API tokenov. Naša práca môže slúžiť aj ako základ pri vytváraní schémy zabezpečenia v rámci vývoja API, konkrétne pri výbere adekvátneho API tokenu ku štruktúre a funkcionalite API. V práci sa zameriame na vybrané API tokeny, konkrétne: Nepriehľadný token, JWT, PASETO, Fernet, Braca, Macaroons a Biscuits.
 
 API tokeny sú úzko spojené s problematikou autentifikácie a autorizácie vo všeobecnosti. Preto sa zo začiatku práce venujeme aj tejto problematike, kde predstavujeme základné schémy zabezpečenia softvérových systémov.
 
