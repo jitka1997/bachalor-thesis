@@ -2,7 +2,7 @@
 
 \label{kap:teoreticke} % id kapitoly pre prikaz ref
 
-V tejto kapitole porovnáme rôzne vlastnosti a parametre konkrétnych tokenov podľa informácií získaných z ich dokumentácií a iných zdrojov. Niektoré dáta sme už zhrnuli v kapitole \ref{kap:typy} a preto ich tu nespomíname. Pri jednotlivých parametroch vysvetlíme ich význam a teda aj dôležitosť pri porovnávaní tokenov. Porovnávať budeme všetky štruktúrované tokeny popísané v kapitole \ref{kap:typy} a nepriehľadný formát tokenu popísaný v~podkapitole \ref{sec:opaque}. Pre jednoduchosť budeme pod pojmom nepriehľadný token myslieť náhodný reťazec s podpisom vo forme hešovaného autentifikačného kódu. 
+V tejto kapitole porovnáme rôzne vlastnosti a parametre konkrétnych tokenov podľa informácií získaných z ich dokumentácií a iných zdrojov. Niektoré dáta sme už zhrnuli v kapitole \ref{kap:typy} a preto ich tu nespomíname alebo nevysvetľujeme. Pri jednotlivých parametroch vysvetlíme ich význam a teda aj dôležitosť pri porovnávaní tokenov. Porovnávať budeme všetky štruktúrované tokeny popísané v kapitole \ref{kap:typy} a nepriehľadný formát tokenu popísaný v~podkapitole \ref{sec:opaque}. Pre jednoduchosť budeme pod pojmom nepriehľadný token myslieť náhodný reťazec s podpisom vo forme hešovaného autentifikačného kódu. 
 
 \begin{table}[H]
   \begin{center}
@@ -15,12 +15,12 @@ V tejto kapitole porovnáme rôzne vlastnosti a parametre konkrétnych tokenov p
       Vlastnosť & Nepriehľadný & JWT & PASETO & Fernet & Branca & Macaroons & Biscuits\\
       \hline
       Počet kryptografických funkcií & 1 & 30 & 6 & 1 & 1 & 1 & 1\\
-      Určenie podpisového alg. z tokenu & $\varoslash$ & \CIRCLE & \CIRCLE & \Circle & \Circle & \Circle & \Circle \\
+      Určenie podpisového algoritmu z tokenu & $\varoslash$ & \CIRCLE & \CIRCLE & \Circle & \Circle & \Circle & \Circle \\
       Náchylnosť na útok pomýlením algortimu & $\varoslash$ & \CIRCLE & \LEFTcircle & \Circle & \Circle & \Circle & \Circle \\
       Riešenie problému odvolania & \CIRCLE & \Circle & \Circle & \Circle & \Circle & \LEFTcircle & \LEFTcircle \\
       Náchylnosť na útok opakovaním & $\varoslash$ & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \LEFTcircle & \LEFTcircle \\
       Ochrana dôvernosti & $\varoslash$ & \LEFTcircle & \LEFTcircle & \CIRCLE & \CIRCLE & \Circle & \Circle \\
-      Overenie autenticity a integrity hocikým & \Circle & \LEFTcircle & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE \\
+      Overenie autentickosti a integrity hocikým & \Circle & \LEFTcircle & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE \\
       Zoslabenie tokenu hocikým & $\varoslash$ & $\varoslash$ & $\varoslash$ & $\varoslash$ & $\varoslash$ & \CIRCLE & \CIRCLE \\
       Autorizačná schéma v tokene & $\varoslash$ & \LEFTcircle & \LEFTcircle & \LEFTcircle & \LEFTcircle & \CIRCLE & \CIRCLE \\
       Bezstavová validácia & $\varoslash$ & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE \\
@@ -40,7 +40,7 @@ V rámci porovnávania bezpečnosti tokenov nebudeme detailne rozoberať bezpeč
 
 \begin{table}[H]
   \begin{center}
-    \caption{Bezpečnosť tokenov}
+    \caption{Bezpečnosť tokenov}(vybrané riadky tabuľky \ref{tab:porovnanie} relevantné pre bezpečnosť)
     \label{tab:bezpecnost} % create a label for the table, after caption
 
     \resizebox{\columnwidth}{!}{%
@@ -49,19 +49,19 @@ V rámci porovnávania bezpečnosti tokenov nebudeme detailne rozoberať bezpeč
       Vlastnosť & Nepriehľadný & JWT & PASETO & Fernet & Branca & Macaroons & Biscuits\\
       \hline
       Počet kryptografických funkcií & 1 & 30 & 6 & 1 & 1 & 1 & 1\\
-      Určenie podpisového alg. z tokenu & $\varoslash$ & \CIRCLE & \CIRCLE & \Circle & \Circle & \Circle & \Circle \\
+      Určenie podpisového algoritmu z tokenu & $\varoslash$ & \CIRCLE & \CIRCLE & \Circle & \Circle & \Circle & \Circle \\
       Náchylnosť na útok pomýlením algortimu & $\varoslash$ & \CIRCLE & \LEFTcircle & \Circle & \Circle & \Circle & \Circle \\
       Riešenie problému odvolania & \CIRCLE & \Circle & \Circle & \Circle & \Circle & \LEFTcircle & \LEFTcircle \\
       Náchylnosť na útok opakovaním & $\varoslash$ & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \LEFTcircle & \LEFTcircle \\
       Ochrana dôvernosti & $\varoslash$ & \LEFTcircle & \LEFTcircle & \CIRCLE & \CIRCLE & \Circle & \Circle \\
-      Overenie autenticity a integrity hocikým & \Circle & \LEFTcircle & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE \\
+      Overenie autentickosti a integrity hocikým & \Circle & \LEFTcircle & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE \\
       \hline
     \end{tabular}%
     }
   \end{center}
 \end{table}
 
-Zameriame sa na porovnanie kryptografických primitív a z nich vyplývajúcich bezpečnostných kvalít a na náchylnosti na zraniteľnosti vyplývajúce zo špecifikácie tokenov. Konkrétne rozoberieme tri bezpečnostné problémy:
+Zameriame sa na porovnanie kryptografických primitív a z nich vyplývajúcich bezpečnostných kvalít a na náchylnosť na zraniteľnosti vyplývajúce zo špecifikácie tokenov. Konkrétne rozoberieme tri bezpečnostné problémy:
 
 
 \begin{itemize}
@@ -77,13 +77,13 @@ Pri tokenoch rozoznávame tri kryptografické primitíva a to asymetrické šifr
 
 Symetrické šifrovanie sa v rámci nami porovnávaných tokenov využíva na šifrovanie obsahu tokenu a teda na ochranu dôvernosti informácií uložených v tokene. Digitálny podpis a hešovanie zaručujú ochranu autenticity a integrity tokenu. Rozdiel v použití digitálneho podpisu a hešovania je v tom, že v prípade digitálneho podpisu ide o asymetrické šifrovanie, teda  podpis vie overiť ľubovoľná entita, ktorá pozná verejný kľúč tvoriaci dvojicu so súkromným kľúčom, ktorým bol token podpísaný. Takýto verejný kľúč je zväčša verejne dostupný a vie ho získať ľubovoľná entita. V prípade hešovania ide o symetrickú kryptografiu, pravosť hešovaného autentifikačného tokenu vie overiť len entita, ktorá pozná tajný kľúč, ktorým bol token zahešovaný, čo je často len entita, ktorá token vytvorila.
 
-Výhodou digitálneho podpisu teda je, že autenticitu a integritu tokenu môže overiť ľubovoľná entita. Výhodou hešovania je, že je rýchlejšie pri generovaní kľúča a generovaní aj overovaní podpisu ako algoritmy pre digitálne podpisy, aj keď v prípade niektorých algoritmov nad eliptickými krivkami je rýchlosť porovnateľná \cite{hmac_perf}. Pri porovnaní iba algoritmov definovaných v JWA \cite{hmac_jwt_perf} vystupuje hešovanie s kľúčom vždy rýchlejšie.
+Výhodou digitálneho podpisu teda je, že autenticitu a integritu tokenu môže overiť ľubovoľná entita. Výhodou hešovania je, že je rýchlejšie pri generovaní kľúča a generovaní aj overovaní podpisu ako algoritmy pre digitálne podpisy, aj keď v prípade niektorých algoritmov nad eliptickými krivkami je rýchlosť porovnateľná \cite{hmac_perf}. Pri porovnaní iba algoritmov definovaných v JWA \cite{hmac_jwt_perf} je hešovanie s kľúčom vždy rýchlejšie.
 
 V prípade JWT si môžeme vybrať, či budeme používať digitálny podpis alebo hešovanie s kľúčom pomocou nastavenia oprávnenia \textit{alg} v hlavičke na požadovanú hodnotu. Všetky možnosti hodnôt oprávnenia \textit{alg} definuje  JWA \cite{jwa_rfc}. Štandard ponúka aj možnosť \textit{alg=none}, v tomto prípade nezaručuje JWT žiadne bezpečnostné kvality a je to jedna zo známych zraniteľností \cite{jwt_vul} JWT. Ak služba akceptuje aj JWT s \textit{alg=none} ako platné tokeny, útočník jednoducho zamení hodnotu \textit{alg='čokoľvek'} na \textit{alg=none}, odstráni podpis z tokenu a môže ľubovoľne zmeniť token, napríklad si zvýši autorizačné práva. Bezpečné implementácie JWT, by nikdy nemali tokeny s \textit{alg=none} považovať za platné.
 
 PASETO využíva v prípade lokálneho využitia hešovanie a v prípade verejného využitia digitálny podpis. Fernet, Branca a Macaroons využívajú hešovanie s kľúčom a~Biscuits využíva digitálny podpis. Nepriehľadný token sme pre potreby tejto kapitoly definovali s použitím hešovania.
 
-Symetrické šifrovanie a z neho vyplývajúcu ochranu dôvernosti umožňujú tokeny JWT, konkrétne vo forme JWE, PASETO s lokálnym využitím, Fernet a Branca. Biscuits a Macaroons neposkytujú žiadnu ochranu dôvernosti. Nepriehľadný token tiež neposkytuje ochranu dôvernosti, no z definície nenesie žiadnu informáciu, teda v jeho prípade nie je dôvernosť čoho chrániť.
+Symetrické šifrovanie a z neho vyplývajúcu ochranu dôvernosti umožňujú tokeny JWT, konkrétne vo forme JWE, PASETO s lokálnym využitím, Fernet a Branca. Biscuits a Macaroons neposkytujú žiadnu ochranu dôvernosti. Nepriehľadný token tiež neposkytuje ochranu dôvernosti v rámci tokenu, no z definície nenesie žiadnu informáciu a všetky dôverné údaje sú uložené na strane servera a asociované s tokenom. Teda na strane klienta nie je dôvernosť čoho chrániť.
 
 \subsection{Útok pomýlením algoritmu}
 
@@ -97,7 +97,7 @@ Tokeny využívajúce jediné kryptografické primitívum sú Fernet, Branca, Bi
 
 Jediné kryptografické primitívum využíva aj nepriehľadný token, ale v tomto prípade to nie je veľmi dôležité, lebo nenesie žiadnu informáciu a všetky autorizačné údaje sú uložené v stave overovacej služby. Teda aj v prípade úspešného útoku pomýlením algoritmu, služba síce vyhodnotí podpis tokenu za platný, no ak nezodpovedá žiadnym dátam uloženým v stave služby, tak služba neautorizuje útočníkovu požiadavku, na ktorú nemá inak právo. Nepriehľadný token je teda absolútne bezpečný voči útokom pomýlením algoritmu.
 
-Viac kryptografických primitív využívajú JWT a PASETO. Oba podporujú asymetrické šifrovanie aj hešovanie s kľúčom na podpisovanie tokenu. V prípade JWT bol útok pomýlením algoritmu jednou zo známych zraniteľností v niektorých implementáciách \cite{jwt_vul}. Konkrétne útok prebiehal tak, že útočník si vybral službu používajúcu digitálny podpis. Získal jej verejný kľúč $pk$, vytvoril podvodný token \textit{mal\_token} a do jeho hlavičky zapísal \textit{alg=HS256} (HS256 označuje funkciu HMAC-SHA256), následne funkciou HMAC-SHA256 podpísal token s využitím $pk$ ako tajného kľúča pre funkciu. Služba, ktorá využívala zraniteľnú knižnicu a na podpisovanie iba digitálny podpis overila token zavolaním funkcie knižnice, napríklad \textit{verify(mal\_token, pub\_key)}, lebo si myslela, že overuje token podpísaný digitálnym podpisom a na jeho overenie teda treba verejný kľúč $pk$. Knižnica následne prečítala z tokenu, že má overiť podpis pomocou HMAC-SHA256 a z druhého argumentu funkcie \textit{verify}, že má pri tom využiť $pk$ ako kľúč. Toto overenie bolo samozrejme úspešné, lebo token bol naozaj podpísaný funkciou HMAC-SHA256 s kľúčom $pk$. Popísaný útok je schematicky znázornený na obrázku \ref{fig:conf_alg_attack}. V súčasnosti už tieto konkrétne implementácie zaviedli ochranu voči útoku pomýlením algoritmu (pomocou identifikátora kľúča), no nič nezaručuje, že neexistujú iné implementácie s touto zraniteľnosťou. Popísaný útok dáva útočníkovi možnosť získať ľubovoľné práva, lebo celý \textit{mal\_token} môže vytvoriť presne tak ako potrebuje. Išlo teda o veľmi nebezpečný útok.
+Viac kryptografických primitív využívajú JWT a PASETO. Oba podporujú asymetrické šifrovanie aj hešovanie s kľúčom na podpisovanie tokenu. V prípade JWT bol útok pomýlením algoritmu jednou zo známych zraniteľností v niektorých implementáciách \cite{jwt_vul}. Konkrétne útok prebiehal tak, že útočník si vybral službu používajúcu digitálny podpis. Získal jej verejný kľúč $pk$, vytvoril podvodný token \textit{mal\_token} a do jeho hlavičky zapísal \textit{alg=HS256} (HS256 označuje funkciu HMAC-SHA256), následne funkciou HMAC-SHA256 podpísal token s využitím $pk$ ako tajného kľúča pre funkciu. Služba, ktorá využívala zraniteľnú knižnicu a na podpisovanie iba digitálny podpis overila token zavolaním funkcie knižnice, napríklad \textit{verify(pub\_key, mal\_token)}, lebo si myslela, že overuje token podpísaný digitálnym podpisom a na jeho overenie teda treba verejný kľúč $pk$. Knižnica následne prečítala z tokenu, že má overiť podpis pomocou HMAC-SHA256 a z prvého argumentu funkcie \textit{verify}, že má pri tom využiť $pk$ ako kľúč. Toto overenie bolo samozrejme úspešné, lebo token bol naozaj podpísaný funkciou HMAC-SHA256 s kľúčom $pk$. Popísaný útok je schematicky znázornený na obrázku \ref{fig:conf_alg_attack}. V súčasnosti už tieto konkrétne implementácie zaviedli ochranu voči útoku pomýlením algoritmu (pomocou identifikátora kľúča), no nič nezaručuje, že neexistujú iné implementácie s touto zraniteľnosťou. Popísaný útok dáva útočníkovi možnosť získať ľubovoľné práva, lebo celý \textit{mal\_token} môže vytvoriť presne tak ako potrebuje. Išlo teda o veľmi nebezpečný útok.
 
 \begin{figure}
   %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
@@ -125,9 +125,9 @@ Hlavnou príčinou problému odvolania je udržiavanie stavu v tokene a nie v da
 
 Pri validácii ostatných tokenov sa autorizačná služba spolieha len na informácie v tokene a uložené kľúče na overovanie podpisov, prípadne dešifrovanie tela tokenu. Samozrejme môže štruktúrovaný token obsahovať identifikátor a podľa tohto identifikátora si o ňom môže autorizačná služba udržiavať stav, či je token platný. Napríklad JWT má pre tento účel štandardom dané oprávnenie \textit{jti} (JWT ID). Takto by však použitie tokenov na autorizáciu stratilo signifikantnú výhodu oproti iným schémam zabezpečenia.
 
-Autorizačná služba by si nemusela o každom tokene pamätať, či je platný alebo nie. Stačí si jej pamätať množinu platných (biely zoznam -- angl. whitelist) alebo množinu odvolaných (čierny zoznam -- angl. blacklist) tokenov. Týmto sa zmenší veľkosť uloženého stavu.
+Autorizačná služba by si nemusela o každom tokene pamätať, či je platný alebo nie. Stačí si jej pamätať množinu platných (biely zoznam -- angl. whitelist) alebo množinu odvolaných, ale ešte nie exspirovaných (čierny zoznam -- angl. blacklist) tokenov. Týmto sa zmenší veľkosť uloženého stavu.
 
-Iným, často využívaným, riešením je vydávať tokeny s krátkou platnosťou. Platnosť tokenu môže byť uložená v samotnom tokene vo forme časovej pečiatky a času platnosti alebo času expirácie, teda nekladie nároky na stav autorizačnej služby. Pri odhlásení klienta ostanú jemu vydané tokeny platné len krátku dobu, takže útočník má málo času na získanie a zneužitie tokenov. Pri odhalení útoku opakovaním sa klient, pre ktorého boli tokeny vydané, odhlási a teda útok bude určite zastavený po krátkom čase, kedy vyprší platnosť tokenom, ktoré útočník získal.
+Iným, často využívaným, riešením je vydávať tokeny s krátkou platnosťou. Platnosť tokenu môže byť uložená v samotnom tokene vo forme časovej pečiatky a času platnosti alebo času exspirácie, teda nekladie nároky na stav autorizačnej služby. Útočník má teda málo času na získanie a zneužitie konkrétneho tokenu s krátkou platnosťou, čo mu výrazne sťažuje realizáciu útoku. Ak má útočník možnosť dlhodobo zachytávať tokeny, vydané používateľovi počas jeho komunikácie so serverom. Tak pri odhalení útoku opakovaním sa mu klient môže brániť tým, že sa odhlási. Útok bude potom určite zastavený po krátkom čase, kedy vyprší platnosť tokenom, ktoré útočník získal a ďalšie nevie zachytiť, lebo používateľ sa odhlásil a už nekomunikuje so serverom.
 
 Nejde teda o dokonalú ochranu pred útokom opakovaním, ale skomplikovanie jeho vykonania útočníkovi a zníženie jeho dopadov. Túto ochranu podľa špecifikácie podporujú tokeny Fernet a Branca. Formáty oboch musia obsahovať časovú pečiatku vo formáte počet sekúnd od 1.1.1970 v UTC časovej zóne. V prípade Branca tokenu ide o 32 bitové číslo, no vo formáte bez znamienka, čo posúva problém 2038 \cite{epoch_end} na rok 2106. Stále však ide o potenciálny problém za cenu ušetrenia 4B dát v tokene. Všetky ostatné tokeny vedia túto metódu ľahko implementovať. Využíva ju aj populárny protokol OAuth 2.0 \cite{oauth2}.
 
@@ -140,7 +140,7 @@ Pod flexibilitou tokenu rozumieme flexibilitu a škálovateľnosť schémy zabez
 
 \begin{table}
   \begin{center}
-    \caption{Flexibilita tokenov}
+    \caption{Flexibilita tokenov}(vybrané riadky tabuľky \ref{tab:porovnanie} relevantné pre flexibilitu)
     \label{tab:flexibilita} % create a label for the table, after caption
 
     \resizebox{\columnwidth}{!}{%
@@ -168,17 +168,17 @@ Delegácia autorizácie je úzko spojená s možnosťou pridávania pravidiel tr
 
 V prípade nepriehľadného tokenu by to bolo veľmi nepraktické, lebo by museli byť zapísané v stave služby, ktorá token vydala a pri kontrole ich naplnenia, by museli byť prečítané z tohto stavu. Následne by autorizačná služba sama získavala potvrdenie o~splnení pravidla od príslušnej tretej strany, čo zbytočne zaťažuje autorizačnú službu.
 
-Pri JWT, PASETO, Fernet a Branca tokenoch je možné pridávať do tela tokenu ľubovoľnú informáciu, teda aj pravidlo tretej strany. Ani jeden z týchto tokenov však podľa špecifikácie nie je prispôsobený na takéto pravidlá. Preto ich pravdepodobne žiadna knižnica nepodporuje a v prípade rozhodnutia používať pravidlá tretích strán s týmito tokenmi takým flexibilným spôsobom ako pri Macaroons alebo Biscuits, by bolo treba implementovať celú logiku využívania tokenov v schéme, vrátane ich generovania a~validácie. Čo môže byť náročné a viesť ku chybám a z nich vyplývajúcich zraniteľnostiam.
+Pri JWT, PASETO, Fernet a Branca tokenoch je možné pridávať do tela tokenu ľubovoľnú informáciu, teda aj pravidlo tretej strany. Ani jeden z týchto tokenov však podľa špecifikácie nie je prispôsobený na takéto pravidlá. Preto ich pravdepodobne žiadna knižnica nepodporuje a v prípade rozhodnutia používať pravidlá tretích strán s týmito tokenmi takým flexibilným spôsobom ako pri Macaroons alebo Biscuits, by bolo treba implementovať celú logiku využívania tokenov v schéme, vrátane ich generovania a~validácie. To môže byť náročné a viesť ku chybám a z nich vyplývajúcich zraniteľnostiam.
 
 \subsection{Autorizačná schéma v tokene}
 
-V tejto časti predpokladáme podpis tokenu za úspešne validovaný.
+V tejto časti predpokladáme, že podpis tokenu je už úspešne validovaný.
 
 Nepriehľadný token z definície nemôže obsahovať žiadnu informáciu, teda ani autorizačnú logiku. Ostatné tokeny sú štruktúrované a nesú v sebe rôzne informácie. Väčšinou ide o statické informácie, napríklad časová pečiatka, administrátorské práva, vlastník tokenu, identifikátor služby, ktorá ho vydala a tak ďalej. Tieto informácie sa doplnia o kontext požiadavky, napríklad IP adresa klienta a aktuálny čas. Následne sa podľa logických pravidiel autorizácie naprogramovaných v autorizačnej službe vyhodnotí, či sa požiadavka autorizuje.
 
 Dynamické informácie dovoľujú autorizačnej službe overiť logické pravidlá, o ktorých nemusela vedieť pri vydávaní tokenu a na ich vyhodnotenie nepotrebuje vlastný stav. Napríklad pravidlá tretích strán v Macaroons tokene dovoľujú preniesť požiadavku na autentifikáciu alebo autorizáciu inou službou na klienta a danú službu. Autorizačná služba potom len validuje dôkaz o autorizácii treťou stranou predložený klientom spolu s požiadavkou.
 
-Biscuits prinášajú ešte väčšiu mieru prenesenia autorizačnej schémy do tokenu. Keďže ich autorizácia prebieha ako vyhodnotenie datalogového programu po bokoch tokenu, každý blok môže zaviesť vlastné symboly, fakty a kontroly v jednotnej syntaxi. Potom služba rozumejúca tejto syntaxi a schopná validovať autoritatívny blok tokenu, dokáže vyhodnotiť celý datalogový program a validovať token.
+Biscuits prinášajú ešte väčšiu mieru prenesenia autorizačnej schémy do tokenu. Keďže ich autorizácia prebieha ako vyhodnotenie datalogového programu po blokoch tokenu, každý blok môže zaviesť vlastné symboly, fakty a kontroly v jednotnej syntaxi. Potom služba rozumejúca tejto syntaxi a schopná validovať autoritatívny blok tokenu, dokáže vyhodnotiť celý datalogový program a validovať token.
 
 Aj Macaroons, aj Biscuits umožňujú ľubovoľnej službe pridávať obmedzenia do tokenu bez komunikácie s autorizačnou službou, čo prenáša časť autorizačnej schémy do tokenu. No v prípade Macaroons musí autorizačná služba vedieť pravidlá tvoriace dané obmedzenia vyhodnotiť podľa naprogramovanej logiky vyhodnocovania pravidiel. Špecifikácia Macaroons \cite{macaroons_paper} nám v tomto prípade nijak nepomáha, lebo formát aj štruktúru pravidiel prenecháva na konkrétnu implementáciu. Naopak služba autorizujúca Biscuits, dokáže vyhodnotiť aj kontroly, ktoré nepozná, ak sú napísané v jednotnej syntaxi.
 
@@ -186,9 +186,9 @@ Aj Macaroons, aj Biscuits umožňujú ľubovoľnej službe pridávať obmedzenia
 
 V predchádzajúcej sekcii sme naznačili problém Macaroons s validáciou pravidiel, ktoré sú v tokene, ale autorizačná služba ich nepozná. Rozšírme toto pozorovanie na všetky tokeny. Opäť budeme uvažovať token s už úspešne validovaným podpisom.
 
-Štandardnosť je žiadaná kvalita pri každej technológii. Prináša jednoznačnosť použitia aj zápisu a programátorovi uľahčuje prácu, lebo nemusí vymýšľať názvy premenných, funkcií, či parametrov. Taktiež zabezpečuje použiteľnosť toho istého kódu medzi viacerými aplikáciami. Ak aplikácia dodržuje štandard je zaručená jej interoperabilita s inými aplikáciami, ktoré ho dodržujú. Pri validácii tokenov budeme uvažovať, že validácia je štandardná, ak je špecifikáciou dané, ktoré hodnoty majú byť v tokene uvedené, akou syntaxou sú zapísané a ako ich vyhodnotiť.
+Štandardnosť je žiadaná kvalita pri každej technológii. Prináša jednoznačnosť použitia aj zápisu a programátorovi uľahčuje prácu, lebo nemusí vytvárať nové rozhrania s vlastnými názvami funkcií a ich parametrov. Taktiež zabezpečuje použiteľnosť toho istého kódu medzi viacerými aplikáciami. Ak aplikácia dodržuje štandard je zaručená jej interoperabilita s inými aplikáciami, ktoré ho tiež dodržujú. Pri validácii tokenov budeme uvažovať, že validácia je štandardná, ak je špecifikáciou dané, ktoré hodnoty majú byť v tokene uvedené, akou syntaxou sú zapísané a ako ich vyhodnotiť.
 
-Nepriehľadný token sa validuje čisto podľa informácií v stave autorizačnej služby a kontextu požiadavky, teda jeho validácia nie je štandardná. Závisí od autorizačnej služby aké informácie si k tokenu pamätá a ako ich vyhodnotí pri validovaní požiadavky s daným tokenom. JWT a PASETO obsahujú vo svojom tele oprávnenia, z ktorých všetky bežné sú definované špecifikáciou. Stačí aby sa ich implementácie riadili špecifikáciou a vyhodnocovanie základnej autorizačnej logiky bude rovnaké, teda štandardné.
+Nepriehľadný token sa validuje čisto podľa informácií v stave autorizačnej služby a kontextu požiadavky, teda jeho validácia nie je štandardná. Závisí od autorizačnej služby aké informácie si k tokenu pamätá a ako ich vyhodnotí pri validovaní požiadavky s daným tokenom. JWT a PASETO obsahujú vo svojom tele oprávnenia, z ktorých všetky bežné sú definované špecifikáciou. Stačí, aby sa ich implementácie riadili špecifikáciou a vyhodnocovanie základnej autorizačnej logiky bude všade rovnaké, teda štandardné.
 
 Pri Fernet a Branca tokenoch sa nedá hovoriť o štandardnej validácii. Ide síce o~štruktúrované tokeny, ale formát ich tela nie je definovaný špecifikáciou a je prenechaný na konkrétne implementácie.
 
@@ -200,7 +200,7 @@ Popularitu tokenov posúdime podľa existencie používaných a udržiavaných k
 
 \begin{table}[H]
     \begin{center}
-      \caption{Vybrané implementácie tokenov}
+      \caption{Vybrané implementácie tokenov}(dáta pochádzajú z 19.4.2023)
       \label{tab:implementacie} % create a label for the table, after caption
   
       \resizebox{\columnwidth}{!}{%
@@ -241,7 +241,7 @@ Popularitu nepriehľadného tokenu nedokážeme takto posúdiť, lebo nejde o ko
 
 Používanosť a udržiavanosť knižníc budeme hodnotiť podľa informácií o knižniciach na platforme GitHub. Konkrétne podľa počtu hviezdičiek, dátumu posledného commitu a celkového počtu commitov. Jednotlivé knižnice a informácie o nich sú uvedené v~tabuľke \ref{tab:implementacie}, uvedené dáta pochádzajú z 19.4.2023. V prípade Python knižnice pre prácu s Fernet tokenom, ide o knižnicu v rámci repozitára pyca/cryptography, teda oficiálnej knižnice pre kryptografiu v Pythone. Počet commitov a údaj o poslednom commite uvádzame iba pre súbor fernet.py implementujúci Fernet. Hviezdičky sa, ale udeľujú celému repozitáru, teda toto číslo je skresľujúce, keďže ide o veľký repozitár, ktorého len malá časť implementuje Fernet. 
 
-Používanosť sme vyhodnotili na základe počtu hviezdičiek a to konkrétne udelením bodu za každú splnenú úroveň, z úrovní: $(1)\ge10$, $(2)\ge100$ a $(3)\ge1000$. Podobne udržiavanosť ako súčet bodov z ostatných dvoch údajov. Konkrétne za splnenie úrovní: $(1)\ge10$, $(2)\ge50$, $(3)\ge100$, $(4)\ge1000$ v počte commitov a úrovní: $(1)$\textit{niekoľko dní}, $(2)$\textit{niekoľko týždňov}, $(3)$\textit{niekoľko mesiacov} a $(4)$\textit{niekoľko rokov} v časovom intervale od posledného commitu. Získané body tokenov v jednotlivých programovacích jazykov sme následne sčítali. Výsledky porovnania nájdeme v tabuľke \ref{tab:popularita}.
+Používanosť sme vyhodnotili na základe počtu hviezdičiek a to konkrétne udelením bodu za každú splnenú úroveň, z úrovní: $(1)\ge10$, $(2)\ge100$ a $(3)\ge1000$. Podobne udržiavanosť ako súčet bodov z ostatných dvoch údajov. Konkrétne za splnenie úrovní: $(1)\ge10$, $(2)\ge50$, $(3)\ge100$, $(4)\ge1000$ v počte commitov a úrovní: $(1)$\textit{niekoľko dní}, $(2)$\textit{niekoľko týždňov}, $(3)$\textit{niekoľko mesiacov} a $(4)$\textit{niekoľko rokov} v časovom intervale od posledného commitu. Získané body tokenov v jednotlivých programovacích jazykov sme následne sčítali. Výsledky porovnania sú uvedené v tabuľke \ref{tab:popularita}.
 
 Do výslednej tabuľky porovnania tokenov \ref{tab:porovnanie} sme preniesli získané body do symbolov \Circle, \LEFTcircle ~a \CIRCLE ~podľa toho, či token získal $\ge5$, $\ge15$ alebo $\ge30$ bodov.
 
