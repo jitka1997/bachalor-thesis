@@ -1,6 +1,7 @@
 - abstrakt: poskytuju -> poskytuje?
 - The comparison is made on the basis of a study of the specifications of individual API tokens and experiments on a simple API, the implementation of which is described in the work. : the pred experiments?
 - kapitoly 1,2 su ok?
+
 - tabulka 3.1: nie su skrtnute, lebo podporuju buduce verzionovanie, nie je to dobre vysvetlene?
 - 3.1.1: ako mam vymenovat tie primitiva? lebo asymetricke sifrovanie sa pouziva iba na podpis
     - tiez hesovanie, mam pisat hesovanie s klucom? naschval sa vyhybam pouzitia hmac ako procesu
@@ -9,3 +10,7 @@
 - 3.1.3: nerozumiem prvej poznamke
 - zvyraznene white a black listy, mam pouzivat deny a allow listy? ake su slovenske preklady potom
 - viem pozriet stiahnutia na npm a pip, v jave sa ako instaluju kniznice
+
+- na seminari vraveli, ze kod sa odovzdava ako elektronicka priloha do aisu, to mam aj spomenut v praci, ci staci link na github?
+- token none?
+- podpis/nepodpis nepriehladneho?

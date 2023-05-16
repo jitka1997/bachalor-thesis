@@ -1,12 +1,12 @@
-\chapter{Jednoduché rozhranie}
+\chapter{Testovacie API}
 
 \label{kap:prakticke} % id kapitoly pre prikaz ref
 
-V tejto kapitole navrhneme, implementujeme a otestujeme jednoduché rozhranie so schémou zabezpečenia využívajúcou jednotlivé tokeny popísané v kapitole \ref{kap:typy} a teoreticky porovnané v kapitole \ref{kap:teoreticke}. Nepriehľadný token budeme, rovnako ako v prechádzajúcej kapitole, chápať ako náhodný reťazec podpísaný pomocou hešovania s kľúčom. Cieľom implementácie je porovnať rýchlosť spracovania požiadaviek využívajúcich rôzne tokeny na autorizáciu a jednoduchosť práce s knižnicami implementujúcimi jednotlivé tokeny vo vybranom programovacom jazyku. Implementácia môže zároveň slúžiť ako základ pre implementovanie jednoduchej schémy zabezpečenia a jej integrovanie s vybranými knižnicami. Zdrojový kód je dostupný na platforme GitHub\footnote{Zdrojový kód je dostupný na adrese https://github.com/jitka1997/bachelor-thesis/tree/main/simpleAPI}.
+V tejto kapitole navrhneme, implementujeme a otestujeme jednoduché rozhranie so schémou zabezpečenia využívajúcou jednotlivé tokeny popísané v kapitole \ref{kap:typy} a teoreticky porovnané v kapitole \ref{kap:teoreticke}. Nepriehľadný token budeme, rovnako ako v prechádzajúcej kapitole, chápať ako náhodný reťazec podpísaný pomocou hešovania s kľúčom. Cieľom implementácie je porovnať rýchlosť spracovania požiadaviek využívajúcich rôzne tokeny na autorizáciu a jednoduchosť práce s knižnicami implementujúcimi jednotlivé tokeny vo vybranom programovacom jazyku. Implementácia môže zároveň slúžiť ako základ pre implementovanie jednoduchej schémy zabezpečenia a jej integrovanie s vybranými knižnicami. Zdrojový kód je dostupný na platforme GitHub\footnote{Zdrojový kód je dostupný na adrese:\\ https://github.com/jitka1997/bachelor-thesis/tree/main/simpleAPI}.
 
 \section{Použité technológie}
 
-Jednoduché rozhranie sme implementovali v jazyku JavaScript, konkrétne pomocou prostredia Node.js. Použili sme knižnicu Express.js, ktorá umožňuje jednoducho implementovať jednoduchý server.
+Testovacie API sme implementovali v jazyku JavaScript, konkrétne pomocou prostredia Node.js. Použili sme knižnicu Express.js, ktorá umožňuje ľahko implementovať jednoduchý server.
 
 Na vytváranie a validáciu jednotlivých tokenov sme použili knižnice pre JavaScript z~tabuľky \ref{tab:implementacie}, ktoré sme použili pri porovnaní popularity tokenov. Pre Biscuits neexistuje knižnica pre JavaScript, preto sme Biscuits v tejto kapitole neporovnávali. Prácu s~nepriehľadným tokenom sme implementovali sami. Informácie spojené s nepriehľadným tokenom si ukladáme v databáze. Využili sme jednoduchú databázu sqlite.
 
@@ -16,16 +16,16 @@ Klienta vykonávajúceho požiadavky na rozhranie sme tiež naprogramovali v Nod
 
 Vytvorili sme rozhranie s dvoma koncovými bodmi \textit{signin} a \textit{welcome}. Prvý z nich slúži na získanie tokenu klientom a druhý na vykonanie požiadavky, ktorá bude úspešná len v~prípade, že bude obsahovať platný token, ktorý rozhranie úspešne validuje. Na získanie tokenu sa klient musí úspešne autentifikovať pomocou základnej HTTP autentifikácie, teda zaslaním base64url \cite{base64_rfc} zakódovaného mena a hesla v autentifikačnej hlavičke požiadavky.
 
-Rozhranie overí korektnosť prihlasovacích údajov a ak sú správne vygeneruje token. V reálnom systéme by boli prihlasovacie údaje uložené v databáze, kde by ich rozhranie overilo. My pre jednoduchosť databázu používateľov simulujeme pomocou načítania objektu s používateľmi zo súboru usersDB. V tomto objekte sú používateľské mená a~heslá uložené ako dvojice kľúč a hodnota.
+Rozhranie overí korektnosť prihlasovacích údajov a ak sú správne, tak vygeneruje token. V reálnom systéme by boli prihlasovacie údaje uložené v databáze, kde by ich rozhranie overilo. My pre jednoduchosť databázu používateľov simulujeme pomocou načítania objektu s používateľmi zo súboru usersDB. V tomto objekte sú používateľské mená a~heslá uložené ako dvojice kľúč a hodnota.
 
-Po úspešnej autentifikácii klienta vygeneruje rozhranie token a vráti ho klientovi. Klient následne môže token použiť na vykonanie požiadavky na koncový bod \textit{welcome}. Rozhranie overí platnosť tokenu a ak je platný, vykoná požiadavku, teda vráti klientovi uvítaciu správu obsahujúcu jeho prihlasovacie meno, získané z tokenu. Ak token nebol zaslaný alebo zlyhá jeho validácia, rozhranie vráti klientovi chybový kód.
+Po úspešnej autentifikácii vygeneruje rozhranie token a vráti ho klientovi. Klient následne môže token použiť na vykonanie požiadavky na koncový bod \textit{welcome}. Rozhranie overí platnosť tokenu a ak je platný, vykoná požiadavku, teda vráti klientovi uvítaciu správu obsahujúcu jeho prihlasovacie meno, získané z tokenu. Ak token nebol zaslaný alebo zlyhá jeho validácia, rozhranie vráti klientovi chybový kód.
 
 \section{Obsah a generovanie tokenu}
 \label{sec:obsah}
 
 Obsahovo vytvárame token nesúci štyri informácie overované pri autorizácii. Konkrétne čas vypršania platnosti tokenu, prihlasovacie meno používateľa, identifikátor vydavateľa tokenu a identifikátor prijímateľa tokenu. Čas vypršania platnosti tokenu je 5~minút od jeho vydania, identifikátory vydavateľa a prijímateľa sú pevne stanovené hodnoty a prihlasovacie meno je získané z prihlasovacích údajov klienta.
 
-Informácie sme do obsahu tokenu obsiahli, aby sme demonštrovali využitie údajov z tokenu na autorizáciu požiadavky, prípadne identifikáciu používateľa. Do konkrétneho tokenu sme vložili informácie spôsobom, ktorý nám umožnila špecifikácia daného tokenu a použitá knižnica implementujúca token. Konkrétne:
+Tieto informácie sme do obsahu tokenu pridali, aby sme demonštrovali využitie údajov z tokenu na autorizáciu požiadavky, prípadne identifikáciu používateľa. Do konkrétneho tokenu sme vložili informácie spôsobom, ktorý nám umožnila špecifikácia daného tokenu a použitá knižnica implementujúca token. Konkrétne:
 
 
 \begin{itemize}
@@ -103,7 +103,7 @@ Keď budeme hovoriť o rýchlosti tokenu, myslíme tým rýchlosť generovania a
 
 Vidíme, že nepriehľadný token je výrazne pomalší ako ostatné tokeny. Konkrétne je v priemere v prípade generovania 7-11 krát pomalší a v prípade validácie 10-16 krát pomalší. Toto je spôsobené tým, že rozhranie si pri generovaní nového tokenu musí tento token uložiť do databázy spolu s autorizačnými údajmi a pri validácii musí token spolu s údajmi vyhľadať v databáze.
 
-Ďalej si všimnime, že JWT a PASETO majú skoro identické časy pri všetkých meraných hodnotách. Tento výsledok je pri použití podobných kryptografických funkcií očakávaný, lebo ide o veľmi podobné tokeny. Fernet a Branca sú dva najrýchlejšie tokeny, čo je pravdepodobne spôsobené jednoduchosťou ich formátu. Branca je však priemerne 1.3 krát pomalší pri generovaní a 1.1 krát pomalší pri validácii ako Fernet. Tento rozdiel môžeme prisúdiť použitiu rôznych kryptografických funkcií alebo inej implementácii.
+Ďalej si všimnime, že JWT a PASETO majú skoro identické časy pri všetkých meraných hodnotách. Tento výsledok je pri použití podobných kryptografických funkcií očakávaný, lebo ide o veľmi podobné tokeny. Fernet a Branca sú dva najrýchlejšie tokeny, čo je pravdepodobne spôsobené jednoduchosťou ich formátu. Branca je však priemerne 1,3 krát pomalší pri generovaní a 1,1 krát pomalší pri validácii ako Fernet. Tento rozdiel môžeme pravdepodobne prisúdiť použitiu rôznych kryptografických funkcií alebo inej implementácii.
 
 Prekvapivým výsledkom je, že Macaroons je najpomalší pri generovaní aj validácii, pretože okrem nepriehľadného tokenu ide o jediný token, ktorého telo sa nešifruje. Tento výsledok je možné vysvetliť tým, že Macaroons je najkomplexnejší token, formátom aj procesom generovania. Pri generovaní sa aplikuje podpisová funkcia raz pri vytvorení nového tokenu a následne toľko krát koľko pravidiel do tokenu pridávame, v~našom prípade štyrikrát. Podobne pri validácii tokenu sa musí vypočítať podpis tokenu postupnou aplikáciou podpisovej funkcie na každé pravidlo v tele tokenu. Macaroons bol vytvorený pre komplexné systémy pre jeho flexibilitu spočívajúcu v možnosti pridávať pravidlá ľubovoľnou entitou a elegantného riešenia zapojenia tretích strán do autorizácie pomocou pravidiel tretích strán. Preto je pre jednoduchý systém, ako je nami implementované rozhranie, Macaroons nevhodný.
 
