@@ -170,6 +170,6 @@ Výhodou oproti obyčajnému štruktúrovanému tokenu je, že klient nedrží v
 
 Rozdelený token \cite{split_token} má podobnú schému a výhodu ako fantómový token, no navyše obmedzuje štruktúrovaný token vydaný autentifikačným serverom tým, že musí obsahovať podpis chrániaci jeho autenticitu.
 
-V schéme rozdeleného tokenu vydá autentifikačný server len štruktúrovaný token. Podpis z tohto tokenu pošle klientovi a do medzipamäte brány alebo RPS zapíše celý token so zahešovaným podpisom ako kľúčom.
+V schéme rozdeleného tokenu vydá autentifikačný server len štruktúrovaný token. Podpis z tohto tokenu pošle klientovi a do medzipamäte brány alebo RPS zapíše celý token s hešovaným podpisom ako kľúčom.
 
 Požiadavky od klienta budú obsahovať ako nepriehľadný token získaný podpis a~brána alebo RPS ho zahešuje a preloží na štruktúrovaný token pomocou medzipamäte. Token následne spolu s požiadavkou pošle rozhraniu.
