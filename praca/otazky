@@ -26,7 +26,10 @@ hesovanie -> hesovania s klucom - DONE
 
 3.1.3 - prepisat cely utok opakovanim, odvolanie pomoze IBA po odhlaseni, pripadne po odhaleni utoku, ale tokeny maju kratku platnost, takze asi aj tak sa nestihne zaragovat na utok - odvodenie - odvolanie preklep - DONE
 
-allow/deny - povolovaci/zamietaci zoznam
+allow/deny - povolovaci/zamietaci zoznam - DONE
+
+
+KAPITOLA 4:
 v 4 dat prec podpis z opaque
 
 do appendixu napisat ze obsah elektrickej prilohy - popisat nieco o tom, ze to je to iste ako na githube
