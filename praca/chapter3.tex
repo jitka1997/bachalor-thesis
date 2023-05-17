@@ -119,7 +119,7 @@ Nepriehľadný token, Fernet, Branca, Macaroons aj Biscuits používajú len jed
 
 \label{sec:replay} % id kapitoly pre prikaz ref
 
-Útok opakovaním a problém odvodenia sú úzko späté pojmy. Konkrétne, riešenie problému odvolania je ochranou voči útoku opakovaním. Ak by služba vedela okamžite zneplatniť ľubovoľný ňou vydaný token, k útoku opakovaním by nemohlo dôjsť, prípadne by bol ihneď po odhalení zastavený. Úplne predísť útoku opakovaním je pri využívaní nositeľských tokenov na autorizáciu nemožné. Z definície nositeľský token autorizuje požiadavku, ktorú sprevádza, ak je sám platný. Teda ak ho dokáže útočník získať a použiť v správnom kontexte, bude úspešný.
+Útok opakovaním a problém odvodenia sú úzko späté pojmy. Konkrétne, riešenie problému odvolania je čiastočnou ochranou voči útoku opakovaním. Ak by služba vedela okamžite zneplatniť ľubovoľný ňou vydaný token, útok opakovaním by mohla ihneď po odhalení zastaviť zneplatnením tokenov využitých pri útoku. Úplne predísť útoku opakovaním je pri využívaní nositeľských tokenov na autorizáciu nemožné. Z definície nositeľský token autorizuje požiadavku, ktorú sprevádza, ak je sám platný. Teda ak ho dokáže útočník získať a použiť v správnom kontexte, bude úspešný.
 
 Hlavnou príčinou problému odvolania je udržiavanie stavu v tokene a nie v databáze autorizačnej služby. Ak by si služba udržiavala stav o vydaných tokenoch, jednoducho by token, ktorý chce odvolať, označila za neplatný. Tento prístup sa dá využiť s nepriehľadným tokenom, lebo v jeho prípade si už aj tak musí autorizačná služba udržiavať stav o vydaných tokenoch.
 
