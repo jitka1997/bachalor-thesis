@@ -11,14 +11,23 @@ import pkg from "./macaroons.cjs";
 const { createMacaroon, verifyMacaroon } = pkg;
 
 const users = JSON.parse(fs.readFileSync("./usersDB", "utf8"));
-
 console.log("Users DB loaded successfully from file usersDB");
-// const USING_TOKEN = "JWT";
-// const USING_TOKEN = "PASETO";
-// const USING_TOKEN = "Fernet";
-// const USING_TOKEN = "Branca";
-const USING_TOKEN = "Macaroon";
-// const USING_TOKEN = "Opaque";
+
+const supportedTokens = [
+  "NONE",
+  "JWT",
+  "PASETO",
+  "Fernet",
+  "Branca",
+  "Macaroon",
+  "Opaque",
+];
+
+const USING_TOKEN = process.argv[2];
+if (!supportedTokens.includes(USING_TOKEN)) {
+  console.log(`Token type ${USING_TOKEN} is not supported`);
+  process.exit(1);
+}
 
 let db;
 if (USING_TOKEN === "Opaque") {
@@ -81,6 +90,9 @@ export const welcome = async (req, res) => {
 const createToken = async (username) => {
   let token;
   switch (USING_TOKEN) {
+    case "NONE":
+      token = username;
+      break;
     case "JWT":
       token = createJWT(username);
       break;
@@ -113,6 +125,9 @@ const createToken = async (username) => {
 const verifyToken = async (token) => {
   let payload;
   switch (USING_TOKEN) {
+    case "NONE":
+      payload = token;
+      break;
     case "JWT":
       payload = verifyJWT(token);
       break;

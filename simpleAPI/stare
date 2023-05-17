@@ -1,0 +1,124 @@
+Successfully signed in. Retrieved: JWT token
+Successfully signed in. Retrieved: JWT token
+Successfully signed in. Retrieved: JWT token
+Successfully signed in. Retrieved: JWT token
+Successfully signed in. Retrieved: JWT token
+Request time - AVERAGE: 1.274122 ms MEDIAN: 1.249658 ms
+Sign in time - AVERAGE: 1.171557 ms MEDIAN: 1.153440 ms
+Successful requests groups: 1000/1000
+
+Request time - AVERAGE: 1.274537 ms MEDIAN: 1.250695 ms
+Sign in time - AVERAGE: 1.171275 ms MEDIAN: 1.150834 ms
+Successful requests groups: 1000/1000
+
+Request time - AVERAGE: 1.273911 ms MEDIAN: 1.250338 ms
+Sign in time - AVERAGE: 1.171953 ms MEDIAN: 1.150930 ms
+Successful requests groups: 1000/1000
+
+Request time - AVERAGE: 1.274589 ms MEDIAN: 1.250572 ms
+Sign in time - AVERAGE: 1.171619 ms MEDIAN: 1.151814 ms
+Successful requests groups: 1000/1000
+
+Request time - AVERAGE: 1.274390 ms MEDIAN: 1.251168 ms
+Sign in time - AVERAGE: 1.172552 ms MEDIAN: 1.150552 ms
+Successful requests groups: 1000/1000
+
+Successfully signed in. Retrieved: PASETO token
+Successfully signed in. Retrieved: PASETO token
+Successfully signed in. Retrieved: PASETO token
+Successfully signed in. Retrieved: PASETO token
+Successfully signed in. Retrieved: PASETO token
+Request time - AVERAGE: 1.750909 ms MEDIAN: 1.723955 ms
+Sign in time - AVERAGE: 1.860676 ms MEDIAN: 1.807604 ms
+Successful requests groups: 1000/1000
+
+Request time - AVERAGE: 1.751270 ms MEDIAN: 1.726403 ms
+Sign in time - AVERAGE: 1.863136 ms MEDIAN: 1.810542 ms
+Successful requests groups: 1000/1000
+
+Request time - AVERAGE: 1.751882 ms MEDIAN: 1.725615 ms
+Sign in time - AVERAGE: 1.862799 ms MEDIAN: 1.813986 ms
+Successful requests groups: 1000/1000
+
+Request time - AVERAGE: 1.754695 ms MEDIAN: 1.731565 ms
+Sign in time - AVERAGE: 1.862255 ms MEDIAN: 1.809425 ms
+Successful requests groups: 1000/1000
+
+Request time - AVERAGE: 1.756480 ms MEDIAN: 1.734708 ms
+Sign in time - AVERAGE: 1.860697 ms MEDIAN: 1.806346 ms
+Successful requests groups: 1000/1000
+
+Successfully signed in. Retrieved: Fernet token
+Successfully signed in. Retrieved: Fernet token
+Successfully signed in. Retrieved: Fernet token
+Successfully signed in. Retrieved: Fernet token
+Successfully signed in. Retrieved: Fernet token
+Request time - AVERAGE: 1.254483 ms MEDIAN: 1.236322 ms
+Sign in time - AVERAGE: 1.348116 ms MEDIAN: 1.327862 ms
+Successful requests groups: 1000/1000
+
+Request time - AVERAGE: 1.255030 ms MEDIAN: 1.237550 ms
+Sign in time - AVERAGE: 1.349038 ms MEDIAN: 1.328099 ms
+Successful requests groups: 1000/1000
+
+Request time - AVERAGE: 1.254640 ms MEDIAN: 1.237304 ms
+Sign in time - AVERAGE: 1.350295 ms MEDIAN: 1.330220 ms
+Successful requests groups: 1000/1000
+
+Request time - AVERAGE: 1.255224 ms MEDIAN: 1.237155 ms
+Sign in time - AVERAGE: 1.349971 ms MEDIAN: 1.324314 ms
+Successful requests groups: 1000/1000
+
+Request time - AVERAGE: 1.255636 ms MEDIAN: 1.239995 ms
+Sign in time - AVERAGE: 1.351154 ms MEDIAN: 1.329309 ms
+Successful requests groups: 1000/1000
+
+Successfully signed in. Retrieved: Branca token
+Successfully signed in. Retrieved: Branca token
+Successfully signed in. Retrieved: Branca token
+Successfully signed in. Retrieved: Branca token
+Successfully signed in. Retrieved: Branca token
+Request time - AVERAGE: 1.411330 ms MEDIAN: 1.390925 ms
+Sign in time - AVERAGE: 1.777973 ms MEDIAN: 1.742866 ms
+Successful requests groups: 1000/1000
+
+Request time - AVERAGE: 1.412152 ms MEDIAN: 1.392584 ms
+Sign in time - AVERAGE: 1.777454 ms MEDIAN: 1.742417 ms
+Successful requests groups: 1000/1000
+
+Request time - AVERAGE: 1.411502 ms MEDIAN: 1.393350 ms
+Sign in time - AVERAGE: 1.778742 ms MEDIAN: 1.742511 ms
+Successful requests groups: 1000/1000
+
+Request time - AVERAGE: 1.411786 ms MEDIAN: 1.392611 ms
+Sign in time - AVERAGE: 1.778429 ms MEDIAN: 1.742219 ms
+Successful requests groups: 1000/1000
+
+Request time - AVERAGE: 1.412276 ms MEDIAN: 1.392833 ms
+Sign in time - AVERAGE: 1.778350 ms MEDIAN: 1.745610 ms
+Successful requests groups: 1000/1000
+
+Successfully signed in. Retrieved: Macaroon token
+Successfully signed in. Retrieved: Macaroon token
+Successfully signed in. Retrieved: Macaroon token
+Successfully signed in. Retrieved: Macaroon token
+Successfully signed in. Retrieved: Macaroon token
+Request time - AVERAGE: 2.160223 ms MEDIAN: 2.114501 ms
+Sign in time - AVERAGE: 2.140284 ms MEDIAN: 2.110003 ms
+Successful requests groups: 1000/1000
+
+Request time - AVERAGE: 2.160569 ms MEDIAN: 2.116596 ms
+Sign in time - AVERAGE: 2.140460 ms MEDIAN: 2.108831 ms
+Successful requests groups: 1000/1000
+
+Request time - AVERAGE: 2.160232 ms MEDIAN: 2.116487 ms
+Sign in time - AVERAGE: 2.140915 ms MEDIAN: 2.109574 ms
+Successful requests groups: 1000/1000
+
+Request time - AVERAGE: 2.160850 ms MEDIAN: 2.115066 ms
+Sign in time - AVERAGE: 2.140376 ms MEDIAN: 2.108221 ms
+Successful requests groups: 1000/1000
+
+Request time - AVERAGE: 2.161476 ms MEDIAN: 2.114663 ms
+Sign in time - AVERAGE: 2.140994 ms MEDIAN: 2.108946 ms
+Successful requests groups: 1000/1000

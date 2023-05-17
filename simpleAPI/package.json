@@ -4,7 +4,17 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "node index.js",
+    "measure-jwt": "npm run server JWT > /dev/null & sleep 2 && (node client.js 0 & node client.js 1 & node client.js 2 & node client.js 3 & node client.js 4) >> measure.out &&  kill $(lsof -t -i:8000)",
+    "measure-paseto": "npm run server PASETO > /dev/null & sleep 2 && (node client.js 0 & node client.js 1 & node client.js 2 & node client.js 3 & node client.js 4) >> measure.out &&  kill $(lsof -t -i:8000)",
+    "measure-fernet": "npm run server Fernet > /dev/null & sleep 2 && (node client.js 0 & node client.js 1 & node client.js 2 & node client.js 3 & node client.js 4) >> measure.out &&  kill $(lsof -t -i:8000)",
+    "measure-branca": "npm run server Branca > /dev/null & sleep 2 && (node client.js 0 & node client.js 1 & node client.js 2 & node client.js 3 & node client.js 4) >> measure.out &&  kill $(lsof -t -i:8000)",
+    "measure-macaroon": "npm run server Macaroon > /dev/null & sleep 2 && (node client.js 0 & node client.js 1 & node client.js 2 & node client.js 3 & node client.js 4) >> measure.out &&  kill $(lsof -t -i:8000)",
+    "measure-opaque": "npm run server Opaque > /dev/null & sleep 2 && (node client.js 0 & node client.js 1 & node client.js 2 & node client.js 3 & node client.js 4) >> measure.out &&  kill $(lsof -t -i:8000)",
+    "measure-none": "npm run server NONE > /dev/null & sleep 2 && (node client.js 0 & node client.js 1 & node client.js 2 & node client.js 3 & node client.js 4) >> measure.out &&  kill $(lsof -t -i:8000)",
+    "measure-all": "date && npm run clear & sleep 1 && npm run measure-jwt && npm run measure-paseto && npm run measure-fernet && npm run measure-branca && npm run measure-macaroon && npm run measure-opaque && npm run measure-none && date",
+    "clear": "rm *.out && rm tokens.db"
   },
   "keywords": [],
   "author": "",
