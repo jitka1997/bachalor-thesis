@@ -49,7 +49,7 @@ Príklad vytvorenia nešifrovaného JWT tokenu s podpisovou funckiou HMAC-SHA256
 
 Platform Agnostic Security Token (PASETO) je relatívne nový štandard tokenu navrhnutý v roku 2018 a je stále v štádiu RFC draftu \cite{paseto_rfc}. Je inšpirovaný rodinou štandardov JOSE (JWT, JWS, JWE, JWK). Jednoducho povedané snaží sa zjednodušiť implementáciu a použitie kryptografických funkcií.
 
-Rovnako ako JWT, PASETO serializuje JSON objekty a zaručuje rôzne bezpečnostné kvality pri ich prenose cez internet. Pôvodne bol PASETO navrhnutý s dvoma verziami \textit{v1} a \textit{v2} líšiacimi sa v použitých kryptografických algoritmoch. Dnes už existujú štyri verzie \textit{v1}, \textit{v2}, \textit{v3} a \textit{v4} popísané štandardom \cite{paseto_git}. Každá verzia tokenu zaručuje autentickosť a integritu obsahu tokenu a to pomocou asymetrického šifrovania v zmysle digitálneho podpisu alebo pomocou hešovaného autentifikačného kódu.
+Rovnako ako JWT, PASETO serializuje JSON objekty a zaručuje rôzne bezpečnostné kvality pri ich prenose cez internet. Pôvodne bol PASETO navrhnutý s dvoma verziami \textit{v1} a \textit{v2} líšiacimi sa v použitých kryptografických algoritmoch. Dnes už existujú štyri verzie \textit{v1}, \textit{v2}, \textit{v3} a \textit{v4} popísané štandardom \cite{paseto_git}. Každá verzia tokenu zaručuje autentickosť a integritu obsahu tokenu a to pomocou digitálneho podpisu alebo pomocou hešovaného autentifikačného kódu.
 
 \subsection{Verzie PASETO}
 
@@ -269,7 +269,7 @@ Splnenie pravidiel prvej strany overí cieľová služba overením splnenia pred
 
 Ako posledný predstavíme najmladší token rozoberaný v tejto práci. Biscuits token bol predstavený v roku 2021 v blogu od spoluautora z firmy Clever Cloud \cite{biscuits_blog}. Vo voľne dostupnom repozitári \cite{biscuits_git} nájdeme detailne popísanú motiváciu a vývoj tokenu. Pôvodne bol Biscuits implementovaný v jazyku Rust, no v súčasnosti sú k dispozícii aj implementácie v ďalších jazykoch, všetky nájdeme v repozitári \cite{biscuits_git}.
 
-Biscuits bol inšpirovaný Macaroons, implementuje podobnú schému zabezpečenia aj funkcionality. Rovnako dovoľuje delegovať autorizáciu medzi službami a ľubovoľná entita vlastniaca token ho môže \textit{zoslabiť} alebo aj \textit{kontextovo obmedziť}. Hlavným rozdielom oproti Macaroons je, že Biscuits tokeny používajú na postupné vytváranie podpisu asymetrické šifrovanie, konkrétne podpisovú funkciu Ed25519 \cite{ed_rfc}. Ďalším veľkým rozdielom je, že Biscuits používa na modelovanie práv, kontrol a dát v rámci tokenu špeciálny variant Datalogu bez negácie a na konkrétnych dátových typoch \cite{datalog_bis}.
+Biscuits bol inšpirovaný Macaroons, implementuje podobnú schému zabezpečenia aj funkcionality. Rovnako dovoľuje delegovať autorizáciu medzi službami a ľubovoľná entita vlastniaca token ho môže \textit{zoslabiť} alebo aj \textit{kontextovo obmedziť}. Hlavným rozdielom oproti Macaroons je, že Biscuits tokeny používajú na postupné vytváranie podpisu digitálne podpisy, konkrétne podpisovú funkciu Ed25519 \cite{ed_rfc}. Ďalším veľkým rozdielom je, že Biscuits používa na modelovanie práv, kontrol a dát v rámci tokenu špeciálny variant Datalogu bez negácie a na konkrétnych dátových typoch \cite{datalog_bis}.
 
 Zoslabenie a kontextové obmedzenie tokenu sa realizuje pomocou pridania nového bloku. Blok môže pridať aj služba tretej strany, v takom prípadne budeme hovoriť o~externom bloku.
 
