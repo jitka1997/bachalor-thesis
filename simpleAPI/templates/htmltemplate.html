@@ -1,0 +1,124 @@
+<html>
+  <head>
+    <title>Report z meraní výkonosti API toknov</title>
+  </head>
+  <body>
+    <h1>Prehľad o grafoch a meraniach</h1>
+    <p>
+        Každý graf je vytvorený z
+      dvoch datasetov - čas prihlasovacej požiadavky (vytvorenie tokenu), čas
+      požiadavky s tokenom (validácia tokenu). Pri každom grafe je uvedený
+      najprv graf z merania vytvorenia tokenu a potom graf z merania validácie
+      tokenu. Všetky grafy orkem histogramov majú na ľavej osi čas v milisekundách. Histogramy majú čas v milisekundách sa dolnej osi a počet meraní na ľavej. Grafy zobrazujú dáta z {{repetitions}} meraní, každé meranie je súčtom časov {{series}} požiadaviek.
+    </p>
+    <h2>Krabicový graf</h2>
+    <p>
+      Krabicový graf je vhodný pre vizualizáciu rozloženia dát. Na grafe tvoria
+      horizontálne hrany krabice prvý a tretí kvartil. Vnútri krabice je plnou
+      čiarou znázornený medián a bodkovanou čiarou priemer. Z krabice vystupujú
+      takzvané fúzy. Hranice týchto fúzov sú vypočítané ako 1,5-násobok
+      medzikvartilového rozpätia (3. kvartil mínus 1. kvartil). Body, ktoré sú
+      mimo týchto fúzov, sú považované za odľahlé a na grafe sú znázornené ako
+      kružnice.
+    </p>
+    <h3>Všetky dáta</h3>
+    <p>
+      Keď do grafu vložíme všetky dáta nie je veľmi prehľadný, lebo nepriehľadný
+      token je výrazne pomalší ako ostatné tokeny
+    </p>
+    <p>
+      <img src="{{signin_boxplot_allW}}" width="700" />
+    </p>
+    <p>
+      <img src="{{request_boxplot_allW}}" width="700" />
+    </p>
+    <h3>Bez nepriehľadného tokenu</h3>
+    </p>
+    <p>
+    <img src="{{signin_boxplot_without_opaqueW}}" width="700" />
+    </p>
+    <p>
+    <img src="{{request_boxplot_without_opaqueW}}" width="700" />
+    </p>
+    <h3>Bez nepriehľadného tokenu a odľahlých hodnôt</h3>
+    </p>
+    <p>
+    <img src="{{signin_boxplot_without_opaque}}" width="700" />
+    </p>
+    <p>
+    <img src="{{request_boxplot_without_opaque}}" width="700" />
+    </p>
+    <h2>Histogram</h2>
+    <p> Ďalším vhodným spôsobom pre zobrazenie rozloženia dát je histogram </p>
+    <p>
+        <img src="{{signin_histogram_all}}" width="700" />
+    </p>
+    <p>
+        <img src="{{request_histogram_all}}" width="700" />
+    </p>
+    <h2>Čiarový graf</h2>
+    <p>
+        Čiarový graf zobrazuje priamo namerané hodnoty a ich vývoj medzi meraniami.
+    </p>
+    <h3>Všetky dáta</h3>
+    <p>
+        <img src="{{signin_line_all_noavg}}" width="700" />
+    </p>
+    <p>
+        <img src="{{request_line_all_noavg}}" width="700" />
+    </p>
+    <h3>Všetky dáta s plávajúcim priemerom</h3>
+    Plávajúci priemer je zobrazený plnou čiarou a je vypočítaný ako priemer 50 po sebe idúcich meraní. Čiarkované čiary rozbrazujú všetky hodnoty.
+    <p>
+        <img src="{{signin_line_all}}" width="700" />
+    </p>
+    <p>
+        <img src="{{request_line_all}}" width="700" />
+    </p>
+    <h3> Dáta bez nepriehľadného tokenu</h3>
+    <p>
+        <img src="{{signin_line_without_opaque_noavg}}" width="700" />
+    </p>
+    <p>
+        <img src="{{request_line_without_opaque_noavg}}" width="700" />
+    </p>
+    <h3>Dáta bez nepriehľadného tokenu s plávajúcim priemerom</h3>
+    <p>
+        Plávajúci priemer je zobrazený plnou čiarou a je vypočítaný ako priemer 50 po sebe idúcich meraní. Čiarkované čiary rozbrazujú všetky hodnoty.
+    </p>
+    <p>
+        <img src="{{signin_line_without_opaque}}" width="700" />
+    </p>
+    <p>
+        <img src="{{request_line_without_opaque}}" width="700" />
+    </p>
+    <h2>Čirový graf z plávajúcich priemerov meraní s odpočítanými NONE meraniami</h2>
+    <p>
+        Merania s NONE, predstavujú merania požiadaviek bez tokenu. Predstavujú teda čas, ktorý trvá samotná réžia okolo meraní a spracovávaní požiadavkiek. Tieto merania sú odpočítané od všetkých meraní. Tento graf je vhodný na porovnanie času vytvorenia tokenu a času validácie tokenu medzi tokenmi.
+    </p>
+    <h3>Dáta s odpočítanými NONE meraniami</h3>
+    <p>
+        <img src="{{signin_line_minus_none}}" width="700" />
+    </p>
+    <p>
+        <img src="{{request_line_minus_none}}" width="700" />
+    </p>
+    <h3>Dáta bez nepriehľadného tokenu s odpočítanými NONE meraniami</h3>
+    <p>
+        <img src="{{signin_line_minus_none_without_opaque}}" width="700" />
+    </p>
+    <p>
+        <img src="{{request_line_minus_none_without_opaque}}" width="700" />
+    </p>
+    <h3> Konštantný čiarový graf priemerov meraní bez nepriehľadného tokenu s odpočítaným priemerným NONE meraním</h2>
+    <p>
+        Graf slúži na porovania priemernej rýchlosti tokenov. V legende sú uvedené presné hodnoty priemerov.
+    </p>
+    <p>
+        <img src="{{signin_line_avg_without_opaque}}" width="700" />
+    </p>
+    <p>
+        <img src="{{request_line_avg_without_opaque}}" width="700" />
+    </p>
+  </body>
+</html>

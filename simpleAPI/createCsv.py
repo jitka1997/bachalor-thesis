@@ -2,7 +2,7 @@ file1 = open('measure.out', 'r')
 lines = file1.readlines()
 file1.close()
 
-PARALEL = 5
+PARALEL = 1
 REPETITIONS = 1000
 jwt = [[] for i in range(PARALEL)]
 paseto = [[] for i in range(PARALEL)]
@@ -32,7 +32,7 @@ def getList(token, typ):
 
 for line in lines:
     sline = line.split(" ")
-    if len(sline) > 5:
+    if len(sline) > 5 or len(sline) < 3:
         continue
     typ = sline[0].strip()
     if typ == "Request:":
