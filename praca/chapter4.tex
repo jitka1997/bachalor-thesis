@@ -97,14 +97,14 @@ Klient teda vykonáva jednu požiadavku bez tokenu, na ktorej vykonanie musí ro
 
 Pre presnejšie meranie meriame čas ako súčet 100 iterácií zaslania a spracovania požiadavky. Všetky namerané hodnoty sú teda súčtom 100 meraní a pre vyjadrenie času vykonania jednej požiadavky je nutné ich predeliť 100. Celý proces opakujeme 1000 krát. Klient teda vykoná spolu 100000 požiadaviek na autentifikáciu (generovanie tokenu) a 100000 požiadaviek s tokenom (validácia tokenu). Výsledky merania, ktoré používame na analýzu rýchlosti tokenov sú zaznamenané v súbore used\_measurements v elektronickej prílohe a v zdrojovom kóde na platforme GitHub.
 
-\section{Spracovanie a vyhodnotenie nameraných výsledkov}
+\section{Analýza nameraných výsledkov}
 \label{sec:vyhodnotenie}
 
 V tejto podkapitole uvedieme a popíšeme vybrané grafy, ktoré sme vygenerovali z nameraných hodnôt. Z každého grafu uvedieme dva varianty. Prvý vypočítaný z meraní generovania tokenu a druhý z meraní validácie tokenu. Keď budeme hovoriť o rýchlosti tokenu, myslíme tým rýchlosť generovania a validácie daného tokenu.
 
 Vhodný graf pre vizualizáciu rozloženia dát je krabicový graf. Na grafe vidíme krabicu, ktorej hornú a dolnú hranu tvoria 1. a 3. kvartil. Vnútri krabice je plnou čiarou znázornený medián (2. kvartil) a čiarkovanou čiarou je znázornený aritmetický priemer. Z krabice vystupujú do dvoch strán takzvané fúzy. Hranice fúzov reprezentujú poslednú hodnotu v rámci 1,5 násobku medzikvartilového rozpätia. Medzikvartilovým rozpätím rozumieme rozdiel medzi 3. a 1. kvartilom. Všetky hodnoty, ktoré sú väčšie ako hranica horného fúzu alebo menšie ako hranica dolného fúzu sú považované za odľahlé hodnoty a sú znázornené malými kružnicami. V našom prípade zobrazuje ľavá os čas v milisekundách.
 
-\begin{figure}
+\begin{figure}[H]
   %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
   %obrazok je v subore images/session.png
   \centerline{\includegraphics[width=0.7\textwidth]{images/signin_boxplot_allW}}
@@ -114,7 +114,7 @@ Vhodný graf pre vizualizáciu rozloženia dát je krabicový graf. Na grafe vid
   \label{fig:signin_boxplot_allW}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
   %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
   %obrazok je v subore images/session.png
   \centerline{\includegraphics[width=0.7\textwidth]{images/request_boxplot_allW}}
@@ -124,9 +124,9 @@ Vhodný graf pre vizualizáciu rozloženia dát je krabicový graf. Na grafe vid
   \label{fig:request_boxplot_allW}
 \end{figure}
 
-Na grafoch \ref{fig:signin_boxplot_allW} a \ref{fig:request_boxplot_allW} sú zobrazené všetky namerané hodnoty. Všimnime si množstvo odľahlých hodnôt, čo znamená, že namerané dáta obsahovali veľa extrémnych hodnôt. Výskyt extrémnych hodnôt viac popíšeme neskôr pomocou čiarových grafov a histogramov. Taktiež si všimnime, že nepriehľadný token je výrazne pomalší ako ostatné tokeny. Toto je spôsobené tým, že rozhranie si pri generovaní nového tokenu musí tento token uložiť do databázy spolu s autorizačnými údajmi a pri validácii musí token spolu s údajmi vyhľadať v databáze. Pomalosť nepriehľadného tokenu spôsobuje značnú neprehľadnosť grafov. Preto sme sa rozhodli zobraziť tokeny bez nepriehľadného tokenu. A taktiež bez odľahlých hodnôt, aby sme získali prehľadnejšie zobrazenie neextrémnych hodnôt. Tieto grafy sú zobrazené na obrázkoch \ref{fig:signin_boxplot_without_opaque} a \ref{fig:request_boxplot_without_opaque}.
+Na grafoch \ref{fig:signin_boxplot_allW} a \ref{fig:request_boxplot_allW} sú zobrazené všetky namerané hodnoty. Všimnime si množstvo odľahlých hodnôt, čo znamená, že namerané dáta obsahovali veľa extrémnych hodnôt. Výskyt extrémnych hodnôt viac popíšeme neskôr pomocou čiarových grafov a histogramov. Taktiež si všimnime, že nepriehľadný token je výrazne pomalší ako ostatné tokeny. Toto je spôsobené tým, že rozhranie si pri generovaní nového tokenu musí tento token uložiť do databázy spolu s autorizačnými údajmi a pri validácii musí token spolu s údajmi vyhľadať v databáze. 
 
-\begin{figure}
+\begin{figure}[H]
   %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
   %obrazok je v subore images/session.png
   \centerline{\includegraphics[width=0.7\textwidth]{images/signin_boxplot_without_opaque}}
@@ -136,7 +136,7 @@ Na grafoch \ref{fig:signin_boxplot_allW} a \ref{fig:request_boxplot_allW} sú zo
   \label{fig:signin_boxplot_without_opaque}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
   %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
   %obrazok je v subore images/session.png
   \centerline{\includegraphics[width=0.7\textwidth]{images/request_boxplot_without_opaque}}
@@ -146,11 +146,11 @@ Na grafoch \ref{fig:signin_boxplot_allW} a \ref{fig:request_boxplot_allW} sú zo
   \label{fig:request_boxplot_without_opaque}
 \end{figure}
 
+Pomalosť nepriehľadného tokenu spôsobuje značnú neprehľadnosť grafov. Preto sme sa rozhodli zobraziť tokeny bez nepriehľadného tokenu. A taktiež bez odľahlých hodnôt, aby sme získali prehľadnejšie zobrazenie neextrémnych hodnôt. Tieto grafy sú zobrazené na obrázkoch \ref{fig:signin_boxplot_without_opaque} a \ref{fig:request_boxplot_without_opaque}.
+
 Pri všetkých tokenoch vidíme zrýchlenie medzi generovaním a validáciou. Toto môže byť spôsobené tým, že veľa hodnôt používaných pri validácii aj generovaní si počítač odložil do medzipamäte (angl. cache) a pri validácií ich mal potom rýchlejšie k dispozícii. Najmenej výrazné zrýchlenie je pri Macaroons. To je pravdepodobne spôsobené tým, že Macaroons počíta viacero hodnôt pri generovaní aj validácii a taktiež má zložitú štruktúru, do ktorej sa hodnoty ukladajú. Teda manipulácia s nimi je ťažšie predvídateľná pre procesor.
 
-Na priamu vizualizáciu všetkých nameraných dát sme použili čiarový graf. Na ľavej osi je rýchlosť v milisekundách a na dolnej osi je poradové číslo merania. Pre vyššiu prehľadnosť grafu sme vypočítali a zobrali aj plávajúci priemer hodnôt. Plávajúci priemer je vypočítaný ako priemer 50 konsekutívnych hodnôt. Tento priemer je na grafe zobrazený plnou čiarou a všetky hodnoty sú zobrazené bodkovanými čiarami. Ako sme si všimli už pri krabicovom grafe, rýchlosť nepriehľadného tokenu je výrazne menšia ako rýchlosť ostatných tokenov. Preto sme sa rozhodli zobraziť graf bez nepriehľadného tokenu. Popísané čiarové grafy sú zobrazené na obrázkoch \ref{fig:signin_line_without_opaque} a \ref{request_line_without_opaque}.
-
-\begin{figure}
+\begin{figure}[H]
   %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
   %obrazok je v subore images/session.png
   \centerline{\includegraphics[width=1\textwidth]{images/signin_line_without_opaque}}
@@ -160,7 +160,7 @@ Na priamu vizualizáciu všetkých nameraných dát sme použili čiarový graf.
   \label{fig:signin_line_without_opaque}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
   %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
   %obrazok je v subore images/session.png
   \centerline{\includegraphics[width=1\textwidth]{images/request_line_without_opaque}}
@@ -170,31 +170,37 @@ Na priamu vizualizáciu všetkých nameraných dát sme použili čiarový graf.
   \label{fig:request_line_without_opaque}
 \end{figure}
 
+Na priamu vizualizáciu všetkých nameraných dát sme použili čiarový graf. Na ľavej osi je rýchlosť v milisekundách a na dolnej osi je poradové číslo merania. Pre vyššiu prehľadnosť grafu sme vypočítali a zobrali aj plávajúci priemer hodnôt. Plávajúci priemer je vypočítaný ako priemer 50 konsekutívnych hodnôt. Tento priemer je na grafe zobrazený plnou čiarou a všetky hodnoty sú zobrazené bodkovanými čiarami. Ako sme si všimli už pri krabicovom grafe, rýchlosť nepriehľadného tokenu je výrazne menšia ako rýchlosť ostatných tokenov. Preto sme sa rozhodli zobraziť graf bez nepriehľadného tokenu. Popísané čiarové grafy sú zobrazené na obrázkoch \ref{fig:signin_line_without_opaque} a \ref{fig:request_line_without_opaque}.
+
+
 Vidíme, že namerané hodnoty výrazne skáču, čo dokazujú aj histogramy na obrázkoch \ref{fig:signin_histogram_all} a \ref{fig:request_histogram_all}. Histogramy majú na ľavej osi počet meraní a na dolnej osi rýchlosť v milisekundách. Toto správanie môžeme vysvetliť tým, že rozhranie aj klienta sme spúšťali na jednom počítači, na ktorom samozrejme bežali aj iné procesy. Výkyvy v nameraných hodnotách sú teda pravdepodobne spôsobené prepínaním procesov a prideľovaním zdrojov na počítači. Až na niektoré extrémne odchýlky sú výkyvy v rámci všetkých tokenov podobné. Najmä na čiarovom grafe zobrazujúcom generovanie tokenu vidíme, že namerané hodnoty v prvých približne 50 meraniach sú vyššie ako v ostatných meraniach a postupne klesajú. Toto sa dá vysvetliť online kompiláciou, už za behu, často používaného kódu. Táto interpretácia sedí aj s tým, že pri validácii tokenu sa tento jav nevyskytuje. Validácia sa totiž meria až po zmeraní generovania tokenu a v rámci jedného spustenia kódu rozhrania aj klienta. Kódy rozhrania aj klienta sú už teda dokompilované.
 
-\begin{figure}
+
+Pre číselné porovnanie rýchlosti tokenov sme z čiarových grafov \ref{fig:signin_line_without_opaque} a \ref{fig:request_line_without_opaque} odstránili bodkované čiary a nechali len plné čiary, reprezentujúce plávajúce priemery. Od hodnôt tokenov sme odpočítali hodnoty namerané s NONE tokenom, aby sme porovnávali čisto rýchlosť generovania a validácie tokenov bez réžie okolo spracovania požiadaviek. Tieto grafy sú zobrazené na obrázkoch \ref{fig:signin_line_minus_none_without_opaque} a \ref{fig:request_line_minus_none_without_opaque}.
+
+\begin{figure}[H]
   %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
   %obrazok je v subore images/session.png
-  \centerline{\includegraphics[width=1\textwidth]{images/signin_histogram_all}}
+  \centerline{\includegraphics[width=0.7\textwidth]{images/signin_histogram_all}}
   %popis obrazku
   \caption[Histogram -- generovanie, všetky hodnoty]{Histogram zobrazujúci všetky namerané hodnoty pri generovaní tokenu}
   %id obrazku, pomocou ktoreho sa budeme na obrazok odvolavat
   \label{fig:signin_histogram_all}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
   %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
   %obrazok je v subore images/session.png
-  \centerline{\includegraphics[width=1\textwidth]{images/request_histogram_all}}
+  \centerline{\includegraphics[width=0.7\textwidth]{images/request_histogram_all}}
   %popis obrazku
   \caption[Histogram -- validácia, všetky hodnoty]{Histogram zobrazujúci všetky namerané hodnoty pri validovaní tokenu}
   %id obrazku, pomocou ktoreho sa budeme na obrazok odvolavat
   \label{fig:request_histogram_all}
 \end{figure}
 
-Pre číselné porovnanie rýchlosti tokenov sme z čiarových grafov \ref{fig:signin_line_without_opaque} a \ref{request_line_without_opaque} odstránili bodkované čiary a nechali len plné čiary, reprezentujúce plávajúce priemery. Od hodnôt tokenov sme odpočítali hodnoty namerané s NONE tokenom, aby sme porovnávali čisto rýchlosť generovania a validácie tokenov bez réžie okolo spracovania požiadaviek. Tieto grafy sú zobrazené na obrázkoch \ref{fig:signin_line_minus_none_without_opaque} a \ref{fig:request_line_minus_none_without_opaque}.
+Aj hodnoty plávajúcich priemerov nie sú úplne rovnomerné a nedá sa z nich priamo porovnať rýchlosť tokenov. Preto sme sa rozhodli porovnať rýchlosť na základe aritmetického priemeru všetkých nameraných hodnôt (tiež po odpočítaní NONE tokenu). Toto porovnanie je zobrazené v grafoch \ref{fig:signin_line_avg_without_opaque} a \ref{fig:request_line_avg_without_opaque}. Graf má odrezanú ľavú os tak, aby nezobrazoval nepriehľadný token. V takomto prípade sú prehľadnejšie vidieť rozdiely medzi ostatnými tokenmi. V legendách je zobrazený aritmetický priemer všetkých nameraných hodnôt. V legende je uvedený aj aritmetický priemer rýchlosti nepriehľadného tokenu.
 
-\begin{figure}
+\begin{figure}[H]
   %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
   %obrazok je v subore images/session.png
   \centerline{\includegraphics[width=1\textwidth]{images/signin_line_minus_none_without_opaque}}
@@ -204,7 +210,7 @@ Pre číselné porovnanie rýchlosti tokenov sme z čiarových grafov \ref{fig:s
   \label{fig:signin_line_minus_none_without_opaque}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
   %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
   %obrazok je v subore images/session.png
   \centerline{\includegraphics[width=1\textwidth]{images/request_line_minus_none_without_opaque}}
@@ -214,9 +220,8 @@ Pre číselné porovnanie rýchlosti tokenov sme z čiarových grafov \ref{fig:s
   \label{fig:request_line_minus_none_without_opaque}
 \end{figure}
 
-Aj hodnoty plávajúcich priemerov nie sú úplne rovnomerné a nedá sa z nich priamo porovnať rýchlosť tokenov. Preto sme sa rozhodli porovnať rýchlosť na základe aritmetického priemeru všetkých nameraných hodnôt (tiež po odpočítaní NONE tokenu). Toto porovnanie je zobrazené v grafoch \ref{fig:signin_line_avg_without_opaque} a \ref{fig:request_line_avg_without_opaque}. Graf má odrezanú ľavú os tak, aby nezobrazoval nepriehľadný token. V takomto prípade sú prehľadnejšie vidieť rozdiely medzi ostatnými tokenmi. V legendách je zobrazený aritmetický priemer všetkých nameraných hodnôt. V legende je uvedený aj aritmetický priemer rýchlosti nepriehľadného tokenu.
 
-\begin{figure}
+\begin{figure}[H]
   %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
   %obrazok je v subore images/session.png
   \centerline{\includegraphics[width=1\textwidth]{images/signin_line_avg_without_opaque}}
@@ -226,7 +231,7 @@ Aj hodnoty plávajúcich priemerov nie sú úplne rovnomerné a nedá sa z nich 
   \label{fig:signin_line_avg_without_opaque}
 \end{figure}
 
-\begin{figure}
+\begin{figure}[H]
   %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
   %obrazok je v subore images/session.png
   \centerline{\includegraphics[width=1\textwidth]{images/request_line_avg_without_opaque}}
