@@ -8,9 +8,10 @@ Konkrétne v kapitole \ref{kap:vyuzitie} sme uviedli rôzne známe prístupy k a
 
 V kapitole \ref{kap:typy} sme predstavili konkrétne tokeny, ktoré sme ďalej v práci porovnávali. Venovali sme sa najmä charakteristikám a parametrom tokenov, ktoré sú nevyhnutné pre analýzu ich vlastností a porovnávanie s inými tokenmi.
 
-V druhej časti práce sme sa venovali analýze, teoretickému a potom aj praktickému porovnaniu tokenov. V kapitole \ref{kap:teoreticke} sme porovnali tokeny z pohľadu bezpečnosti, flexibility a popularity. Výsledkom tohto porovnania je prehľadová tabuľka \ref{tab:porovnanie}. V kapitole \ref{kap:prakticke} sme navrhli a implementovali jednoduché rozhranie, na ktorom sme demonštrovali použitie jednotlivých tokenov v schéme zabezpečenia. Taktiež sme implementovali jednoduchého klienta, ktorý vykonával požiadavky na rozhranie a meral čas ich vykonania. Merali sme dva typy požiadaviek. Pri prvom type muselo rozhranie vygenerovať token a pri druhom validovať token. Namerané hodnoty sú uvedené v tabuľke \ref{tab:api_porovnanie} a ich interpretácia v sekcii \ref{sec:vyhodnotenie}. Z meraní sme zistili, že najrýchlejšie tokeny sú Fernet a Branca, kvôli ich jednoduchej štruktúre. Naopak výrazne najpomalší bol nepriehľadný token z~dôvodu potreby použitia databázy pri generovaní aj validácii tokenu. Navzájom podobne rýchle boli JWT a PASETO, oba len mierne pomalšie ako Fernet a Branca. Najpomalší bol okrem nepriehľadného tokenu Macaroons. Ide však o veľmi flexibilný token s komplexnou štruktúrou, preto nie je vhodný na použitie v jednoduchom rozhraní, ktoré sme implementovali.
+V druhej časti práce sme sa venovali analýze, teoretickému a potom aj praktickému porovnaniu tokenov. V kapitole \ref{kap:teoreticke} sme porovnali tokeny z pohľadu bezpečnosti, flexibility a popularity. Výsledkom tohto porovnania je prehľadová tabuľka \ref{tab:porovnanie}. V kapitole \ref{kap:prakticke} sme navrhli a implementovali jednoduché rozhranie, na ktorom sme demonštrovali použitie jednotlivých tokenov v schéme zabezpečenia. Taktiež sme implementovali jednoduchého klienta, ktorý vykonával požiadavky na rozhranie a meral čas ich vykonania. Merali sme dva typy požiadaviek. Pri prvom type muselo rozhranie vygenerovať token a pri druhom validovať token. Namerané hodnoty a ich interpretácia pomocou rôznych grafov je v sekcii \ref{sec:vyhodnotenie}. Z meraní sme zistili, že najrýchlejšie tokeny sú Fernet a PASETO, no rozdiel v rýchlostiach tokenov JWT, PASETO, Branca a Fernet je takmer zanedbateľný. Pri validácii tokenu je tento rozdiel najviac 0,13 ms na jednu požiadavku. Naopak výrazne najpomalší bol nepriehľadný token z~dôvodu potreby použitia databázy pri generovaní aj validácii tokenu. Okrem nepriehľadného tokenu bol najpomalší Macaroons. Ide však o veľmi flexibilný token s komplexnou štruktúrou, preto nie je vhodný na použitie v jednoduchom rozhraní, ktoré sme implementovali.
 
-Hlavným cieľom práce bolo porovnať rôzne tokeny. Ako výsledok tohto porovnania uvádzame tabuľku \ref{tab:vysledok}, ktorá je spojením tabuliek \ref{tab:porovnanie} a \ref{tab:api_porovnanie}. Podrobnejšia interpretácia uvedených hodnôt je v kapitolách \ref{kap:teoreticke} a \ref{kap:prakticke}.
+
+Hlavným cieľom práce bolo porovnať rôzne tokeny. Ako výsledok tohto porovnania uvádzame tabuľku \ref{tab:vysledok}, ktorá je spojením tabuliek \ref{tab:porovnanie} a nameraných priemerných rýchlostí tokenov. Podrobnejšia interpretácia uvedených hodnôt je v kapitolách \ref{kap:teoreticke} a \ref{kap:prakticke}.
 
 \begin{table}[H]
     \begin{center}
@@ -36,14 +37,14 @@ Hlavným cieľom práce bolo porovnať rôzne tokeny. Ako výsledok tohto porovn
         Popularita & $\varoslash$ & \CIRCLE & \LEFTcircle & \LEFTcircle & \Circle & \LEFTcircle & \Circle \\
         \hline
         Jednoduchosť práce & $\varoslash$ & \CIRCLE & \CIRCLE & \Circle & \Circle & \LEFTcircle & $\varoslash$ \\
-        Generovanie priemer [ms] & 17.556 & 2.442 & 2.241 & 1.577 & 2.089 & 2.430 & $\varoslash$ \\
-        Generovanie medián [ms] & 17.087 & 2.160 & 2.093 & 1.457 & 1.898 & 2.266 & $\varoslash$ \\
-        Validácia priemer [ms] & 21.230 & 1.846 & 1.803 & 1.199 & 1.336 & 2.183 & $\varoslash$ \\
-        Validácia medián [ms] & 23.216 & 1.743 & 1.706 & 1.152 & 1.274 & 2.079 & $\varoslash$ \\
+        Generovanie priemer [ms] & 366,82 & 24,34 & 11,93 & 19,31 & 39,92 & 45,21 & $\varoslash$ \\
+        Validácia priemer [ms] & 650,09 & 18,27 & 15,31 & 9,53 & 22,31 & 49,82 & $\varoslash$ \\
         \hline
       \end{tabular}%
       }
     \end{center}
   \end{table}
 
-V budúcnosti je možné nadviazať na našu prácu buď porovnaním ďalších tokenov, ktoré vzniknú v budúcnosti alebo porovnaním tokenov, ktoré sme v práci nespomenuli (napríklad token na základe certifikátov verejných kľúčov a Crypto auth token (CAT), oba vymyslené \cite{fb_tokens} a používané spoločnosťou Meta). Ďalej je možné nadviazať na našu prácu rozšírením rozhrania o ďalšie funkcie, ktoré by boli zaujímavé z pohľadu porovnania tokenov, napríklad pridať tretie strany do procesu autorizácie požiadavky.
+Pri porovnaní rýchlosti tokenov na testovacom API si však uvedomujeme, že porovnávame iba konkrétne implementácie daných tokenov. Implementácie sme vybrali na základe popularity a udržiavanosti knižníc, ktoré ich sprostredkúvajú. Analyzovať konkrétne implementácie tokenov presahuje rozsah tejto práci. Jednou z možností ako nadviazať na túto prácu je preto porovnanie viacerých implementácií každého tokenu a analýza a porovnanie týchto implementácií.
+
+Okrem toho je v budúcnosti je možné nadviazať na našu prácu buď porovnaním ďalších tokenov, ktoré vzniknú v budúcnosti alebo porovnaním tokenov, ktoré sme v práci nespomenuli (napríklad token na základe certifikátov verejných kľúčov a Crypto auth token (CAT), oba vymyslené \cite{fb_tokens} a používané spoločnosťou Meta). Ďalej je možné nadviazať na našu prácu rozšírením rozhrania o ďalšie funkcie, ktoré by boli zaujímavé z pohľadu porovnania tokenov, napríklad pridať tretie strany do procesu autorizácie požiadavky.
