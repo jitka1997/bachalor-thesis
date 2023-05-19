@@ -30,13 +30,14 @@ allow/deny - povolovaci/zamietaci zoznam - DONE
 
 
 KAPITOLA 4:
-v 4 dat prec podpis z opaque
+v 4 dat prec podpis z opaque - DONE
 
-do appendixu napisat ze obsah elektrickej prilohy - popisat nieco o tom, ze to je to iste ako na githube
+- skusit pustil len jedneho - DONE
+  candle stick graph - minimum, maximum, priemer, median, 10 percentil, 90 percentil - DONE
+
+matplotlib - kniznica v pythone na grafy, jupyter extension vo vs code, aj nejake baliky v linuxe nato, asi ma to vyzve samo - DONE
+
+- do appendixu napisat ze obsah elektrickej prilohy - popisat nieco o tom, ze to je to iste ako na githube
 
 - postgres? - netreba ale bolo by fajn asi
 - odseknut divne hodnoty na zaciatku konci
-- skusit pustil len jedneho
-  candle stick graph - minimum, maximum, priemer, median, 10 percentil, 90 percentil
-
-matplotlib - kniznica v pythone na grafy, jupyter extension vo vs code, aj nejake baliky v linuxe nato, asi ma to vyzve samo

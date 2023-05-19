@@ -241,8 +241,8 @@ dataMinusNoneRequestWithoutOpaque = [np.array(data, dtype=np.float32)
 
 dataAvgsSigninWithoutOpaque = []
 avg_none_signin = np.average(dataSignin[6])
-for i, data in enumerate(dataSigninWithoutOpaque):
-    if tokensWithoutOpaque[i] == "NONE":
+for i, data in enumerate(dataSignin):
+    if tokens[i] == "NONE":
         continue
     avg = np.average(data)
     dataAvgsSigninWithoutOpaque.append(
@@ -250,8 +250,8 @@ for i, data in enumerate(dataSigninWithoutOpaque):
 
 avg_none_request = np.average(dataRequest[6])
 dataAvgsRequestWithoutOpaque = []
-for i, data in enumerate(dataRequestWithoutOpaque):
-    if tokensWithoutOpaque[i] == "NONE":
+for i, data in enumerate(dataRequest):
+    if tokens[i] == "NONE":
         continue
     avg = np.average(data)
     dataAvgsRequestWithoutOpaque.append(
@@ -280,7 +280,7 @@ makeBoxplot(dataRequestWithoutOpaque, tokensWithoutOpaque,
             "request_boxplot_without_opaque.svg", colorsWithoutOpaque)
 
 # make histograms
-makeHistogram(dataSignin, tokens, "sigin_histogram_all.svg", colors=colors)
+makeHistogram(dataSignin, tokens, "signin_histogram_all.svg", colors=colors)
 makeHistogram(dataRequest, tokens, "request_histogram_all.svg", colors=colors)
 
 # make line charts
@@ -310,10 +310,10 @@ makeLineOnlyAvg(dataMinusNoneRequestWithoutOpaque, tokens,
                 "request_line_minus_none_without_opaque.svg", colors)
 
 # only constant average
-makeLine(dataAvgsSigninWithoutOpaque, tokensWithoutOpaque,
-         "signin_line_avg_without_opaque.svg", colorsWithoutOpaque, avg=True)
-makeLine(dataAvgsRequestWithoutOpaque, tokensWithoutOpaque,
-         "request_line_avg_without_opaque.svg", colorsWithoutOpaque, avg=True)
+makeLine(dataAvgsSigninWithoutOpaque, tokens,
+         "signin_line_avg_without_opaque.svg", colors, avg=True)
+makeLine(dataAvgsRequestWithoutOpaque, tokens,
+         "request_line_avg_without_opaque.svg", colors, avg=True)
 
 # Create html report
 env = Environment(loader=FileSystemLoader('templates'))
@@ -328,7 +328,7 @@ html = template.render(
     request_boxplot_without_opaqueW='graphs/boxplot/request_boxplot_without_opaqueW.svg',
     signin_boxplot_without_opaque='graphs/boxplot/signin_boxplot_without_opaque.svg',
     request_boxplot_without_opaque='graphs/boxplot/request_boxplot_without_opaque.svg',
-    signin_histogram_all='graphs/histogram/sigin_histogram_all.svg',
+    signin_histogram_all='graphs/histogram/signin_histogram_all.svg',
     request_histogram_all='graphs/histogram/request_histogram_all.svg',
     signin_line_all_noavg='graphs/line/signin_line_all_noavg.svg',
     request_line_all_noavg='graphs/line/request_line_all_noavg.svg',

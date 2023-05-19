@@ -2,15 +2,17 @@
 
 \label{kap:prakticke} % id kapitoly pre prikaz ref
 
-V tejto kapitole navrhneme, implementujeme a otestujeme jednoduché rozhranie so schémou zabezpečenia využívajúcou jednotlivé tokeny popísané v kapitole \ref{kap:typy} a teoreticky porovnané v kapitole \ref{kap:teoreticke}. Nepriehľadný token budeme, rovnako ako v prechádzajúcej kapitole, chápať ako náhodný reťazec podpísaný pomocou hešovania s kľúčom. Cieľom implementácie je porovnať rýchlosť spracovania požiadaviek využívajúcich rôzne tokeny na autorizáciu a jednoduchosť práce s knižnicami implementujúcimi jednotlivé tokeny vo vybranom programovacom jazyku. Implementácia môže zároveň slúžiť ako základ pre implementovanie jednoduchej schémy zabezpečenia a jej integrovanie s vybranými knižnicami. Zdrojový kód je dostupný na platforme GitHub\footnote{Zdrojový kód je dostupný na adrese:\\ https://github.com/jitka1997/bachelor-thesis/tree/main/simpleAPI}.
+V tejto kapitole navrhneme, implementujeme a otestujeme jednoduché rozhranie so schémou zabezpečenia využívajúcou jednotlivé tokeny popísané v kapitole \ref{kap:typy} a teoreticky porovnané v kapitole \ref{kap:teoreticke}. Nepriehľadný token budeme, narozdiel od prechádzajúcej kapitoly, chápať iba ako náhodný reťazec. Cieľom implementácie je porovnať rýchlosť spracovania požiadaviek využívajúcich rôzne tokeny na autorizáciu a jednoduchosť práce s knižnicami implementujúcimi jednotlivé tokeny vo vybranom programovacom jazyku. Implementácia môže zároveň slúžiť ako základ pre implementovanie jednoduchej schémy zabezpečenia a jej integrovanie s vybranými knižnicami. Zdrojový kód je dostupný na platforme GitHub\footnote{Zdrojový kód je dostupný na adrese:\\ https://github.com/jitka1997/bachelor-thesis/tree/main/simpleAPI} a v prílohe TODO:ref na prilohu.
 
 \section{Použité technológie}
 
 Testovacie API sme implementovali v jazyku JavaScript, konkrétne pomocou prostredia Node.js. Použili sme knižnicu Express.js, ktorá umožňuje ľahko implementovať jednoduchý server.
 
-Na vytváranie a validáciu jednotlivých tokenov sme použili knižnice pre JavaScript z~tabuľky \ref{tab:implementacie}, ktoré sme použili pri porovnaní popularity tokenov. Pre Biscuits neexistuje knižnica pre JavaScript, preto sme Biscuits v tejto kapitole neporovnávali. Prácu s~nepriehľadným tokenom sme implementovali sami. Informácie spojené s nepriehľadným tokenom si ukladáme v databáze. Využili sme jednoduchú databázu sqlite.
+Na vytváranie a validáciu jednotlivých tokenov sme použili knižnice pre JavaScript z~tabuľky \ref{tab:implementacie}, ktoré sme použili pri porovnaní popularity tokenov. Implementovali sme aj NONE token, reprezentujúci samotnú réžiu okolo vytvorenia a spracovania volania na API. Pre Biscuits neexistuje knižnica pre JavaScript, preto sme Biscuits v tejto kapitole neporovnávali. Prácu s~nepriehľadným tokenom sme implementovali sami. Informácie spojené s nepriehľadným tokenom si ukladáme v databáze. Využili sme jednoduchú databázu sqlite.
 
 Klienta vykonávajúceho požiadavky na rozhranie sme tiež naprogramovali v Node.js.
+
+Pre interpretáciu nameraných výsledkov sme použili jazyk Python a knižnice: numpy pre prácu s vektormi čísel, matplotlib pre generovanie grafov a jinja2 pre prácu s HTML šablónou.
 
 \section{Popis rozhrania}
 
@@ -18,7 +20,7 @@ Vytvorili sme rozhranie s dvoma koncovými bodmi \textit{signin} a \textit{welco
 
 Rozhranie overí korektnosť prihlasovacích údajov a ak sú správne, tak vygeneruje token. V reálnom systéme by boli prihlasovacie údaje uložené v databáze, kde by ich rozhranie overilo. My pre jednoduchosť databázu používateľov simulujeme pomocou načítania objektu s používateľmi zo súboru usersDB. V tomto objekte sú používateľské mená a~heslá uložené ako dvojice kľúč a hodnota.
 
-Po úspešnej autentifikácii vygeneruje rozhranie token a vráti ho klientovi. Klient následne môže token použiť na vykonanie požiadavky na koncový bod \textit{welcome}. Rozhranie overí platnosť tokenu a ak je platný, vykoná požiadavku, teda vráti klientovi uvítaciu správu obsahujúcu jeho prihlasovacie meno, získané z tokenu. Ak token nebol zaslaný alebo zlyhá jeho validácia, rozhranie vráti klientovi chybový kód.
+Po úspešnej autentifikácii vygeneruje rozhranie token a vráti ho klientovi. Klient následne môže token použiť na vykonanie požiadavky na koncový bod \textit{welcome}. Rozhranie overí platnosť tokenu a ak je platný, vykoná požiadavku, teda vráti klientovi uvítaciu správu obsahujúcu jeho prihlasovacie meno získané z tokenu. Ak token nebol zaslaný alebo zlyhá jeho validácia, rozhranie vráti klientovi chybový kód.
 
 \section{Obsah a generovanie tokenu}
 \label{sec:obsah}
@@ -36,7 +38,9 @@ Tieto informácie sme do obsahu tokenu pridali, aby sme demonštrovali využitie
     \item Macaroons -- všetky informácie sme do tokenu vložili ako pravidlá prvej strany.
 \end{itemize}
 
-JWT a PASETO, aj vybrané knižnice, ktoré ich implementujú, ponúkajú viacero funkcií na podpísanie a prípadné šifrovanie tokenu. Ostatné tokeny však používajú na podpisovanie jedinú funkciu, vždy variant hešovania s kľúčom. Fernet a Branca navyše šifrujú telo tokenu. Preto sme pre objektívne porovnanie tokenov zvolili pri JWT a~PASETO, čo najpodobnejšie funkcie na podpisovanie a taktiež šifrujeme telo tokenu. Kryptografické funkcie použité na podpisovanie a šifrovanie jednotlivých tokenov sú uvedené v tabuľke \ref{tab:funkcie}.
+NONE token sme implementovali ako samotné prihlasovacie meno používateľa. Token sa nešifruje ani nepodpisuje a nemá ani žiadnu štruktúru. Ide len len o reťazec reprezentujúci prihlasovacie meno používateľa.
+
+JWT a PASETO, aj vybrané knižnice, ktoré ich implementujú, ponúkajú viacero funkcií na podpísanie a prípadné šifrovanie tokenu. Ostatné tokeny však používajú na podpisovanie jedinú funkciu, vždy variant hešovania s kľúčom. Fernet a Branca navyše šifrujú telo tokenu. Preto sme pre objektívne porovnanie tokenov zvolili pri JWT a~PASETO, čo najpodobnejšie funkcie na podpisovanie a taktiež šifrujeme telo tokenu. Šifrovacie funkcie sme tiež vybrali tak, aby boli najpodobnejšie šifrovacím funkciám v ostatných tokenoch. Kryptografické funkcie použité na podpisovanie a šifrovanie jednotlivých tokenov sú uvedené v tabuľke \ref{tab:funkcie}.
 
 \begin{table}[H]
   \begin{center}
@@ -49,7 +53,7 @@ JWT a PASETO, aj vybrané knižnice, ktoré ich implementujú, ponúkajú viacer
       Proces & Nepriehľadný & JWT & PASETO & Fernet & Branca & Macaroons \\
       \hline
       Šifrovanie & $\varoslash$ & AES-128-CBC & AES-256-CTR & AES-128-CBC & XChaCha20 & $\varoslash$ \\
-      Podpisovanie & HMAC-SHA256 & HMAC-SHA256 & HMAC-SHA384 & HMAC-SHA256 & Poly1305 & HMAC-SHA256 \\
+      Podpisovanie & $\varoslash$ & HMAC-SHA256 & HMAC-SHA384 & HMAC-SHA256 & Poly1305 & HMAC-SHA256 \\
       \hline
     \end{tabular}%
     }
@@ -65,19 +69,13 @@ Všetky knižnice podporujú jednoduché podpísanie a prípadné šifrovanie to
 
 Pre JWT a PASETO nám knižnice ponúkli viacero štandardných oprávnení, ktoré sme mohli použiť pri vytváraní obsahu tokenu. Potom pri validácii tokenu stačilo uviesť požadované hodnoty týchto oprávnení a knižničné volanie ich validovalo. Fernet nepodporuje nijaké štandardné validovanie obsahu tokenu ani na úrovni špecifikácie, teda ani knižnica, ktorá ho implementuje, ho neponúkala. Overovanie formátu a obsahu tela tokenu sme teda implementovali sami. Branca podobne ako Fernet na úrovni špecifikácie neponúka štandardnú validáciu tela tokenu. No vybraná knižnica umožňuje validovať aspoň časovú platnosť tokenu pomocou časovej pečiatky v tokene a časového limitu zadaného ako argument pri dešifrovaní tela. Ani špecifikácia Macaroons nepodporuje žiadnu štandardnú validáciu pravidiel. Vybraná knižnica dovoľuje jednoducho pridávať pravidlá prvej strany tým, že riadi réžiu okolo postupného generovania podpisu tokenu. Neexistujú však žiadne štandardné pravidlá a preto sme ich validáciu implementovali sami.
 
+NONE token slúži len na odmeranie času potrebného na réžiu spojenú s vykonávaním požiadaviek rozhraním, preto v tejto podkapitole neporovnávame.
+
 Na základe týchto pozorovaní sme porovnali jednoduchosť práce s rôznymi tokenmi, rovnakým spôsobom ako vlastnosti porovnané v tabuľke \ref{tab:porovnanie} pomocou symbolov \CIRCLE, \LEFTcircle, \Circle ~a $\varoslash$. Výsledky sú uvedené v tabuľke \ref{tab:api_porovnanie}.
-
-\section{Meranie rýchlosti}
-
-Pre porovnanie rýchlosti spracovania požiadavky sme implementovali jednoduchého klienta vykonávajúceho požiadavky na rozhranie. Klient sa najprv úspešne autentifikuje voči rozhraniu, ktoré mu vráti platný prístupový token. Následne klient vytvorí požiadavku na rozhranie s týmto tokenom.
-
-Klient teda vykonáva jednu požiadavku bez tokenu, na ktorej vykonanie musí rozhranie vygenerovať nový token a jednu požiadavku s platným tokenom, na ktorej vykonanie musí rozhranie validovať token. Teda v princípe meriame čas generovania a validácie tokenu. Na meranie času vytvorenia tokenu meria klient čas od odoslania požiadavky na autentifikáciu po vrátenie tokenu rozhraním. Na meranie času validácie tokenu meria klient čas od odoslania požiadavky na rozhranie po vrátenie odpovede rozhraním.
-
-Pre presnejšie meranie času vykoná klient 10000 požiadaviek na autentifikáciu a~10000 požiadaviek s platným tokenom a zaznamená priemer a medián nameraných časov. Pri meraní času sme paralelne pustili 5 klientov, ktorých zaznamenané priemery a mediány sme spriemerovali. Výsledky sú uvedené v tabuľke \ref{tab:api_porovnanie}.
 
 \begin{table}
   \begin{center}
-    \caption{Namerané rýchlosti spracovania požiadavky}
+    \caption{Jednoduchosť práce s knižnicami}
     \label{tab:api_porovnanie} % create a label for the table, after caption
 
     \resizebox{\columnwidth}{!}{%
@@ -85,26 +83,165 @@ Pre presnejšie meranie času vykoná klient 10000 požiadaviek na autentifikác
       \hline
       Vlastnosť & Nepriehľadný & JWT & PASETO & Fernet & Branca & Macaroons \\
       \hline
-      Jednoduchosť práce & $\varoslash$ & \CIRCLE & \CIRCLE & \Circle & \Circle & \LEFTcircle \\
-      Generovanie priemer [ms] & 17.556 & 2.442 & 2.241 & 1.577 & 2.089 & 2.430 \\
-      Generovanie medián [ms] & 17.087 & 2.160 & 2.093 & 1.457 & 1.898 & 2.266 \\
-      Validácia priemer [ms] & 21.230 & 1.846 & 1.803 & 1.199 & 1.336 & 2.183 \\
-      Validácia medián [ms] & 23.216 & 1.743 & 1.706 & 1.152 & 1.274 & 2.079 \\
-      \hline
+      Jednoduchosť práce & $\varoslash$ & \CIRCLE & \CIRCLE & \Circle & \Circle & \LEFTcircle
     \end{tabular}%
     }
   \end{center}
 \end{table}
 
-\section{Vyhodnotenie nameraných výsledkov}
+\section{Meranie rýchlosti}
+
+Pre porovnanie rýchlosti spracovania požiadavky sme implementovali jednoduchého klienta vykonávajúceho požiadavky na rozhranie. Klient sa najprv úspešne autentifikuje voči rozhraniu, ktoré mu vráti platný prístupový token. Následne klient vytvorí požiadavku na rozhranie s týmto tokenom.
+
+Klient teda vykonáva jednu požiadavku bez tokenu, na ktorej vykonanie musí rozhranie vygenerovať nový token a jednu požiadavku s platným tokenom, na ktorej vykonanie musí rozhranie validovať token. Teda v princípe meriame čas generovania a validácie tokenu. Na meranie času vytvorenia tokenu meria klient čas od odoslania požiadavky na autentifikáciu po vrátenie tokenu rozhraním. Na meranie času validácie tokenu meria klient čas od odoslania požiadavky na rozhranie po vrátenie odpovede rozhraním.
+
+Pre presnejšie meranie meriame čas ako súčet 100 iterácií zaslania a spracovania požiadavky. Všetky namerané hodnoty sú teda súčtom 100 meraní a pre vyjadrenie času vykonania jednej požiadavky je nutné ich predeliť 100. Celý proces opakujeme 1000 krát. Klient teda vykoná spolu 100000 požiadaviek na autentifikáciu (generovanie tokenu) a 100000 požiadaviek s tokenom (validácia tokenu). Výsledky merania, ktoré používame na analýzu rýchlosti tokenov sú zaznamenané v súbore used\_measurements v elektronickej prílohe a v zdrojovom kóde na platforme GitHub.
+
+\section{Spracovanie a vyhodnotenie nameraných výsledkov}
 \label{sec:vyhodnotenie}
 
-Keď budeme hovoriť o rýchlosti tokenu, myslíme tým rýchlosť generovania a validácie daného tokenu. 
+V tejto podkapitole uvedieme a popíšeme vybrané grafy, ktoré sme vygenerovali s nameraných hodnôt. Z každého grafu uvedieme dva varianty. Prvý vypočítaný z meraní generovania tokenu a druhý z meraní validácie tokenu. Keď budeme hovoriť o rýchlosti tokenu, myslíme tým rýchlosť generovania a validácie daného tokenu.
 
-Vidíme, že nepriehľadný token je výrazne pomalší ako ostatné tokeny. Konkrétne je v priemere v prípade generovania 7-11 krát pomalší a v prípade validácie 10-16 krát pomalší. Toto je spôsobené tým, že rozhranie si pri generovaní nového tokenu musí tento token uložiť do databázy spolu s autorizačnými údajmi a pri validácii musí token spolu s údajmi vyhľadať v databáze.
+Vhodný graf pre vizualizáciu rozloženia dát je krabicový graf. Na grafe vidíme krabicu, ktorej hornú a dolnú hranu tvoria 1. a 3. kvartil. Vnútri krabice je plnou čiarou znázornený medián (2. kvartil) a čiarkovanou čiarou je znázornený aritmetický priemer. Z krabice vystupujú do dvoch strán takzvané fúzy. Hranice fúzou reprezntujú poslednú hodnotu v rámci 1,5 násobku medzikvartilového rozpätia. Medzikvartilovým rozpätím rozumieme rozdiel medzi 3. a 1. kvartilom. Všetky hodnoty, ktoré sú väčšie ako hranica horného fúzu alebo menšie ako hranica dolného fúzu sú považované za odľahlé hodnoty a sú znázornené malými kružnicami. V našom prípade zobrazuje ľavá os čas v milisekundách.
 
-Ďalej si všimnime, že JWT a PASETO majú skoro identické časy pri všetkých meraných hodnotách. Tento výsledok je pri použití podobných kryptografických funkcií očakávaný, lebo ide o veľmi podobné tokeny. Fernet a Branca sú dva najrýchlejšie tokeny, čo je pravdepodobne spôsobené jednoduchosťou ich formátu. Branca je však priemerne 1,3 krát pomalší pri generovaní a 1,1 krát pomalší pri validácii ako Fernet. Tento rozdiel môžeme pravdepodobne prisúdiť použitiu rôznych kryptografických funkcií alebo inej implementácii.
+\begin{figure}
+  %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
+  %obrazok je v subore images/session.png
+  \centerline{\includegraphics[width=0.7\textwidth]{images/signin_boxplot_allW}}
+  %popis obrazku
+  \caption[Krabicový graf -- generovanie, všetky hodnoty]{Krabicový graf zobrazujúci všetky namerané hodnoty pri generovaní tokenu}
+  %id obrazku, pomocou ktoreho sa budeme na obrazok odvolavat
+  \label{fig:signin_boxplot_allW}
+\end{figure}
+
+\begin{figure}
+  %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
+  %obrazok je v subore images/session.png
+  \centerline{\includegraphics[width=0.7\textwidth]{images/request_boxplot_allW}}
+  %popis obrazku
+  \caption[Krabicový graf -- validácia, všetky hodnoty]{Krabicový graf zobrazujúci všetky namerané hodnoty pri validovaní tokenu}
+  %id obrazku, pomocou ktoreho sa budeme na obrazok odvolavat
+  \label{fig:request_boxplot_allW}
+\end{figure}
+
+Na grafoch \ref{fig:signin_boxplot_allW} a \ref{fig:request_boxplot_allW} sú zobrazené všetky namerané hodnoty. Všimnime si množstvo odľahlých hodnôt, čo znamená, že namerané dáta obsahovali veľa extrémnych hodnôt. Výskyt extremálnych hodnôt viac popíšeme neskôr pomocou čiarových grafov a histrogramov. Taktiež si všimnime, že nepriehľadný token je výrazne pomalší ako ostatné tokeny. Toto je spôsobené tým, že rozhranie si pri generovaní nového tokenu musí tento token uložiť do databázy spolu s autorizačnými údajmi a pri validácii musí token spolu s údajmi vyhľadať v databáze. Pomalosť nepriehľadného tokenu spôsobuje značnú neprehľadnosť grafu. Preto sme sa rozhodli zobraziť tokeny bez nepriehľadného tokenu. A taktiež bez odľahlých hodnôt, aby sme získali prehľadnejšie zobrazenie neextremánych hodnôt. Tieto grafy sú zobrazené na obrázkoch \ref{fig:signin_boxplot_without_opaque} a \ref{fig:request_boxplot_without_opaque}.
+
+\begin{figure}
+  %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
+  %obrazok je v subore images/session.png
+  \centerline{\includegraphics[width=0.7\textwidth]{images/signin_boxplot_without_opaque}}
+  %popis obrazku
+  \caption[Krabicový graf -- generovanie, hodnoty bez nepriehľadného tokenu]{Krabicový graf zobrazujúci namerané hodnoty bez nepriehľadného tokenu pri generovaní tokenu}
+  %id obrazku, pomocou ktoreho sa budeme na obrazok odvolavat
+  \label{fig:signin_boxplot_without_opaque}
+\end{figure}
+
+\begin{figure}
+  %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
+  %obrazok je v subore images/session.png
+  \centerline{\includegraphics[width=0.7\textwidth]{images/request_boxplot_without_opaque}}
+  %popis obrazku
+  \caption[Krabicový graf -- validácia, hodnoty bez nepriehľadného tokenu]{Krabicový graf zobrazujúci namerané hodnoty bez nepriehľadného tokenu pri validovaní tokenu}
+  %id obrazku, pomocou ktoreho sa budeme na obrazok odvolavat
+  \label{fig:request_boxplot_without_opaque}
+\end{figure}
+
+Pri všetkých tokenoch vidíme zrýchlenie medzi generovaním a validáciou. Toto môže byť spôsobené tým, že veľa hodnôt používaných pri validácií aj generovaní si počítač odložil do medzipamäte (angl. cache) a pri validácií ich mal potom rýchlejšie k dispozícii. Najmenej výrazné zrýchlenie je pri Macaroons. To je pravdepodobne spôsobené tým, že Macaroons počíta viacero hodnôt pri generovaní aj validácii a taktiež má zložitú štruktúru, do ktorej sa hodnoty ukladajú. Teda malipúlácia s nimi je ťažšie predvídateľná pre procesor.
+
+Na priamu vizualizáciu všetkých nameraných dát sme použili čiarový graf. Pre vyššiu prehľadnosť grafu sme vypočítali a zobrali aj plávajúci priemer hodnôt. Plávajúci priemer je vypočítaný ako priemer 50 konsekutívnych hodnôt. Tento priemer je na grafe zobrazený plnou čiarou a všetky hodnoty sú zobrazené bodkovanými čiarami. Ako sme si všimli už pri krabicovom grafe, rýchlosť nepriehľadného tokenu je výrazne menšia ako rýchlosť otatných tokenov. Preto sme sa rozhodli zobraziť graf bez nepriehľadného tokenu. Popísané čiarové grafy sú zobrazené na obrázkoch \ref{fig:signin_line_without_opaque} a \ref{request_line_without_opaque}.
+
+\begin{figure}
+  %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
+  %obrazok je v subore images/session.png
+  \centerline{\includegraphics[width=1\textwidth]{images/signin_line_without_opaque}}
+  %popis obrazku
+  \caption[Čiarový graf -- generovanie, hodnoty bez nepriehľadného tokenu]{Čiarový graf zobrazujúci namerané hodnoty bez nepriehľadného tokenu pri generovaní tokenu}
+  %id obrazku, pomocou ktoreho sa budeme na obrazok odvolavat
+  \label{fig:signin_line_without_opaque}
+\end{figure}
+
+\begin{figure}
+  %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
+  %obrazok je v subore images/session.png
+  \centerline{\includegraphics[width=1\textwidth]{images/request_line_without_opaque}}
+  %popis obrazku
+  \caption[Čiarový graf -- validácia, hodnoty bez nepriehľadného tokenu]{Čiarový graf zobrazujúci namerané hodnoty bez nepriehľadného tokenu pri validovaní tokenu}
+  %id obrazku, pomocou ktoreho sa budeme na obrazok odvolavat
+  \label{fig:request_line_without_opaque}
+\end{figure}
+
+Vidíme, že namerané hodnoty výrazne skáču, čo dokazujú aj histogrami na obrázkoch \ref{fig:signin_histogram_all} a \ref{fig:request_histogram_all}. Toto správanie môžeme vysvetliť tým, že rozhranie aj klienta sme spúšťali na jednom počítači, na ktorom samozrejme bežali aj iné procesy. Výkyvy v nameraných hodnotách sú teda pravdepodobne spôsobené prepínaním procesov a prideľovaním zdrojov na počítači. Až na niektoré extrémne odchýľky sú vykyvy vrámci všetkých tokenov podobné. Najmä na čiarovom grafe zobrajúcom generovanie tokenu vidíme, že namerané hodnoty v prvých približne 50 meraniach sú vyššie ako v ostatných meraniach a postupne klesajú. Toto sa dá vysvetliť online kompiláciou, už za behu, často používaného kódu. Táto interpretácia sedí aj s tým, že pri validácii tokenu sa tento jav nevyskytuje. Validácia sa totiž meria až po zmeraní generovania tokenu a vrámci jedného spustenia kódu rozhrania aj klienta. Kódy rozhrania aj klienta sú už teda dokompilované.
+
+\begin{figure}
+  %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
+  %obrazok je v subore images/session.png
+  \centerline{\includegraphics[width=1\textwidth]{images/signin_histogram_all}}
+  %popis obrazku
+  \caption[Histogram -- generovanie, všetky hodnoty]{Histogram zobrazujúci namerané všetky hodnoty pri generovaní tokenu}
+  %id obrazku, pomocou ktoreho sa budeme na obrazok odvolavat
+  \label{fig:signin_histogram_all}
+\end{figure}
+
+\begin{figure}
+  %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
+  %obrazok je v subore images/session.png
+  \centerline{\includegraphics[width=1\textwidth]{images/request_histogram_all}}
+  %popis obrazku
+  \caption[Histogram -- validácia, všetky hodnoty]{Histogram zobrazujúci namerané hodnoty všetky pri validovaní tokenu}
+  %id obrazku, pomocou ktoreho sa budeme na obrazok odvolavat
+  \label{fig:request_histogram_all}
+\end{figure}
+
+Pre číselné porovnanie rýchlosti tokenov sme z čiarových grafov \ref{fig:signin_line_without_opaque} a \ref{request_line_without_opaque} odstránili bodkované čiary a nechali len plné čiary, reprezentujúce plávajúce priemery. Od hodnôt tokenov sme odpočítali hodnoty namerané s NONE tokenom, aby sme porovnávali čisto rýchlosť generovania a validácie tokenov bez réžie okolo spracovania požiadaviek. Tieto grafy sú zobrazené na obrázkoch \ref{fig:signin_line_minus_none_without_opaque} a \ref{fig:request_line_minus_none_without_opaque}.
+
+\begin{figure}
+  %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
+  %obrazok je v subore images/session.png
+  \centerline{\includegraphics[width=1\textwidth]{images/signin_line_minus_none_without_opaque}}
+  %popis obrazku
+  \caption[Čiarový graf -- generovanie, odpočítaný NONE token]{Čiarový graf zobrazujúci namerané hodnoty s odpočítaným NONE tokenom bez nepriehľadného tokenu pri generovaní tokenu}
+  %id obrazku, pomocou ktoreho sa budeme na obrazok odvolavat
+  \label{fig:signin_line_minus_none_without_opaque}
+\end{figure}
+
+\begin{figure}
+  %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
+  %obrazok je v subore images/session.png
+  \centerline{\includegraphics[width=1\textwidth]{images/request_line_minus_none_without_opaque}}
+  %popis obrazku
+  \caption[Čiarový graf -- validácia, odpočítaný NONE token]{Čiarový graf zobrazujúci namerané hodnoty s odpočítaným NONE tokenom bez nepriehľadného tokenu pri validovaní tokenu}
+  %id obrazku, pomocou ktoreho sa budeme na obrazok odvolavat
+  \label{fig:request_line_minus_none_without_opaque}
+\end{figure}
+
+Aj hodnoty plávajúcich priemerov nie sú úplne rovnomerané a nedá sa z nich priamo porovnať rýchlosť tokenov. Preto sme sa rozhodli porovnať rýchlosť na základe aritmetického priemeru všetkých nameraných hodnôt (tiež po odpočítaní NONE tokenu). Toto porovnanie je zobrazené v grafoch \ref{fig:signin_line_avg_without_opaque} a \ref{fig:request_line_avg_without_opaque}. Graf má odrezanú ľavú os tak, aby nezobrazoval nepriehľadný token. V takomto prípade sú prehľadnejšie vidieť rozdiely medzi ostatnými tokenmi. V legendách je zobrazený aritmetický priemer všetkých nameraných hodnôt. V legende je uvedený aj aritmetický priemer rýchlosti nepriehľadného tokenu.
+
+\begin{figure}
+  %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
+  %obrazok je v subore images/session.png
+  \centerline{\includegraphics[width=1\textwidth]{images/signin_line_avg_without_opaque}}
+  %popis obrazku
+  \caption[Čiarový graf -- generovanie, konštantný priemer]{Čiarový graf zobrazujúci aritmetický priemer nameraných hodnôt s odpočítaným NONE tokenom bez nepriehľadného tokenu pri generovaní tokenu}
+  %id obrazku, pomocou ktoreho sa budeme na obrazok odvolavat
+  \label{fig:signin_line_avg_without_opaque}
+\end{figure}
+
+\begin{figure}
+  %vlozenie samotneho obrazku vycentrovaneho a vhodnej velkosti
+  %obrazok je v subore images/session.png
+  \centerline{\includegraphics[width=1\textwidth]{images/request_line_avg_without_opaque}}
+  %popis obrazku
+  \caption[Čiarový graf -- validácia, konštantný]{Čiarový graf zobrazujúci aritmetický priemer nameraných hodnôt s odpočítaným NONE tokenom bez nepriehľadného tokenu pri validovaní tokenu}
+  %id obrazku, pomocou ktoreho sa budeme na obrazok odvolavat
+  \label{fig:request_line_avg_without_opaque}
+\end{figure}
+
+Ako sme spomenuli už vyššie, nepriehľadný token je pre využívanie databázy výrazne pomalší ako ostatné tokeny. Konkrétne je v priemere v prípade generovania 8-30 krát pomalší a v prípade validácie 13-68 krát pomalší. Ďalej teda vzájomne porovnajme ostatné tokeny.
 
 Prekvapivým výsledkom je, že Macaroons je najpomalší pri generovaní aj validácii, pretože okrem nepriehľadného tokenu ide o jediný token, ktorého telo sa nešifruje. Tento výsledok je možné vysvetliť tým, že Macaroons je najkomplexnejší token, formátom aj procesom generovania. Pri generovaní sa aplikuje podpisová funkcia raz pri vytvorení nového tokenu a následne toľko krát koľko pravidiel do tokenu pridávame, v~našom prípade štyrikrát. Podobne pri validácii tokenu sa musí vypočítať podpis tokenu postupnou aplikáciou podpisovej funkcie na každé pravidlo v tele tokenu. Macaroons bol vytvorený pre komplexné systémy pre jeho flexibilitu spočívajúcu v možnosti pridávať pravidlá ľubovoľnou entitou a elegantného riešenia zapojenia tretích strán do autorizácie pomocou pravidiel tretích strán. Preto je pre jednoduchý systém, ako je nami implementované rozhranie, Macaroons nevhodný.
 
-Porovnaním mediánu a priemeru hodnôt vidíme, že medián je takmer vždy menší oproti priemeru. Jedinou výnimkou je validácia nepriehľadného tokenu. Menší medián ako priemer v nameraných hodnotách značí, že medzi nameranými hodnotami bolo viac vysokých extrémov. Rozhranie aj klienta sme spúšťali lokálne z jedného počítaču, teda sa mohlo stať, že výkonnosť rozhrania ovplyvnili iné bežiace procesy na počítači, čo spôsobilo aj výkyvy v nameraných hodnotách.
+Zaujímavým pozorovaním je výrazné zrýchlenie validácie nepriehľadného tokenu a Branca tokenu oproti jeho generovaniu. Vyššie sme oddôvodnili prečo pri všetkých tokenoch vidíme zrýchlenie validácie oproti generovaniu. V prípade týchto tokenom je ale zrýchlenie najvýraznejšie. V oboch prípadoch takmer dvojnásobné. Rozhranie využíva jednoduchú súborovú databázu sqlite. Pri generovaní nepriehľadného tokenu sa teda pravdepodobne načíta do opereračnej pamäti z disku a ďalej pri validácii sa už číta iba z operačnej pamäte, ktorá je výrazne rýchejšia.
+
+Pri Branca tokene predpokladáme, že ide o rozdiel rýchlosti šifrovacej funkcie pri šifrovaní a dešifrovaní. Táto funkcie je totiž odlišná od funkcií pouťitých v ostatných tokenoch.
+
+Celkovo najrýchleší je pri generovaní PASETO, konkrétne 1,6-3,8 krát rýchlejší. Pri validácii je najrýchlejší Fernet, konkrétne 1,6-5,2 krát. V oboch prípadoch porovnávame najrýchlejší token s ostanými tokenmi okrem nepriehľadného tokenu. Uvedomme si však, že najmä v prípade validácie sú rozdiely medzi JWT, PASETO, Fernet a Branca takmer zanedbateľné. Rozdiel ich rýchlostí je najviac 12,78 ms pri súčte 100 meraní. Teda 0,13 ms na jednu požiadavku.
