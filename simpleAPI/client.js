@@ -19,6 +19,7 @@ const signinInit = {
   },
 };
 let data;
+// measure signin time (token generation)
 for (let i = 0; i < requestsRepetitions; i++) {
   const start = performance.now();
   for (let j = 0; j < requestsInGroup; j++) {
@@ -40,6 +41,7 @@ const welcomeInit = {
   method: "GET",
   headers: { Authorization: "Bearer " + token },
 };
+// measure request time with token (token validation)
 for (let i = 0; i < requestsRepetitions; i++) {
   const start = performance.now();
   for (let j = 0; j < requestsInGroup; j++) {
@@ -54,5 +56,6 @@ for (let i = 0; i < requestsRepetitions; i++) {
   responseTimes.push(end - start);
 }
 
+// print results
 signinTimes.forEach((x) => console.log("Signin:", usingToken, id, x));
 responseTimes.forEach((x) => console.log("Request:", usingToken, id, x));

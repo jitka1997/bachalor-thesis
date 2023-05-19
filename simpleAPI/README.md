@@ -6,7 +6,7 @@ Projekt ponúka viacero skriptov na používanie API.
 
 ### Meranie a interpretácia výsledkov
 
-Meranie zapne server rozhrania postupne s každým tokenom a pre každý spustí klienta, ktorý vykoná 100000 požiadaviek na koncový bod `signin` a 100000 požiadaviek na koncový bod `welcome`. Na spracovanie prvej požiadavky musí rozhranie vygenerovať vybraný token, na spracovanie druhej musí validovať zaslaný token.
+Meranie spustí server rozhrania postupne s každým tokenom a pre každý spustí klienta, ktorý vykoná 100000 požiadaviek na koncový bod `signin` a 100000 požiadaviek na koncový bod `welcome`. Na spracovanie prvej požiadavky musí rozhranie vygenerovať vybraný token, na spracovanie druhej musí validovať zaslaný token.
 
 Meranie - namerané hodnoty zapíše do súboru `measure.out`:
 
