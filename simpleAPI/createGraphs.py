@@ -133,7 +133,7 @@ def makeLineWithAvg(data, tokens, filename, colors):
 
         # plot moving average and data
         plt.plot(range(1000-period), moving_aves,
-                 label=tokens[i]+' tredline', color=colors[i])
+                 label=tokens[i]+' plávajúci priemer', color=colors[i])
         plt.plot(xpoints, data[i], label=tokens[i],
                  color=colors[i], ls=':', linewidth=0.5)
     plt.legend()
@@ -192,7 +192,7 @@ def makeLineOnlyAvg(data, tokens, filename, colors):
 
         # plot moving average
         plt.plot(range(1000-period), moving_aves,
-                 label=tokens[i]+' tredline', color=colors[i])
+                 label=tokens[i]+' plávajúci priemer', color=colors[i])
     plt.legend()
     plt.grid(axis='y')
 
