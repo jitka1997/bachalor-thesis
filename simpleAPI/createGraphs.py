@@ -30,7 +30,7 @@ def getList(token):
         return branca
     elif token == "Macaroon":
         return macaroon
-    elif token == "Opaque":
+    elif token == "Opaque" or token == "Nepriehľadný token":
         return opaque
     elif token == "NONE":
         return none
@@ -133,7 +133,7 @@ def makeLineWithAvg(data, tokens, filename, colors):
 
         # plot moving average and data
         plt.plot(range(1000-period), moving_aves,
-                 label=tokens[i]+' plávajúci priemer', color=colors[i])
+                 label=tokens[i]+' plávajúci priemer', color=colors[i], linewidth=1.5)
         plt.plot(xpoints, data[i], label=tokens[i],
                  color=colors[i], ls=':', linewidth=0.5)
     plt.legend()
@@ -156,7 +156,7 @@ def makeLine(data, tokens, filename, colors, width=0.5, avg=False):
 
     if avg:
         ax.set_ylim([0, 60])
-        width = 1.5
+        width = 2
 
     for i in range(len(data)):
         # set x axis range and labels
@@ -192,7 +192,7 @@ def makeLineOnlyAvg(data, tokens, filename, colors):
 
         # plot moving average
         plt.plot(range(1000-period), moving_aves,
-                 label=tokens[i]+' plávajúci priemer', color=colors[i])
+                 label=tokens[i]+' plávajúci priemer', color=colors[i], linewidth=1.5)
     plt.legend()
     plt.grid(axis='y')
 
@@ -200,7 +200,8 @@ def makeLineOnlyAvg(data, tokens, filename, colors):
     plt.close()
 
 
-tokens = ["JWT", "PASETO", "Fernet", "Branca", "Macaroon", "Opaque", "NONE"]
+tokens = ["JWT", "PASETO", "Fernet", "Branca",
+          "Macaroon", "Nepriehľadný token", "NONE"]
 tokensWithoutOpaque = ["JWT", "PASETO", "Fernet", "Branca", "Macaroon", "NONE"]
 
 dataSignin = [np.array(getList(tokenlist)[0], dtype=np.float32)

@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Report z meraní výkonnosti API tokenov</title>
+    <title>Report z meraní výkonosti API toknov</title>
   </head>
   <body>
     <h1>Prehľad o grafoch a meraniach</h1>
@@ -9,7 +9,7 @@
       dvoch datasetov - čas prihlasovacej požiadavky (vytvorenie tokenu), čas
       požiadavky s tokenom (validácia tokenu). Pri každom grafe je uvedený
       najprv graf z merania vytvorenia tokenu a potom graf z merania validácie
-      tokenu. Všetky grafy okrem histogramov majú na ľavej osi čas v milisekundách. Histogramy majú čas v milisekundách sa dolnej osi a počet meraní na ľavej. Grafy zobrazujú dáta z 1000 meraní, každé meranie je súčtom časov 100 požiadaviek.
+      tokenu. Všetky grafy orkem histogramov majú na ľavej osi čas v milisekundách. Histogramy majú čas v milisekundách sa dolnej osi a počet meraní na ľavej. Grafy zobrazujú dáta z 1000 meraní, každé meranie je súčtom časov 100 požiadaviek.
     </p>
     <h2>Krabicový graf</h2>
     <p>
@@ -68,7 +68,7 @@
         <img src="graphs/line/request_line_all_noavg.svg" width="700" />
     </p>
     <h3>Všetky dáta s plávajúcim priemerom</h3>
-    Plávajúci priemer je zobrazený plnou čiarou a je vypočítaný ako priemer 50 po sebe idúcich meraní. Čiarkované čiary zobrazujú všetky hodnoty.
+    Plávajúci priemer je zobrazený plnou čiarou a je vypočítaný ako priemer 50 po sebe idúcich meraní. Čiarkované čiary rozbrazujú všetky hodnoty.
     <p>
         <img src="graphs/line/signin_line_all.svg" width="700" />
     </p>
@@ -84,7 +84,7 @@
     </p>
     <h3>Dáta bez nepriehľadného tokenu s plávajúcim priemerom</h3>
     <p>
-        Plávajúci priemer je zobrazený plnou čiarou a je vypočítaný ako priemer 50 po sebe idúcich meraní. Čiarkované čiary zobrazujú všetky hodnoty.
+        Plávajúci priemer je zobrazený plnou čiarou a je vypočítaný ako priemer 50 po sebe idúcich meraní. Čiarkované čiary rozbrazujú všetky hodnoty.
     </p>
     <p>
         <img src="graphs/line/signin_line_without_opaque.svg" width="700" />
@@ -92,9 +92,9 @@
     <p>
         <img src="graphs/line/request_line_without_opaque.svg" width="700" />
     </p>
-    <h2>Čiarový graf z plávajúcich priemerov meraní s odpočítanými NONE meraniami</h2>
+    <h2>Čirový graf z plávajúcich priemerov meraní s odpočítanými NONE meraniami</h2>
     <p>
-        Merania s NONE, predstavujú merania požiadaviek bez tokenu. Predstavujú teda čas, ktorý trvá samotná réžia okolo meraní a spracovávaní požiadaviek. Tieto merania sú odpočítané od všetkých meraní. Tento graf je vhodný na porovnanie času vytvorenia tokenu a času validácie tokenu medzi tokenmi.
+        Merania s NONE, predstavujú merania požiadaviek bez tokenu. Predstavujú teda čas, ktorý trvá samotná réžia okolo meraní a spracovávaní požiadavkiek. Tieto merania sú odpočítané od všetkých meraní. Tento graf je vhodný na porovnanie času vytvorenia tokenu a času validácie tokenu medzi tokenmi.
     </p>
     <h3>Dáta s odpočítanými NONE meraniami</h3>
     <p>
@@ -112,7 +112,7 @@
     </p>
     <h3> Konštantný čiarový graf priemerov meraní bez nepriehľadného tokenu s odpočítaným priemerným NONE meraním</h2>
     <p>
-        Graf slúži na porovnanie priemernej rýchlosti tokenov. V legende sú uvedené presné hodnoty priemerov.
+        Graf slúži na porovania priemernej rýchlosti tokenov. V legende sú uvedené presné hodnoty priemerov.
     </p>
     <p>
         <img src="graphs/line/signin_line_avg_without_opaque.svg" width="700" />
