@@ -32,7 +32,7 @@ Po spustení klient vykoná 1000 meraní každé pozostávajúce zo 100 iteráci
 
 Pri modifikácii daných konštánt treba dať pozor, aby vygenerované tokeny v prvom type volania (generovanie tokenu) ostali platné až kým sa budú vykonávať volania druhého typu (validácia tokenu). Toto sa dá ošetriť nastavením väčšieho časového limitu priamo v tokenoch alebo miernejšieho ošetrovania časovej platnosti tokenov. Druhý prístup sme využili pri nepriehľadnom tokene už pri 100000 volaniach.
 
-Namerané výsledky v súbore `measure.out` sú vždy súčtom nemeraných `requestsInGroup` časov.
+Namerané výsledky v súbore `measure.out` sú vždy súčtom nameraných `requestsInGroup` časov.
 
 ### CSV a paralelné volania (nevyužíva sa v bakalárskej práci)
 
@@ -42,7 +42,7 @@ Meranie pomocou piatich paralelných klientov - namerané výsledky zapíše do 
 npm run measure-all
 ```
 
-Z paralelných meraní nie je implementované korektné vygenerovanie grafov a HTML reportu. Výsledky je však možné exportovať do CSV (aj výsledky `npm run measure-all-single` je takto exportovať) - vytvorí súbor `measure.csv`:
+Z paralelných meraní nie je implementované korektné vygenerovanie grafov a HTML reportu. Výsledky je však možné exportovať do CSV (aj výsledky `npm run measure-all-single` je možné takto exportovať) - vytvorí súbor `measure.csv`:
 
 ```console
 python3 createCsv.py

@@ -18,7 +18,7 @@ Samotný JWT je v podstate iba serializovaný JSON objekt chránený JWS alebo J
 
 A to konkrétne v hlavičke sú najdôležitejšie \textit{typ} a \textit{alg}. Prvý určuje typ tokenu a~druhý algoritmus, ktorý bol použitý na vytvorenie podpisu alebo v rámci šifrovania obsahu tokenu. Rôzne možnosti pre algoritmy sú definované v JWA štandardoch.
 
-Telo tvorí logický obsah tokenu, napríklad môže obsahovať oprávnenia týkajúce sa konkrétnej autentifikácie a používateľa, pre ktorého bol token vydaný. Dôležité štandardom popísané kľúče sú napríklad \textit{iss}, \textit{sub}, \textit{exp}, \textit{nbf}, \textit{iat}. Popisujú postupne vydavateľa tokenu, identifikátor používateľa, čas vypršania platnosti tokenu, čas, kedy sa token začne považovať za platný a čas vydania tokenu.
+Telo tvorí logický obsah tokenu, napríklad môže obsahovať oprávnenia týkajúce sa konkrétnej autentifikácie a používateľa, pre ktorého bol token vydaný. Dôležité, štandardom popísané, kľúče sú napríklad \textit{iss}, \textit{sub}, \textit{exp}, \textit{nbf}, \textit{iat}. Popisujú postupne vydavateľa tokenu, identifikátor používateľa, čas vypršania platnosti tokenu, čas, kedy sa token začne považovať za platný a čas vydania tokenu.
 
 Do tela aj hlavičky sa môžu vkladať ľubovoľné iné oprávnenia, napríklad \textit{admin}, \textit{role}, \textit{permissions}, určujúce oprávnenia používateľa.
 
@@ -107,7 +107,7 @@ Fernet sa skladá z piatich zreťazených častí. Každá časť reprezentuje j
 
 \begin{itemize}
     \item Verzia -- reprezentuje verziu Fernet tokenu, aktuálne existuje len jedna verzia a~je reprezentovaná číslom 0x80. Zaberá vždy 8 bitov.
-    \item Časová pečiatka -- reprezentuje čas vytvorenia tokenu. Čas je zachytení ako počet sekúnd od 1.1.1970 v UTC časovej zóne. Zaberá vždy 64 bitov.
+    \item Časová pečiatka -- reprezentuje čas vytvorenia tokenu. Čas je zachytený ako počet sekúnd od 1.1.1970 v UTC časovej zóne. Zaberá vždy 64 bitov.
     \item Inicializačný vektor (IV) -- reprezentuje náhodný reťazec znakov, ktorý je použitý pri šifrovaní a dešifrovaní tokenu. IV musí byť unikátny a najmä nepredvídateľný pre každý token, preto sa generuje náhodnou funkciou. Zaberá vždy 128 bitov.
     \item Zašifrované telo -- reprezentuje zašifrované dáta uložené v tokene. Môže mať premenlivú dĺžku, no vždy násobok 128 bitov.
     \item Podpis -- reprezentuje výstup HMAC-SHA256 funkcie a zaberá vždy 256 bitov.
@@ -207,7 +207,7 @@ Príklad Macaroons tokenu je zobrazený v obrázku \ref{fig:macaroon_example}.
 
 Každá cieľová služba disponuje tajným kľúčom, prípadne spôsobom ako ho vygenerovať. Ku každému tajnému kľúču musí vedieť odvodiť verejný nepriehľadný identifikátor, ktorý dokáže spätne previesť na tajný kľúč. Takého identifikátory môžu byť implementované napríklad ako náhodné príležitostné slová reprezentujúce kľúč v databáze alebo pomocou šifrovania s verejným alebo súkromným kľúčom \cite{macaroons_key_id}.
 
-Cieľová služba vytvorí nový token z danej lokácie, identifikátora a tajného kľúča $sk$ tak, že podpíše identifikátor pomocou $sk$ a spojí lokáciu, identifikátor a podpis. Podpis vypočíta ako $HMAC(sk, identifikátor)$.
+Cieľová služba vytvorí nový token z danej lokácie, identifikátora a tajného kľúča $sk$ tak, že podpíše identifikátor pomocou $sk$ a spojí lokáciu, identifikátor a podpis. Podpis vypočíta ako \textit{HMAC(sk, identifikátor)}.
 
 Takto vytvorený token si môžeme predstaviť ako univerzálny kľúč, ktorý autorizuje ľubovoľnú požiadavku na cieľovú službu. Cieľová služba môže ďalej token poslať inej službe. Ako sme uviedli v úvode podkapitoly, každá služba môže token zoslabiť alebo kontextovo obmedziť pridaním pravidiel.
 
