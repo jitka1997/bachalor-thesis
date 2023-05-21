@@ -30,6 +30,8 @@ npm run run-graphs
 
 Po spustení klient vykoná 1000 meraní každé pozostávajúce zo 100 iterácií volania API. Tieto počty sa dajú modifikovať pomocou konštánt `requestsInGroup` a `requestsRepetitions` v súbore `client.js`. Pre korektné vygenerovanie grafov a HTML reportu treba aj v súbore `createGraphs` adekvátne zmeniť konštanty `SERIES` a `REPETITIONS`.
 
+Pri modifikácii daných konštánt treba dať pozor, aby vygenerované tokeny v prvom type volania (generovanie tokenu) ostali platné až kým sa budú vykonávať volania druhého typu (validácia tokenu). Toto sa dá ošetriť nastavením väčšieho časového limitu priamo v tokenoch alebo miernejšieho ošetrovania časovej platnosti tokenov. Druhý prístup sme využili pri nepriehľadnom tokene už pri 100000 volaniach.
+
 Namerané výsledky v súbore `measure.out` sú vždy súčtom nemeraných `requestsInGroup` časov.
 
 ### CSV a paralelné volania (nevyužíva sa v bakalárskej práci)

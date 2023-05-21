@@ -3,7 +3,7 @@ lines = file1.readlines()
 file1.close()
 
 PARALEL = 5
-REPETITIONS = 10
+REPETITIONS = 1000
 jwt = [[] for i in range(PARALEL)]
 paseto = [[] for i in range(PARALEL)]
 fernet = [[] for i in range(PARALEL)]
