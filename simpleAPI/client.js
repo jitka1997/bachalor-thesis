@@ -4,8 +4,8 @@ const singinUrl = "http://localhost:8000/signin";
 const requestUrl = "http://localhost:8000/welcome";
 const username = "jitka";
 const password = "hesielko";
-const requestsInGroup = 100; // for better accuracy we measure time of 100 iterations
-const requestsRepetitions = 1000; // we repeat the whole process 1000 times
+const requestsInGroup = 10; // for better accuracy we measure time of 100 iterations
+const requestsRepetitions = 10; // we repeat the whole process 1000 times
 
 const id = process.argv[2];
 

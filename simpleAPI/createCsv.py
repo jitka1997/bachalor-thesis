@@ -2,8 +2,8 @@ file1 = open('measure.out', 'r')
 lines = file1.readlines()
 file1.close()
 
-PARALEL = 1
-REPETITIONS = 1000
+PARALEL = 5
+REPETITIONS = 10
 jwt = [[] for i in range(PARALEL)]
 paseto = [[] for i in range(PARALEL)]
 fernet = [[] for i in range(PARALEL)]
@@ -59,7 +59,6 @@ for i in range(REPETITIONS):
                 csvline += str(getList(token, "Request:")[j][i]) + ", "
             else:
                 csvline += "-1, "
-            # csvline += str(getList(token, "Signin:")[j][i]) + ", "
     csv.append(csvline)
 
 with open('measure.csv', 'w') as f:
