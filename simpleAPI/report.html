@@ -2,7 +2,10 @@
   <head>
     <title>Report z meraní výkonosti API toknov</title>
   </head>
-  <body>
+  <body style= "
+  max-width: 70%;
+  margin: auto;
+">
     <h1>Prehľad o grafoch a meraniach</h1>
     <p>
         Každý graf je vytvorený z
@@ -24,7 +27,7 @@
     <h3>Všetky dáta</h3>
     <p>
       Keď do grafu vložíme všetky dáta nie je veľmi prehľadný, lebo nepriehľadný
-      token je výrazne pomalší ako ostatné tokeny
+      token je výrazne pomalší ako ostatné tokeny.
     </p>
     <p>
       <img src="graphs/boxplot/signin_boxplot_allW.svg" width="700" />
@@ -49,7 +52,7 @@
     <img src="graphs/boxplot/request_boxplot_without_opaque.svg" width="700" />
     </p>
     <h2>Histogram</h2>
-    <p> Ďalším vhodným spôsobom pre zobrazenie rozloženia dát je histogram </p>
+    <p> Ďalším vhodným spôsobom pre zobrazenie rozloženia dát je histogram. </p>
     <p>
         <img src="graphs/histogram/signin_histogram_all.svg" width="700" />
     </p>
@@ -68,7 +71,9 @@
         <img src="graphs/line/request_line_all_noavg.svg" width="700" />
     </p>
     <h3>Všetky dáta s plávajúcim priemerom</h3>
+    <p>
     Plávajúci priemer je zobrazený plnou čiarou a je vypočítaný ako priemer 50 po sebe idúcich meraní. Čiarkované čiary rozbrazujú všetky hodnoty.
+    </p>
     <p>
         <img src="graphs/line/signin_line_all.svg" width="700" />
     </p>
